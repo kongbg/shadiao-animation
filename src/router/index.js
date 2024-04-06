@@ -71,6 +71,110 @@ export const constantRoutes = [
     ]
   },
   {
+    name: "Source",
+    path: "/source",
+    hidden: false,
+    redirect: "noRedirect",
+    component: Layout,
+    alwaysShow: true,
+    meta: {
+      title: "资源管理",
+      icon: "monitor",
+      noCache: false,
+      link: null
+    },
+    children: [
+      {
+        name: "Image",
+        path: "image",
+        hidden: false,
+        component: () => import('@/views/source/image'),
+        meta: {
+          title: "图片",
+          icon: "online",
+          noCache: false,
+          link: null
+        }
+      },
+      {
+        name: "Audio",
+        path: "audio",
+        hidden: false,
+        component: () => import('@/views/source/audio'),
+        meta: {
+          title: "音频",
+          icon: "online",
+          noCache: false,
+          link: null
+        }
+      },
+      {
+        name: "Video",
+        path: "video",
+        hidden: false,
+        component: () => import('@/views/source/video'),
+        meta: {
+          title: "视频",
+          icon: "online",
+          noCache: false,
+          link: null
+        }
+      },
+    ]
+  },
+  {
+    name: "Animation",
+    path: "/animation",
+    hidden: false,
+    redirect: "noRedirect",
+    component: Layout,
+    alwaysShow: true,
+    meta: {
+      title: "动画设计",
+      icon: "monitor",
+      noCache: false,
+      link: null
+    },
+    children: [
+      {
+        name: "Desgin",
+        path: "desgin",
+        hidden: false,
+        component: () => import('@/views/animation/desgin'),
+        meta: {
+          title: "设计",
+          icon: "online",
+          noCache: false,
+          link: null
+        }
+      },
+      {
+        name: "Preview",
+        path: "preview",
+        hidden: false,
+        component: () => import('@/views/animation/preview'),
+        meta: {
+          title: "预览",
+          icon: "online",
+          noCache: false,
+          link: null
+        }
+      },
+      {
+        name: "Hero",
+        path: "hero",
+        hidden: false,
+        component: () => import('@/views/animation/hero'),
+        meta: {
+          title: "十里坡剑神",
+          icon: "online",
+          noCache: false,
+          link: null
+        }
+      }
+    ]
+  },
+  {
     path: '/user',
     component: Layout,
     hidden: true,
