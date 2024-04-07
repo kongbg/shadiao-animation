@@ -8,7 +8,7 @@
             <div class="right"></div>
         </div>
         <Table :columns="columns" :loading="loading" :tableData="tableData" :total="total" :pageSize="pageInfo.pageSize"
-            :currentPage="pageInfo.pageNum">
+            :currentPage="pageInfo.pageNum"  row-key="id">
             <template #path="{row}">
                 <el-image
                     style="width: 60px; height: 60px"
@@ -61,7 +61,8 @@
 </template>
 <script setup>
 import { ref, defineProps, reactive, toRefs } from 'vue';
-import { upload, getFiles } from '@/api/source/index.js'
+import { upload } from '@/api/source/index.js'
+import { addVideoType, getVideoType, deleteVideoType } from '@/api/videoType/index2.js'
 import Table from '@/components/Table'
 import SearchForm from '@/components/SearchForm'
 
@@ -109,23 +110,19 @@ function search(data={}) {
 async function getList(searchForm) {
     let params = {
         page: pageInfo.pageNum,
-        pageSize: pageInfo.pageSize,
-        type: 1,
-        purpose: props.activeName,
-        ...searchForm
+        pageSize: pageInfo.pageSize
     }
     loading.value = true;
-    let res = await getFiles(params);
+    let res = await getVideoType(params);
     loading.value = false;
     let { code, data, msg } = res;
     if (code == 200) {
         tableData.value = data.data || [];
         total.value = data.total;
         tableData.value.forEach(item => {
-            item.path = `http://127.0.0.1:3006${item.path}`;
-            item.size = `${(item.size / 1000)}kb`
-            srcList.value.push(item.path);
+            item.children = item.list;
         })
+        console.log('tableData.value:', tableData.value)
     }
 }
 

@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-table ref="table" v-loading="loading" :data="tableData" empty-text="暂无数据" @selection-change="handleSelection"
-      border :height="height">
+      border :height="height" :rowKey="rowKey">
       <el-table-column type="selection" width="100" v-if="showSelection" align="center" />
       <template v-for="(item, i) in columns">
         <el-table-column :show-overflow-tooltip="!item.hiddenOverTip" :sortable="item.sort" :width="item.width"
@@ -99,6 +99,10 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  rowKey: {
+    type: String,
+    default: ''
+  }
 });
 const table = ref(null);
 

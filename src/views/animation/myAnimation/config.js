@@ -17,7 +17,7 @@ function createColumns () {
         },
         {
             label: '名称',
-            prop: 'fileName',
+            prop: 'name',
         },
         {
             label: '类型',
@@ -50,42 +50,19 @@ function createColumns () {
 // tab配置
 export const allTabList = [
     {
-        label: "背景",
-        name: "background",
-    },
-    {
-        label: "人物",
-        name: "person",
-    },
-    {
-        label: "表情",
-        name: "face",
-    },
-    {
-        label: "武器",
-        name: "weapon",
-    },
-    {
-        label: "特效",
-        name: "effect",
-    },
+        label: "我的动画",
+        name: "myAnimation",
+    }
 ];
 export default {
     "default": {
-        tabList: ['background', 'person', 'face', 'weapon', 'effect'],
+        tabList: ['myAnimation'],
+        tabShow: false,
         columns: {
-            'background': createColumns(),
-            'person': createColumns(),
-            'face': createColumns(),
-            'weapon': createColumns(),
-            'effect': createColumns(),
+            'myAnimation': createColumns(),
         },
         searchConfig: {
-            'background': createSearchConfig(),
-            'person': createSearchConfig(),
-            'face': createSearchConfig(),
-            'weapon': createSearchConfig(),
-            'effect': createSearchConfig(),
+            'myAnimation': createSearchConfig(),
         }
     }
 }

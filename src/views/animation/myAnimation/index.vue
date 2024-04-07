@@ -1,6 +1,6 @@
 <template>
     <div class="app-container">
-        <el-tabs v-model="tabInfo.activeName" class="tabs" @tab-change="tabChange">
+        <el-tabs v-model="tabInfo.activeName" :class="['tabs', tabShow ? 'hide' : '']" @tab-change="tabChange">
             <el-tab-pane v-for="item in tabInfo.list" :label="item.label" :key="item.name" :name="item.name">
                 <List :columns="item.columns" :searchConfig="item.searchConfig" :activeName="item.name"></List>
             </el-tab-pane>
@@ -9,14 +9,16 @@
 </template>
   
 <script setup>
-import { ref, onMounted, reactive, } from "vue";
+import { ref, onMounted, reactive, computed, } from "vue";
 import List from './list'
 import configs, { allTabList } from "./config.js";
 const router = useRouter();
 
-console.log('configs:', configs)
 let userType = '';
 let config = configs[(userType||'default')]
+let tabShow = computed(()=>{
+    return !(config.tabShow === undefined || config.tabShow === true);
+})
 let tabInfo = reactive({
     list: [],
     activeName: ''
@@ -50,6 +52,13 @@ onMounted(() => {
 
         .el-tab-pane {
             height: 100%;
+        }
+    }
+
+    &.hide{
+        :deep(.el-tabs__header) {
+            height: 0;
+            overflow: hidden;
         }
     }
 }
