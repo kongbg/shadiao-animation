@@ -85,7 +85,7 @@ export default class FilesService {
                     '2': 'audio',
                     '3': 'video',
                 }
-                let pathName = pathNames[state.type];
+                let pathName = `${pathNames[state.type]}/${state.purpose}`;
                 //创建文件夹
                 let uploadPath = path.join(staticPath, `/uploads/`, pathName); //文件上传存放路径
                 const existsSync = await new Promise((resolve, reject) => {
@@ -124,7 +124,7 @@ export default class FilesService {
      * 异步上传文件
      * @param {*} file
      */
-    static async __filePromise (file, uploadPath, { type, userId, userName }) {
+    static async __filePromise (file, uploadPath, { type, userId, userName, purpose }) {
         return new Promise((resolve, reject) => { //异常上传,同步获取
             const { name, size } = file;
             //创建数据库存储数据
@@ -135,6 +135,7 @@ export default class FilesService {
                 size, //文件大小
                 type, //文件类型
                 fileType: file.type, //文件类型
+                purpose, // 用途
                 fileName: name, //获取原文件名
                 suffix: getExtname(name), //获取文件后缀名
                 path: null, //文件路径
@@ -147,7 +148,7 @@ export default class FilesService {
                 const fileName = `${data.fileId}.${data.suffix}`; //重名名后的文件
                 const fileSavePath = path.join(uploadPath, fileName); //合成路径 + 时间 + 文件名
                 
-                data.path = `/uploads/images/${fileName}`; //存储完整路径
+                data.path = `/uploads/images/${ purpose ? purpose+'/' : '' }${fileName}`; //存储完整路径
                 data.aliasName = name; //存储别名
                 reader.pipe(fs.createWriteStream(fileSavePath)); //写入文件
                 reader.on('end', () => {

@@ -8,6 +8,7 @@ const columns = [
   { name: 'id', type: 'INTEGER PRIMARY KEY AUTOINCREMENT' },
   { name: 'type', type: 'TEXT' }, // 1 图片 2 音频 3 视频
   { name: 'fileType', type: 'TEXT' }, // 图片 音频 视频
+  { name: 'purpose', type: 'TEXT' }, // 用途类型
   { name: 'userId', type: 'TEXT' }, //上传者id
   { name: 'userName', type: 'TEXT' }, //上传者名称
   { name: 'fileId', type: 'TEXT' }, // 文件id
@@ -32,14 +33,15 @@ export default class appController {
         let files = ctx.request.files;
         // console.log('files:',files)
         // 额外的参数，需要使用ctx.request.body获取
-	    const { type, duration, userId, userName } = ctx.request.body;
+	    const { type, duration, userId, userName, purpose } = ctx.request.body;
         // console.log('额外的参数:', type, duration, userId, userName);
         let params = {
             state: {
                 type,
                 duration,
                 userId,
-                userName
+                userName, 
+                purpose
             },
             files
         }
@@ -58,8 +60,8 @@ export default class appController {
      */
     static async getFiles(ctx) {
         // console.log('getFiles:', ctx.request.query)
-        let { page, pageSize, type } = ctx.request.query;
-        let condition = `type = ${type}`
+        let { page, pageSize, type, purpose } = ctx.request.query;
+        let condition = `type = '${type}' AND purpose = '${purpose}'`
         let { data, total, totalPages } = await db.getPagedData("files", page, pageSize, condition)
         // console.log(data, total, totalPages)
         let result = {

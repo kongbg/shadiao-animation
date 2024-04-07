@@ -137,6 +137,18 @@ export const constantRoutes = [
     },
     children: [
       {
+        name: "MyAnimation",
+        path: "myAnimation",
+        hidden: false,
+        component: () => import('@/views/animation/myAnimation'),
+        meta: {
+          title: "我的动画",
+          icon: "online",
+          noCache: false,
+          link: null
+        }
+      },
+      {
         name: "Desgin",
         path: "desgin",
         hidden: false,
