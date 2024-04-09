@@ -24,7 +24,7 @@ import { computed, provide, onMounted, ref, watch, getCurrentInstance } from 'vu
 import anime from 'animejs/lib/anime.es.js';
 import useDrawStore from '@/store/modules/draw';
 import VueDragResize from 'vue-drag-resize/src';
-import { throttle } from '@/utils'
+import { throttle } from '../../utils'
 let drawStore = useDrawStore();
 const { proxy }  = getCurrentInstance();
 const props = defineProps({

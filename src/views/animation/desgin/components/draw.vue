@@ -37,8 +37,7 @@
 </template>
 <script setup>
 import { ref, shallowRef, getCurrentInstance, computed, nextTick, onMounted, watch } from 'vue';
-import { deepClone, TsetInterval } from '@/utils';
-import { generateUniqueID,  } from './utils'
+import { generateUniqueID, deepClone, TsetInterval } from '../utils'
 const { proxy } = getCurrentInstance()
 import compWarpper from './common/compWarpper.vue';
 import compWarpper2 from './common/compWarpper2.vue';
@@ -46,7 +45,7 @@ import person from './common/person/index.vue';
 import background from './common/background/index.vue';
 import useDrawStore from '@/store/modules/draw';
 import anime from 'animejs/lib/anime.es.js';
-import { exportVideo, updateVideo } from '@/api/video/index.js'
+import { exportVideo, updateVideo } from '../api/video/index.js'
 import { useRoute } from "vue-router"
 import { speak } from '@/utils/speak'
 let drawStore = useDrawStore();
@@ -539,7 +538,6 @@ async function updateComp(data) {
 
 // 子组件内容改变
 const compChange = (e) => {
-    debugger
     let { action, data } = e;
 
     if (action === 'update') {
@@ -611,7 +609,6 @@ const drop = (e) => {
 
 let customStyle = ref({});
 const positionChange = (data) => {
-    debugger
     let { x, y, unit} = data;
     customStyle.value = {
         left: `${x}${unit}`,

@@ -13,8 +13,7 @@
 </template>
 <script setup>
 import { computed, onMounted, ref, inject, getCurrentInstance, defineEmits } from "vue";
-import { speak, sleep } from "../../utils";
-import { getImgUrl } from '@/utils'
+import { speak, sleep, getImgUrl } from "../../../utils";
 import anime from 'animejs/lib/anime.es.js';
 const { proxy } = getCurrentInstance()
 import useDrawStore from '@/store/modules/draw';

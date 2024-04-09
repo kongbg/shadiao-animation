@@ -9,7 +9,6 @@
 import sideBar from './components/sideBar.vue'
 import panelPeer from './components/panelPeer.vue'
 import content from './components/content.vue'
-import { deepClone } from '@/utils';
 import Bus from "./utils/bus";
 
 

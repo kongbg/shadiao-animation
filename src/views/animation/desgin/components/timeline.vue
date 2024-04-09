@@ -23,16 +23,14 @@
 import { ref, computed, getCurrentInstance, watch, nextTick,onMounted } from 'vue';
 // import Image from '@/components/Image'
 import useDrawStore from '@/store/modules/draw';
-import { deepClone } from '@/utils';
+import { deepClone, generateUniqueID } from '../utils';
 import Bus from '../utils/bus';
-import { generateUniqueID, } from './utils'
 let drawStore = useDrawStore();
 const {proxy} = getCurrentInstance();
 
 // 从每个场景中的所有组件中展出background组件，提取背景图片，组成timeline
 const timeline = ref([])
 function getTimeline() {
-    debugger
     let confs = drawStore.drawConfigs.confs;
     confs.forEach((item, index)=>{
         let info = item.option.comps.find(v=>{

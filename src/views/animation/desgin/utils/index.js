@@ -34,7 +34,12 @@ export function getExtname (fullpath) {
   return root === "" || pos < 1 ? "" : root.slice(pos + 1);
 };
 
-export function sleep(delay = 100) {
+/**
+ * 同步等待
+ * @param {string} delay 等待时间 毫秒
+ * @returns {Boolean}
+ */
+export function sleep(delay = 0) {
     return new Promise((resolve) => {
         setTimeout(() => {
             resolve()
@@ -110,4 +115,8 @@ export function throttle(func, delay) {
           lastCall = now;
       }
   };
+}
+
+export function speak () {
+  
 }

@@ -64,8 +64,10 @@ import { ref, defineProps, reactive, toRefs } from 'vue';
 import { upload, getFiles } from '@/api/source/index.js'
 import Table from '@/components/Table'
 import SearchForm from '@/components/SearchForm'
+import useUserStore from '@/store/modules/user'
 
-const { proxy } = getCurrentInstance()
+const { proxy } = getCurrentInstance();
+const userStore = useUserStore();
 const props = defineProps({
     columns: {
         type: Array,
@@ -140,13 +142,13 @@ async function uploadFiles() {
     fileList.value.forEach(item => {
         fileData.append('file', item.raw);
     })
-    fileData.append('userId', '001');
-    fileData.append('userName', 'admin');
+    const { userName, userId  } = userStore.userInfo;
+    fileData.append('userId', userId);
+    fileData.append('userName', userName);
     fileData.append('type', '1');
     fileData.append('purpose', props.activeName);
     
     let res = await upload(fileData);
-    console.log('res:', res)
     if (res.code == 200) {
         proxy.$modal.msgSuccess("上传成功");
         cancel();

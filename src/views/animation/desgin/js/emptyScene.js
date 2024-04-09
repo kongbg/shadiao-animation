@@ -1,6 +1,6 @@
 import { Text } from "pixi.js";
 import { createComp } from "./tools"
-import { speak, deepClone  } from './utils'
+import { speak, deepClone  } from '../utils'
 import Scene from "./scene"
 import gsap from "gsap"
 
@@ -77,7 +77,6 @@ export default class EmptyScene extends Scene {
 
                             // 构建Gsap 动画参数
                             act.gsapOption = getGsapOption(act)
-                            debugger
                             
                             let {type, gsapOption: oldOption, content, audioUrl } = act;
 

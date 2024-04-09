@@ -6,8 +6,7 @@
 
 <script setup>
 import { computed, ref, watch, onMounted } from 'vue'
-import { getImgUrl } from '@/utils'
-import { speak, sleep } from "../../utils";
+import { speak, sleep, getImgUrl } from "../../utils";
 
 const props = defineProps({
   compData: {

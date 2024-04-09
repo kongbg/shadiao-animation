@@ -21,9 +21,9 @@ import timeline from './timeline.vue'
 import { ref, nextTick, reactive, computed } from "vue";
 import Stage from "../js/stage";
 import Bus from "../utils/bus";
-import { deepClone, generateUniqueID } from '../js/utils'
+import { deepClone, generateUniqueID } from '../utils'
 import useDrawStore from '@/store/modules/draw';
-import { exportVideo, updateVideo } from '@/api/video/index.js'
+import { exportVideo, updateVideo } from '../api/video/index.js'
 
 import History from '../js/history'
 const history = new History();

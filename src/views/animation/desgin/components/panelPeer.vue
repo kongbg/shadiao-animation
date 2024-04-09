@@ -106,8 +106,7 @@
 <script setup>
 import useDrawStore from '@/store/modules/draw';
 import { computed,watch, nextTick, onMounted, ref, getCurrentInstance } from 'vue';
-import { generateUniqueID, } from './utils'
-import { deepClone } from '@/utils'
+import { deepClone, generateUniqueID } from '../utils'
 import position from './pannelPeer/position.vue';
 import size from './pannelPeer/size.vue';
 import face from './pannelPeer/face.vue';
