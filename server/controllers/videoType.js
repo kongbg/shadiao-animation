@@ -32,9 +32,21 @@ export default class appController {
      * @memberof rustController
      */
     static async getVideoType(ctx) {
-        const page = 1;
-        const pageSize = 10;
-        const condition = "id > 0";
+        const { page = 1, pageSize = 10 } = ctx.request.query;
+        const querys = { ...ctx.request.query };
+        delete querys.page;
+        delete querys.pageSize;
+        let condition = "";
+        console.log('querys:', querys)
+        for (const key in querys) {
+            condition+= ` ${key} = ${querys[key]} AND`;
+        }
+
+        let lastIndex = condition.lastIndexOf("AND");
+        if (lastIndex !== -1) {
+            condition = condition.substring(0, lastIndex).trim();
+        }
+        console.log('getVideoType:', condition)
         let { data, total, totalPages } = await db.getPagedData("videoTypes", page, pageSize, condition)
         // console.log(data); // 处理分页查询结果
         // console.log(total); // 总数

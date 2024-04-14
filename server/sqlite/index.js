@@ -76,10 +76,10 @@ class SQLiteDB {
    * @param condition // const condition = "column_name = 'value'";
    * @returns {Promise<unknown>}
    */
-  getPagedData(tableName, page, pageSize,condition) {
+  getPagedData(tableName, page, pageSize, condition) {
     const offset = (page - 1) * pageSize;
-    const countQuery = `SELECT COUNT(*) as total FROM ${tableName} WHERE ${condition}`;
-    const dataQuery = `SELECT * FROM ${tableName} WHERE ${condition} LIMIT ? OFFSET ?`;
+    const countQuery = condition ? `SELECT COUNT(*) as total FROM ${tableName} WHERE ${condition}` : `SELECT COUNT(*) as total FROM ${tableName}`;
+    const dataQuery = condition ? `SELECT * FROM ${tableName} WHERE ${condition} LIMIT ? OFFSET ?` : `SELECT * FROM ${tableName} LIMIT ? OFFSET ?`;
   
     return new Promise((resolve, reject) => {
       this.db.serialize(() => {

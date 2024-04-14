@@ -161,6 +161,18 @@ export const constantRoutes = [
         }
       },
       {
+        name: "Person",
+        path: "person",
+        hidden: false,
+        component: () => import('@/views/animation/person'),
+        meta: {
+          title: "设计人物",
+          icon: "online",
+          noCache: false,
+          link: null
+        }
+      },
+      {
         name: "Preview",
         path: "preview",
         hidden: false,

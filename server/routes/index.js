@@ -4,6 +4,7 @@ import videoTypeController from '../controllers/videoType.js'
 import videoController from '../controllers/video.js'
 import fileController from '../controllers/file.js'
 import userController from '../controllers/user.js'
+import schemaController from '../controllers/schema.js'
 const routerInit = new Router({ prefix: '/api' })
 
 // 音频相关
@@ -27,17 +28,21 @@ routerInit.post('/exportVideo', videoController.exportVideos)
 routerInit.post('/uploadV2', fileController.upload)
 routerInit.get('/getFiles', fileController.getFiles)
 
+// schema
+routerInit.get('/getSchema', schemaController.getSchema)
+routerInit.post('/saveSchema', schemaController.saveSchema)
+routerInit.post('/updateSchema', schemaController.updateSchema)
+routerInit.post('/deleteSchema', schemaController.deleteSchema)
 
 // 若依
 // 获取登录验证码
-routerInit.get('/captchaImage', (ctx)=>{
-    let result = {
-        code: 200,
-        data: {},
-        msg: 'ok'
-    }
-    ctx.body = result;
+routerInit.get('/captchaImage', (ctx) => {
+  let result = {
+    code: 200,
+    data: {},
+    msg: 'ok'
+  }
+  ctx.body = result
 })
-
 
 export default routerInit

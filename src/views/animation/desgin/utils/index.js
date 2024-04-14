@@ -100,7 +100,10 @@ export function deepClone(source) {
  * @returns
  */
 export function getImgUrl(path) {
-    return new URL(`../${path}`, import.meta.url).href;
+  return new URL(`../${path}`, import.meta.url).href;
+}
+export function getImgUrlV2(path) {
+  return new URL(`${path}`, import.meta.url).href;
 }
 
 /**

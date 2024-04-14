@@ -205,12 +205,14 @@ Bus.$on('compChange', (data) => {
     panelType.value = 'comp'
     confInfo.value = info || {}; 
     schema.value = info.schema || {}
+    
 })
 
 let currentConfInfo = ref(null)
 
 Bus.$on('timelineChange', options => {
     currentConfInfo.value = drawStore.drawConfigs.confs[drawStore.currentConfIndex];
+    console.log('currentConfInfo:', currentConfInfo.value)
 })
 
 

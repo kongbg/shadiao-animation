@@ -3,7 +3,7 @@ import Bus from "../utils/bus"
 import { Text, Graphics, Container } from "pixi.js";
 import { getTextures } from "./textures"
 import Bump from "bump.js"
-import { throttle, generateUniqueID } from '../utils'
+import { throttle, generateUniqueID, getImgUrlV2 } from '../utils'
 
 const { Sprite } = PIXI
 
@@ -136,7 +136,8 @@ export function createComp(data) {
     borderLine.visible = false;
 
     // 删除按钮
-    let deleteBtn = new Sprite.from('http://127.0.0.1:3000/uploads/images/505m97f9.png');
+    let deleteUrl = getImgUrlV2('../assets/images/icon-delete.png')
+    let deleteBtn = new Sprite.from(deleteUrl);
     deleteBtn.name = 'deleteBtn';
     deleteBtn.id = `${generateUniqueID()}`;
     deleteBtn.type = 'deleteBtn';

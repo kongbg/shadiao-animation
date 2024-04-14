@@ -52,7 +52,6 @@
           <span v-if="!loading">登 录</span>
           <span v-else>登 录 中...</span>
         </el-button>
-        <el-button @click="exportVideos">导出视频</el-button>
         <div style="float: right;" v-if="register">
           <router-link class="link-type" :to="'/register'">立即注册</router-link>
         </div>
@@ -70,7 +69,6 @@ import { getCodeImg } from "@/api/login";
 import Cookies from "js-cookie";
 import { encrypt, decrypt } from "@/utils/jsencrypt";
 import useUserStore from '@/store/modules/user'
-import { exportVideo } from '@/api/video/index.js'
 
 const userStore = useUserStore()
 const route = useRoute();
@@ -90,14 +88,6 @@ const loginRules = {
   password: [{ required: true, trigger: "blur", message: "请输入您的密码" }],
   code: [{ required: true, trigger: "change", message: "请输入验证码" }]
 };
-
-// 导出视频
-async function exportVideos() {
-  let params = {
-    url: 'https://www.baidu.com/'
-  }
-  await exportVideo(params)
-}
 
 const codeUrl = ref("");
 const loading = ref(false);

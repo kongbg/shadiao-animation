@@ -23,7 +23,7 @@
                 />
             </template>
             <template #action="{row}">
-                <el-button>删除</el-button>
+                <el-button @click="goToDesgin(row)">前往设计</el-button>
             </template>
         </Table>
 
@@ -63,10 +63,12 @@
 import { ref, defineProps, reactive, toRefs } from 'vue';
 import { upload } from '@/api/source/index.js'
 import { addVideoType, getVideoType, deleteVideoType } from '@/api/videoType/index2.js'
+import { useRouter } from "vue-router"
 import Table from '@/components/Table'
 import SearchForm from '@/components/SearchForm'
 
-const { proxy } = getCurrentInstance()
+const { proxy } = getCurrentInstance();
+const router = useRouter();
 const props = defineProps({
     columns: {
         type: Array,
@@ -131,6 +133,15 @@ function handlePictureCardPreview() {
 }
 function handleRemove() {
     
+}
+function goToDesgin (row) {
+    router.push({
+        path: 'desgin',
+        query: {
+            type: row.videoTypeid ? row.videoTypeid : row.id,
+            video: row.videoTypeid ? row.id : ''
+        }
+    })
 }
 async function uploadFiles() {
     let fileData = new FormData();

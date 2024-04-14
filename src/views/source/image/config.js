@@ -52,40 +52,70 @@ export const allTabList = [
     {
         label: "背景",
         name: "background",
+        zIndex: 1
     },
     {
         label: "人物",
         name: "person",
+        zIndex: 10
     },
     {
         label: "表情",
         name: "face",
+        zIndex: 10
+    },
+    {
+        label: "头部",
+        name: "head",
+        zIndex: 10
+    },
+    {
+        label: "头发",
+        name: "hair",
+        zIndex: 10
+    },
+    {
+        label: "躯干",
+        name: "body",
+        zIndex: 10
+    },
+    {
+        label: "手",
+        name: "hand",
+        zIndex: 10
+    },
+    {
+        label: "脚",
+        name: "foot",
+        zIndex: 10
     },
     {
         label: "武器",
         name: "weapon",
+        zIndex: 10
     },
     {
         label: "特效",
         name: "effect",
+        zIndex: 10
     },
+    
 ];
+let tabList = [];
+let columns = {};
+let searchConfig = {};
+let imageInfo = {};
+allTabList.forEach(item => {
+    tabList.push(item.name);
+    columns[item.name] = createColumns();
+    searchConfig[item.name] = createSearchConfig();
+    imageInfo[item.name] = item;
+})
 export default {
     "default": {
-        tabList: ['background', 'person', 'face', 'weapon', 'effect'],
-        columns: {
-            'background': createColumns(),
-            'person': createColumns(),
-            'face': createColumns(),
-            'weapon': createColumns(),
-            'effect': createColumns(),
-        },
-        searchConfig: {
-            'background': createSearchConfig(),
-            'person': createSearchConfig(),
-            'face': createSearchConfig(),
-            'weapon': createSearchConfig(),
-            'effect': createSearchConfig(),
-        }
+        tabList,
+        columns,
+        searchConfig,
+        imageInfo
     }
 }
