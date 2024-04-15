@@ -187,7 +187,6 @@ export default class MyContainer {
   }
   // 更新属性
   updateSprite(options) {
-    console.log(this.sprite, options)
     // Object.assign(this.sprite, options)
     // 更新显示列表，根据 zIndex 排序
     this.app.stage.children.sort((a, b) => a.zIndex - b.zIndex)

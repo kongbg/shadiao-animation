@@ -38,6 +38,7 @@ import { computed, watch, ref, getCurrentInstance } from 'vue'
 import { deepClone } from '../utils'
 import position from './pannelPeer/position.vue'
 import size from './pannelPeer/size.vue'
+import image from './pannelPeer/image.vue'
 import scale from './pannelPeer/scale.vue'
 import face from './pannelPeer/face.vue'
 import speak from './pannelPeer/actions/speak.vue'
@@ -130,6 +131,7 @@ Bus.$on('updateProperty', (options) => {
 let compMap = {
   position,
   size,
+  image,
   scale,
   face,
   head,

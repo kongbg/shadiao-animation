@@ -1,6 +1,6 @@
 {
-  "type": "body",
-  "name": "躯干",
+  "type": "face",
+  "name": "表情",
   "property": {
     "image": {
       "show": true,
@@ -44,6 +44,17 @@
         "height": {
           "label": "高度",
           "value": "auto"
+        }
+      }
+    },
+    "scale": {
+      "show": true,
+      "name": "缩放",
+      "type": "scale",
+      "value": {
+        "scale": {
+          "label": "比例",
+          "value": 1
         }
       }
     }

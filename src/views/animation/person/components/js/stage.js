@@ -1,5 +1,6 @@
 import { Application } from 'pixi.js'
 import Sprite from './sprite'
+import { generateUniqueID } from '../../utils'
 // 创建舞台
 export default class Stage {
   constructor(options = {}) {
@@ -50,11 +51,15 @@ export default class Stage {
     })
     this.el.addEventListener('drop', (event) => {
       const data = JSON.parse(event.dataTransfer.getData('text/plain'))
-      if (this.drop)
-        this.drop(data.id, data.type, {
+      if (this.drop) {
+        let id = generateUniqueID()
+        this.drop(id, data.type, {
           x: event.offsetX - data.ox,
-          y: event.offsetY - data.ox
+          y: event.offsetY - data.ox,
+          zIndex: data.zIndex,
+          url: data.url
         })
+      }
     })
   }
   // 将this上的事件事件绑定到this
@@ -70,6 +75,7 @@ export default class Stage {
           width: data.width,
           height: data.height,
           scale: data.scale,
+          zIndex: data.zIndex,
           x: data.x,
           y: data.y,
           ox: data.ox,
@@ -85,12 +91,13 @@ export default class Stage {
             if (that.pointermove) that.pointermove(event)
           },
           removeSprite(id) {
-            debugger
             if (that.removeSprite) that.removeSprite(id)
           }
         })
         // 将精灵添加到舞台
-        this.stage.addChild(spriteObj)
+        setTimeout(() => {
+          this.stage.addChild(spriteObj)
+        }, 100)
       }
     }
   }

@@ -299,10 +299,9 @@ async function getListByType(playload) {
 
 // 获取数据
 async function getData() {
-  // console.log('imageApis:', imageInfo, imageApis)
+  debugger
   let apis = []
   let persons = await getList()
-  // console.log('persons:', persons)
   for (const key in imageApis) {
     if (key != 'person') {
       apis.push(getListByType(imageApis[key]))
@@ -313,7 +312,6 @@ async function getData() {
     purpose: 'person',
     data: persons
   })
-  // console.log('result:', result)
 
   result.forEach((item) => {
     let { purpose, data } = item
@@ -324,7 +322,6 @@ async function getData() {
       list: []
     }
     data.forEach((info) => {
-      // console.log('info:', info)
       let { purpose, fileId, fileName, path, scale, children = [] } = info
       let urls = {
         head: 'http://127.0.0.1:3006/uploads/images/head/l27un4ev.png',

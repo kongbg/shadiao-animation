@@ -61,7 +61,7 @@ defineExpose({
   //justify-content: space-between;
 
   .sideBar {
-    width: 300px;
+    width: 340px;
     height: 100%;
     border-right: 1px solid #eee;
     flex-shrink: 0;

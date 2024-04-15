@@ -2,6 +2,17 @@
   "type": "head",
   "name": "头",
   "property": {
+    "image": {
+      "show": true,
+      "name": "图片",
+      "type": "image",
+      "value": {
+        "url": {
+          "label": "图片",
+          "value": ""
+        }
+      }
+    },
     "position": {
       "show": true,
       "name": "位置",

@@ -10,6 +10,8 @@ export default class MySprite {
     this.id = ''
     this.name = ''
     this.app = options.app
+    this.width = options.width
+    this.height = options.height
     this.x = 0
     this.y = 0
     this.imageUrl = imageUrl
@@ -52,6 +54,8 @@ export default class MySprite {
     // 创建精灵
     this.sprite = Sprite.from(imageUrl)
     // 设置精灵自有属性
+    this.sprite.width = width
+    this.sprite.height = height
     this.sprite.x = x - ox
     this.sprite.y = y - oy
     this.sprite.interactive = interactive // 开启可交互性（可拖拽）
@@ -100,7 +104,6 @@ export default class MySprite {
     this.deleteBtn.interactive = true // 可交互性
     this.deleteBtn.visible = false // 是否显示
     this.deleteBtn.on('pointerdown', () => {
-      debugger
       if (that.removeSprite) that.removeSprite(that.id)
       that.sprite.parent.removeChild(that.sprite)
     })

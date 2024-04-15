@@ -101,7 +101,6 @@ export function deepClone(source) {
  */
 export function getImgUrl(path) {
   const moduleURL = new URL(import.meta.url)
-  console.log(moduleURL)
   return new URL(`../${path}`, moduleURL).href
 }
 export function getImgUrlV2(path) {

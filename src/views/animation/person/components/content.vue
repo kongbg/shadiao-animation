@@ -75,19 +75,13 @@ async function getConfigs() {
       schemas.value = JSON.parse(schema)
     }
   }
+
   schemas.value.forEach((item) => {
     let property = transformOptions(item.property)
-    // todo
-    let urls = {
-      head: 'http://127.0.0.1:3006/uploads/images/head/l27un4ev.png',
-      body: 'http://127.0.0.1:3006/uploads/images/body/2mhmm3dh.png',
-      face: 'http://127.0.0.1:3006/uploads/images/face/cdrd3v6s.png'
-    }
     config.value.push({
       type: item.type,
       id: item.id || generateUniqueID(),
       name: item.name,
-      url: urls[item.type],
       ...property,
       schema: item
     })
@@ -95,16 +89,10 @@ async function getConfigs() {
 }
 function createConf(item) {
   let property = transformOptions(item.property)
-  let urls = {
-    head: 'http://127.0.0.1:3006/uploads/images/head/l27un4ev.png',
-    body: 'http://127.0.0.1:3006/uploads/images/body/2mhmm3dh.png',
-    face: 'http://127.0.0.1:3006/uploads/images/face/cdrd3v6s.png'
-  }
   return {
     type: item.type,
     id: item.id || generateUniqueID(),
     name: item.name,
-    url: urls[item.type],
     ...property,
     schema: item
   }
@@ -140,7 +128,12 @@ function saveSchema() {
 }
 
 function getSchemas() {
-  console.log('getSchemas:', schemas.value)
+  schemas.value.sort((a, b) => {
+    return (
+      a.property.position.value.zIndex.value -
+      b.property.position.value.zIndex.value
+    )
+  })
   return schemas.value
 }
 
@@ -150,7 +143,6 @@ defineExpose({
 
 onMounted(async () => {
   // 如果是编辑，先从数据库获取配置
-  console.log('id:', props.id)
   if (props.id) {
     await getConfigs()
   }
@@ -163,6 +155,8 @@ onMounted(async () => {
       schema.id = id
       schema.property.position.value.x.value = options.x || 0
       schema.property.position.value.y.value = options.y || 0
+      schema.property.position.value.zIndex.value = options.zIndex || 11
+      schema.property.image.value.url.value = options.url || ''
 
       schemas.value.push(schema)
 
@@ -190,7 +184,7 @@ onMounted(async () => {
     pointermove(event) {
       let currentTarget = event.currentTarget
       let options = {}
-      let propertys = ['width', 'height', 'x', 'y', 'zIndex', 'scale']
+      let propertys = ['width', 'height', 'x', 'y', 'zIndex', 'scale', 'url']
       // 从pixi中获取所需要的属性值
       for (let i = 0; i < propertys.length; i++) {
         const key = propertys[i]
