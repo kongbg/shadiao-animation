@@ -13,6 +13,7 @@ import sideBar from './components/sideBar.vue'
 import panelPeer from './components/panelPeer.vue'
 import content from './components/content.vue'
 import Bus from './utils/bus'
+import { watch } from 'vue'
 
 const props = defineProps({
   id: {
@@ -20,6 +21,12 @@ const props = defineProps({
     default: ''
   }
 })
+watch(
+  () => props.id,
+  () => {
+    console.log('3234234')
+  }
+)
 
 function panelPeerChange({ action, data }) {
   switch (action) {

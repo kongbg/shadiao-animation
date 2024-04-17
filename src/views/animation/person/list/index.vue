@@ -4,7 +4,9 @@
     <div class="table-tools">
       <div class="left">
         <!-- <el-button type="primary" @click="handleAdd">上传</el-button> -->
-        <el-button type="primary" @click="handleAddSchema">新增</el-button>
+        <el-button type="primary" @click="handleEditData('create')"
+          >新增</el-button
+        >
       </div>
       <div class="right"></div>
     </div>
@@ -33,7 +35,7 @@
         <el-button type="primary" link @click="handleRemoveData(row)"
           >删除</el-button
         >
-        <el-button type="primary" link @click="handleEditData(row)"
+        <el-button type="primary" link @click="handleEditData('edit', row)"
           >编辑</el-button
         >
       </template>
@@ -206,10 +208,16 @@ function handleRemoveData(row) {
     })
 }
 // 编辑
-function handleEditData(row) {
-  handleAddSchema('编辑')
-  schemaDialog.id = row.id
-  schemaDialog.name = row.name
+function handleEditData(type, row) {
+  if (type == 'create') {
+    schemaDialog.id = ''
+    schemaDialog.name = ''
+    handleAddSchema()
+  } else if (type == 'edit') {
+    handleAddSchema('编辑')
+    schemaDialog.id = row.id
+    schemaDialog.name = row.name
+  }
 }
 
 function handlePictureCardPreview() {}
@@ -256,7 +264,7 @@ let schemaDialog = reactive({
 })
 function handleAddSchema(title = '新增') {
   schemaDialog.show = true
-  schemaDialog.title = '新增'
+  schemaDialog.title = title
 }
 function schemaDialogConfirm() {
   schemaDialog.nameShow = true
@@ -301,6 +309,8 @@ async function schemaNameDialogConfirm() {
       getList()
     }
   }
+
+  schemaDialog.id = ''
 }
 /** schema相关-end */
 

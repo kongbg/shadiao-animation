@@ -8,8 +8,8 @@
 </template>
 
 <script setup>
-import { getCurrentInstance, onMounted, ref } from 'vue'
-import { deepClone, generateUniqueID } from '../utils'
+import { getCurrentInstance, onMounted, ref, watch } from 'vue'
+import { deepClone, generateUniqueID, throttle } from '../utils'
 import { getLists } from '../api/schema/index.js'
 import Bus from '../utils/bus'
 import Stage from './js/stage'
@@ -22,6 +22,14 @@ const props = defineProps({
     default: ''
   }
 })
+
+watch(
+  () => props.id,
+  () => {
+    console.log('init:', props.id)
+    init()
+  }
+)
 
 let stage = ref(null)
 const pixiContainer = ref(null)
@@ -75,6 +83,7 @@ async function getConfigs() {
       schemas.value = JSON.parse(schema)
     }
   }
+  config.value = []
 
   schemas.value.forEach((item) => {
     let property = transformOptions(item.property)
@@ -137,37 +146,45 @@ function getSchemas() {
   return schemas.value
 }
 
-defineExpose({
-  getSchemas
-})
+async function handleDrop(id, purpose, options) {
+  let schema = await getSchema(purpose)
+  schema.id = id
+  schema.property.position.value.x.value = options.x || 0
+  schema.property.position.value.y.value = options.y || 0
+  schema.property.position.value.zIndex.value = options.zIndex || 11
+  schema.property.image.value.url.value = options.url || ''
 
-onMounted(async () => {
+  schemas.value.push(schema)
+
+  let conf = createConf(schema)
+  // 把之前的标记为已创建，调用initConfig时才不重复创建
+  config.value.forEach((item) => (item.inited = true))
+
+  config.value.push(conf)
+  // 更新舞台
+  stage.value.uptateStage()
+}
+
+const throttleFn = throttle(handleDrop, 200)
+
+async function init() {
+  if (stage.value) {
+    stage.value.destroy()
+    stage.value = null
+  }
+
   // 如果是编辑，先从数据库获取配置
   if (props.id) {
     await getConfigs()
+  } else {
+    schemas.value = []
+    config.value = []
   }
 
   stage.value = new Stage({
     el: pixiContainer.value,
     config: config.value,
-    async drop(id, purpose, options) {
-      let schema = await getSchema(purpose)
-      schema.id = id
-      schema.property.position.value.x.value = options.x || 0
-      schema.property.position.value.y.value = options.y || 0
-      schema.property.position.value.zIndex.value = options.zIndex || 11
-      schema.property.image.value.url.value = options.url || ''
-
-      schemas.value.push(schema)
-
-      let conf = createConf(schema)
-      // 把之前的标记为已创建，调用initConfig时才不重复创建
-      config.value.forEach((item) => (item.inited = true))
-
-      config.value.push(conf)
-      // 更新舞台
-      stage.value.uptateStage()
-    },
+    drop: throttleFn,
     pointerdown(event) {
       let { id, purpose } = event.currentTarget
       let info = config.value.find((item) => item.id == id)
@@ -209,6 +226,14 @@ onMounted(async () => {
       }
     }
   })
+}
+
+defineExpose({
+  getSchemas
+})
+
+onMounted(() => {
+  init()
 })
 </script>
 <style lang="scss">

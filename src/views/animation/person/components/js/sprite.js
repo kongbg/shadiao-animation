@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js'
 import Bump from 'bump.js'
-import { generateUniqueID, getImgUrl, getImgUrlV2 } from '../../utils'
+import { generateUniqueID, getImgUrlV2 } from '../../utils'
 
 const bump = new Bump(PIXI)
 const { Sprite } = PIXI
@@ -87,18 +87,15 @@ export default class MySprite {
   addDeleteBtn(sprite) {
     let that = this
     // 删除按钮
-    let deleteUrl = getImgUrlV2('../../../../assets/images/icon-delete.png')
+    let deleteUrl = getImgUrlV2('../../../../assets/images/icon-delete2.png')
     this.deleteBtn = new Sprite.from(deleteUrl)
     // 设置精灵自有属性
     let scale = sprite.scale.x > 1 ? 1 : sprite.scale.x
-    this.deleteBtn.width = 20 / scale // 宽
-    this.deleteBtn.height = 20 / scale // 高
+    this.deleteBtn.width = 20 // scale // 宽
+    this.deleteBtn.height = 20 // scale // 高
 
     setTimeout(() => {
-      this.deleteBtn.position.set(
-        sprite.width - 10 - this.deleteBtn.width / 2,
-        -10
-      ) // 定位容器comp右上角
+      this.deleteBtn.position.set(sprite.width - this.deleteBtn.width / 2, -10) // 定位容器comp右上角
     }, 100)
 
     this.deleteBtn.interactive = true // 可交互性

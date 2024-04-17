@@ -67,6 +67,7 @@ export default class Stage {
   // 根据config初始化画布
   initStage() {
     let that = this
+    console.log('this.config:', this.config)
     for (let i = 0; i < this.config.length; i++) {
       let data = this.config[i]
       if (!data.inited) {
@@ -113,5 +114,13 @@ export default class Stage {
   // 删除Sprite后通知删除config
   removeSprite() {
     console.log('删除Sprite后通知删除config')
+  }
+  //销毁
+  destroy() {
+    console.log('destroy:', this)
+    debugger
+    this.app.config = []
+    this.config = []
+    this.app.destroy(true, true)
   }
 }
