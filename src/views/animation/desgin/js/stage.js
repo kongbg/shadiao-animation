@@ -1,6 +1,7 @@
 import { Application, Loader } from 'pixi.js'
 import { setTextures, getTexturesAll } from './textures'
 import EmptyScene from './emptyScene'
+import { generateUniqueID } from '../utils'
 
 export default class Stage {
   constructor(options = {}) {
@@ -52,6 +53,9 @@ export default class Stage {
 
     // 缓存资源
     this.cacheTextures(resources)
+
+    // 开启事件监听
+    this.enableAddEventListener()
 
     // 开始
     // this.start();
@@ -201,5 +205,38 @@ export default class Stage {
     })
     urls = urls.filter((item) => item[1])
     return urls
+  }
+
+  // 开启事件监听
+  enableAddEventListener() {
+    let that = this
+    this.el.addEventListener('dragover', (event) => {
+      event.preventDefault()
+    })
+    this.el.addEventListener('drop', (event) => {
+      let offsetX = event.offsetX
+      let offsetY = event.offsetY
+      const data = JSON.parse(event.dataTransfer.getData('text/plain'))
+      if (data.children) {
+        let minx = 99999
+        let miny = 99999
+        data.children.forEach((item) => {
+          if (item.x <= minx) minx = item.x
+          if (item.y <= miny) miny = item.y
+        })
+        data.children.forEach((item) => {
+          item.x = item.x - minx
+          item.y = item.y - miny
+        })
+      }
+      if (this.drop) {
+        let id = generateUniqueID()
+        this.drop(id, data.type, {
+          ...data,
+          x: offsetX,
+          y: offsetY
+        })
+      }
+    })
   }
 }

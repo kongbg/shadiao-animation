@@ -77,8 +77,13 @@
       width="95%"
       append-to-body
     >
+      {{ schemaDialog.show }}
       <!-- 设计页面 -->
-      <Desgin ref="desginRef" :id="schemaDialog.id"></Desgin>
+      <Desgin
+        v-if="schemaDialog.show"
+        ref="desginRef"
+        :id="schemaDialog.id"
+      ></Desgin>
       <!-- 名称 -->
       <el-dialog v-model="schemaDialog.nameShow" title="名称" width="500">
         <el-input v-model="schemaDialog.name"></el-input>
@@ -270,6 +275,7 @@ function schemaDialogConfirm() {
   schemaDialog.nameShow = true
 }
 function schemaDialogCancel() {
+  schemaDialog.id = ''
   schemaDialog.show = false
 }
 function schemaNameDialogCancel() {

@@ -14,9 +14,10 @@
             draggable="true"
             v-for="child in item.list"
             :key="child.id"
-            @dragstart="(e) => onDragStart(child, item, e)"
+            @dragstart="(e) => onDragStart(e, child, item)"
             @click="compClick(child)"
           >
+            <!-- {{ child }} -->
             <el-image class="imgs" :src="child.url" fit="scale-down" />
             <div class="name">{{ child.name }}</div>
           </div>
@@ -28,16 +29,12 @@
 <script setup>
 import { onMounted, ref, getCurrentInstance } from 'vue'
 import { generateUniqueID, deepClone } from '../../utils'
-import { upload, getFiles } from '../../api/source/index.js'
+import { getFiles } from '../../api/source/index.js'
 import { getLists } from '../../api/schema/index.js'
-import configs, { allTabList } from '../../../../source/image/config'
+import configs from '../../../../source/image/config'
 import useDrawStore from '@/store/modules/draw'
 
-// console.log('configs:', configs, allTabList)
-
 const { proxy } = getCurrentInstance()
-let drawStore = useDrawStore()
-
 const pageInfo = reactive({
   pageNum: 1,
   pageSize: 20
@@ -217,18 +214,23 @@ let imagesConf = ref([
 const activeNames = ref([])
 
 // 开始拖拽左侧组件，记录该组件信息
-function onDragStart(data, parent, e) {
-  data.px = e.offsetX
-  data.py = e.offsetY
-  drawStore.setDragElType(parent)
-  e.dataTransfer.setData(
-    'text/plain',
-    JSON.stringify({ ...data, type: parent.type })
-  )
+async function onDragStart(e, data, parent) {
+  console.log('onDragStart:', data, parent)
+
+  // e.dataTransfer.setData(
+  //   'text/plain',
+  //   JSON.stringify({
+  //     ox: e.offsetX,
+  //     oy: e.offsetY,
+  //     type: parent.type,
+  //     ...data
+  //   })
+  // )
 }
 
 // 点击
 async function compClick(data) {
+  return
   const schema = (await import(`../common/${data.type}/schema.json`)).default
   data.schema = schema
   console.log('compClick:', data)
@@ -254,7 +256,7 @@ function createApi(purpose) {
 function initImageApis() {
   // console.log('imageTypes:', imageTypes)
   imageTypes.forEach((key) => {
-    let list = [] //['face', 'head', 'hair', 'body', 'hand', 'foot']
+    let list = ['face', 'head', 'hair', 'body', 'hand', 'foot']
     if (!list.includes(key)) {
       imageApis[key] = createApi(key)
     }
@@ -299,7 +301,6 @@ async function getListByType(playload) {
 
 // 获取数据
 async function getData() {
-  debugger
   let apis = []
   let persons = await getList()
   for (const key in imageApis) {
@@ -323,11 +324,6 @@ async function getData() {
     }
     data.forEach((info) => {
       let { purpose, fileId, fileName, path, scale, children = [] } = info
-      let urls = {
-        head: 'http://127.0.0.1:3006/uploads/images/head/l27un4ev.png',
-        body: 'http://127.0.0.1:3006/uploads/images/body/2mhmm3dh.png',
-        face: 'http://127.0.0.1:3006/uploads/images/face/cdrd3v6s.png'
-      }
 
       let temp = {
         id: fileId || generateUniqueID(),
@@ -344,15 +340,15 @@ async function getData() {
       }
       if (purpose == 'person') {
         let schema = JSON.parse(info.schema)
+        console.log('schema:', schema)
         temp.children = []
         schema.forEach((res) => {
-          // console.log('res', res)
+          console.log('res', res)
           temp.children.push({
             id: res.id,
             type: res.type,
             name: res.name,
-            ...transformOptions(res.property),
-            url: urls[res.type]
+            ...transformOptions(res.property)
           })
         })
         console.log('temp:', temp)
@@ -360,12 +356,14 @@ async function getData() {
       obj.list.push(temp)
     })
     imagesConf.value.push(obj)
+    console.log(imagesConf.value)
     activeNames.value.push(obj.id)
   })
 }
 // 将schema格式参数转换为pixi.js 格式参数
 function transformOptions(options) {
   options = deepClone(options)
+  console.log('optionsoptions:', options)
   let obj = {}
   for (const key in options) {
     let info = {}
@@ -380,6 +378,7 @@ function transformOptions(options) {
     } else {
       info = options[key].value
       for (const key2 in info) {
+        console.log('key2', key2, info[key2].value)
         let value = info[key2].value
         if (value != 'auto') {
           obj[key2] = value
@@ -387,6 +386,7 @@ function transformOptions(options) {
       }
     }
   }
+  console.log('obj:', obj)
   return obj
 }
 async function getList() {

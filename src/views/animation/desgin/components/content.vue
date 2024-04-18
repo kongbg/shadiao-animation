@@ -321,6 +321,24 @@ async function initStage(name, destroy = false) {
         resolution: 1,
         configs: configs.value,
         history: history,
+        async drop(id, purpose, options) {
+          console.log(id, purpose, options)
+          const schema = deepClone(
+            (await import(`./common/${purpose}/schema.json`)).default
+          )
+          console.log(schema)
+          schema.id = id
+          schema.property.position.value.x.value = options.x || 0
+          schema.property.position.value.y.value = options.y || 0
+          schema.property.position.value.zIndex.value = options.zIndex || 11
+          if (schema.children) {
+            schema.children.forEach((item) => {
+              // schema.property.children[item.type].value.height.value = item.
+            })
+          }
+          options.schema = schema
+          create(options)
+        },
         onProgress: (n) => {
           Bus.$emit('changeProgress', n)
         }

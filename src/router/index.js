@@ -48,7 +48,7 @@ export const constantRoutes = [
     hidden: true
   },
   {
-    path: "/:pathMatch(.*)*",
+    path: '/:pathMatch(.*)*',
     component: () => import('@/views/error/404'),
     hidden: true
   },
@@ -71,127 +71,127 @@ export const constantRoutes = [
     ]
   },
   {
-    name: "Source",
-    path: "/source",
+    name: 'Source',
+    path: '/source',
     hidden: false,
-    redirect: "noRedirect",
+    redirect: 'noRedirect',
     component: Layout,
     alwaysShow: true,
     meta: {
-      title: "资源管理",
-      icon: "monitor",
+      title: '资源管理',
+      icon: 'monitor',
       noCache: false,
       link: null
     },
     children: [
       {
-        name: "Image",
-        path: "image",
+        name: 'Image',
+        path: 'image',
         hidden: false,
         component: () => import('@/views/source/image'),
         meta: {
-          title: "图片",
-          icon: "online",
+          title: '图片',
+          icon: 'online',
           noCache: false,
           link: null
         }
       },
       {
-        name: "Audio",
-        path: "audio",
+        name: 'Audio',
+        path: 'audio',
         hidden: false,
         component: () => import('@/views/source/audio'),
         meta: {
-          title: "音频",
-          icon: "online",
+          title: '音频',
+          icon: 'online',
           noCache: false,
           link: null
         }
       },
       {
-        name: "Video",
-        path: "video",
+        name: 'Video',
+        path: 'video',
         hidden: false,
         component: () => import('@/views/source/video'),
         meta: {
-          title: "视频",
-          icon: "online",
+          title: '视频',
+          icon: 'online',
           noCache: false,
           link: null
         }
-      },
+      }
     ]
   },
   {
-    name: "Animation",
-    path: "/animation",
+    name: 'Animation',
+    path: '/animation',
     hidden: false,
-    redirect: "noRedirect",
+    redirect: 'noRedirect',
     component: Layout,
     alwaysShow: true,
     meta: {
-      title: "动画设计",
-      icon: "monitor",
+      title: '动画设计',
+      icon: 'monitor',
       noCache: false,
       link: null
     },
     children: [
       {
-        name: "MyAnimation",
-        path: "myAnimation",
+        name: 'MyAnimation',
+        path: 'myAnimation',
         hidden: false,
         component: () => import('@/views/animation/myAnimation'),
         meta: {
-          title: "我的动画",
-          icon: "online",
+          title: '我的动画',
+          icon: 'online',
           noCache: false,
           link: null
         }
       },
       {
-        name: "Desgin",
-        path: "desgin",
+        name: 'Desgin',
+        path: 'desgin',
         hidden: false,
         component: () => import('@/views/animation/desgin'),
         meta: {
-          title: "设计",
-          icon: "online",
+          title: '设计',
+          icon: 'online',
           noCache: false,
           link: null
         }
       },
       {
-        name: "Person",
-        path: "person",
+        name: 'Person',
+        path: 'person',
         hidden: false,
         component: () => import('@/views/animation/person'),
         meta: {
-          title: "设计人物",
-          icon: "online",
+          title: '设计人物',
+          icon: 'online',
           noCache: false,
           link: null
         }
       },
       {
-        name: "Preview",
-        path: "preview",
+        name: 'Preview',
+        path: 'preview',
         hidden: false,
         component: () => import('@/views/animation/preview'),
         meta: {
-          title: "预览",
-          icon: "online",
+          title: '预览',
+          icon: 'online',
           noCache: false,
           link: null
         }
       },
       {
-        name: "Hero",
-        path: "hero",
+        name: 'Hero',
+        path: 'hero',
         hidden: false,
         component: () => import('@/views/animation/hero'),
         meta: {
-          title: "十里坡剑神",
-          icon: "online",
+          title: '十里坡剑神',
+          icon: 'online',
           noCache: false,
           link: null
         }
@@ -297,7 +297,7 @@ const router = createRouter({
     } else {
       return { top: 0 }
     }
-  },
-});
+  }
+})
 
-export default router;
+export default router

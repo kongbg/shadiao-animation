@@ -8,7 +8,7 @@
 </template>
 
 <script setup>
-import { getCurrentInstance, onMounted, ref, watch } from 'vue'
+import { getCurrentInstance, nextTick, onMounted, ref, watch } from 'vue'
 import { deepClone, generateUniqueID, throttle } from '../utils'
 import { getLists } from '../api/schema/index.js'
 import Bus from '../utils/bus'
@@ -26,7 +26,7 @@ const props = defineProps({
 watch(
   () => props.id,
   () => {
-    console.log('init:', props.id)
+    console.log('content:', props.id)
     init()
   }
 )
@@ -75,6 +75,8 @@ async function getConfigs() {
   let params = {
     id: props.id
   }
+  schemas.value = []
+  config.value = []
   let res = await getLists(params)
   let { code, data, msg } = res
   if (code == 200) {
@@ -83,7 +85,6 @@ async function getConfigs() {
       schemas.value = JSON.parse(schema)
     }
   }
-  config.value = []
 
   schemas.value.forEach((item) => {
     let property = transformOptions(item.property)
@@ -168,6 +169,7 @@ async function handleDrop(id, purpose, options) {
 const throttleFn = throttle(handleDrop, 200)
 
 async function init() {
+  debugger
   if (stage.value) {
     stage.value.destroy()
     stage.value = null
@@ -176,9 +178,6 @@ async function init() {
   // 如果是编辑，先从数据库获取配置
   if (props.id) {
     await getConfigs()
-  } else {
-    schemas.value = []
-    config.value = []
   }
 
   stage.value = new Stage({

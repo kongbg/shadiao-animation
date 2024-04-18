@@ -77,10 +77,7 @@
       </el-collapse-item>
     </el-collapse>
 
-    <Source-collapse
-      @create="compClick"
-      @dragstart="(e) => onDragStart(child, item, e)"
-    ></Source-collapse>
+    <Source-collapse @create="compClick"></Source-collapse>
 
     <el-dialog v-model="createVideoDialog" title="Tips" width="500">
       <div class="name-warp">
@@ -616,18 +613,6 @@ const parseStr = async (text) => {
   return { confs, speaks }
 }
 // 视频相关-end
-
-// 开始拖拽左侧组件，记录该组件信息
-const onDragStart = (data, parent, e) => {
-  data.px = e.offsetX
-  data.py = e.offsetY
-  drawStore.setDragElType(parent)
-  e.dataTransfer.setData(
-    'text/plain',
-    JSON.stringify({ ...data, type: parent.type })
-  )
-}
-
 // 点击
 async function compClick(data) {
   proxy.$emit('create', data)

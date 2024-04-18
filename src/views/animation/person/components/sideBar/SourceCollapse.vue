@@ -16,7 +16,7 @@
             :key="child.id"
             @dragstart="(e) => onDragStart(e, child)"
           >
-            <el-image class="imgs" :src="child.url" fit="scale-down" />
+            <el-image class="imgs" :src="child.url" fit="contain" />
             <div class="name">{{ child.name }}</div>
           </div>
         </div>

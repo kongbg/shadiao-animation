@@ -1,6 +1,7 @@
-import { Application } from 'pixi.js'
+import { Application, Container, Loader } from 'pixi.js'
 import Sprite from './sprite'
 import { generateUniqueID } from '../../utils'
+import { setTextures, getTextures, getTexturesAll } from './textures'
 // 创建舞台
 export default class Stage {
   constructor(options = {}) {
@@ -34,14 +35,18 @@ export default class Stage {
     this.stage.type = 'stage'
     this.stage.id = id
     this.stage.name = name
+
     // 开启事件监听
     this.enableAddEventListener()
 
     // 将this上的事件事件绑定到this.sprite上
     this.bindEvent()
 
+    // 初始化加载器
+    this.loader = new Loader()
+
     // 根据config初始化画布
-    this.initStage()
+    await this.initStage()
   }
 
   // 开启事件监听
@@ -64,15 +69,57 @@ export default class Stage {
   }
   // 将this上的事件事件绑定到this
   bindEvent() {}
+  // 缓存资源
+  async cacheResources() {
+    // 获取资源url
+    let remoteUrl = this.getRemoteUrl()
+    // 预加载所有资源
+    let resources = await this.loaderResource(remoteUrl)
+    // 缓存Textures
+    Object.entries(resources).forEach(([key, value]) => {
+      setTextures(key, value.texture)
+    })
+  }
+  getRemoteUrl() {
+    let urls = []
+    this.config.forEach((item) => {
+      if (!getTextures(item.id)) {
+        let key = item.id
+        let url = item.url || ''
+        let temp = [key, url]
+        urls.push(temp)
+      }
+    })
+    urls = urls.filter((item) => item[1])
+    return urls
+  }
+  // 预加载所有资源
+  async loaderResource(urls) {
+    const { loader } = this
+
+    return new Promise((resolve, reject) => {
+      urls.forEach(([key, value]) => loader.add(key, value, () => {}))
+      loader.load((loader, resources) => {
+        // console.log('预加载资源完成')
+        resolve(resources)
+      })
+    })
+  }
   // 根据config初始化画布
-  initStage() {
+  async initStage() {
     let that = this
-    console.log('this.config:', this.config)
-    for (let i = 0; i < this.config.length; i++) {
-      let data = this.config[i]
+    let count = 0
+    let leng = this.config.length
+
+    // 缓存资源
+    await this.cacheResources()
+    debugger
+
+    while (count < leng) {
+      let data = this.config[count]
       if (!data.inited) {
         // config数组中，已经创建过的不再创建，避免重复
-        const spriteObj = new Sprite(data.url, {
+        const spriteObj = new Sprite(getTextures(data.id), {
           width: data.width,
           height: data.height,
           scale: data.scale,
@@ -95,11 +142,11 @@ export default class Stage {
             if (that.removeSprite) that.removeSprite(id)
           }
         })
+
         // 将精灵添加到舞台
-        setTimeout(() => {
-          this.stage.addChild(spriteObj)
-        }, 100)
+        this.stage.addChild(spriteObj)
       }
+      count++
     }
   }
   // 更新舞台
@@ -117,10 +164,24 @@ export default class Stage {
   }
   //销毁
   destroy() {
-    console.log('destroy:', this)
-    debugger
     this.app.config = []
     this.config = []
     this.app.destroy(true, true)
+  }
+
+  // 创建容器
+  createContainer(options) {
+    let { name, id, type, scale = 1, history = [], zIndex } = options
+    let container = new Container()
+
+    container.name = name
+    container.id = id
+    container.type = type
+    // container.history = history
+    container.scale.x = scale
+    container.scale.y = scale
+    container.zIndex = zIndex
+
+    return container
   }
 }

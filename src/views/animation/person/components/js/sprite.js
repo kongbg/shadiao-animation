@@ -6,7 +6,7 @@ const bump = new Bump(PIXI)
 const { Sprite } = PIXI
 // 创建精灵
 export default class MySprite {
-  constructor(imageUrl, options = {}) {
+  constructor(texture, options = {}) {
     this.id = ''
     this.name = ''
     this.app = options.app
@@ -14,7 +14,7 @@ export default class MySprite {
     this.height = options.height
     this.x = 0
     this.y = 0
-    this.imageUrl = imageUrl
+    this.texture = texture
     this.interactive = true
     this.buttonMode = true
     this.dragging = false
@@ -41,7 +41,7 @@ export default class MySprite {
       zIndex = 10,
       x = 0,
       y = 0,
-      imageUrl,
+      texture,
       interactive,
       buttonMode,
       id,
@@ -52,17 +52,29 @@ export default class MySprite {
     } = this
 
     // 创建精灵
-    this.sprite = Sprite.from(imageUrl)
+    // this.sprite = new Sprite(texture)
+    this.sprite = new Sprite.from(texture, () => {
+      console.log('精灵加载完成')
+    })
     // 设置精灵自有属性
-    this.sprite.width = width
-    this.sprite.height = height
     this.sprite.x = x - ox
     this.sprite.y = y - oy
     this.sprite.interactive = interactive // 开启可交互性（可拖拽）
     this.sprite.buttonMode = buttonMode
     this.sprite.scale.x = scale
     this.sprite.scale.y = scale
+    // 坑爹属性。宽高一定要放 scale 后，不然宽高不会生效，真尼玛坑
+    if (width) this.sprite.width = width
+    if (height) this.sprite.height = height
     this.sprite.zIndex = zIndex
+
+    // this.sprite.anchor.set(0.5) // 设置精灵的锚点为中心位置
+
+    // 设置精灵的位置为屏幕中心
+    // this.sprite.position.set(
+    //   this.app.screen.width / 2,
+    //   this.app.screen.height / 2
+    // )
 
     // 设置自定义业务属性
     this.sprite.type = 'sprite'
@@ -83,6 +95,16 @@ export default class MySprite {
     // this.hitTestRectangle(this.sprite, this.sprite.parent.children, {x: this.sprite.x, y: this.sprite.y})
   }
 
+  //
+  createSprite() {
+    return new Promise((resolve) => {
+      let sprite = new Sprite(texture)
+      setTimeout(() => {
+        resolve(sprite)
+      }, 100)
+    })
+  }
+
   // 新增删除按钮
   addDeleteBtn(sprite) {
     let that = this
@@ -95,6 +117,10 @@ export default class MySprite {
     this.deleteBtn.height = 20 // scale // 高
 
     setTimeout(() => {
+      // this.deleteBtn.position.set(
+      //   sprite.width / 2 - this.deleteBtn.width / 2,
+      //   -(sprite.height / 2 - this.deleteBtn.height / 2)
+      // ) // 定
       this.deleteBtn.position.set(sprite.width - this.deleteBtn.width / 2, -10) // 定位容器comp右上角
     }, 100)
 

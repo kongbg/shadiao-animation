@@ -24,7 +24,7 @@ const props = defineProps({
 watch(
   () => props.id,
   () => {
-    console.log('3234234')
+    console.log('desgin:', props.id)
   }
 )
 
