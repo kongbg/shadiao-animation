@@ -331,10 +331,23 @@ async function initStage(name, destroy = false) {
           schema.property.position.value.x.value = options.x || 0
           schema.property.position.value.y.value = options.y || 0
           schema.property.position.value.zIndex.value = options.zIndex || 11
-          if (schema.children) {
-            schema.children.forEach((item) => {
-              // schema.property.children[item.type].value.height.value = item.
-            })
+          if (schema.property?.children) {
+            console.log('schema.property:', schema.property.children.children)
+            for (const key in schema.property.children.children) {
+              let info = options.children.find((item) => item.type == key)
+              if (info) {
+                for (const key2 in schema.property.children.children[key]
+                  .value) {
+                  schema.property.children.children[key].value[key2].value =
+                    info[key2]
+                }
+              }
+            }
+
+            // schema.property.children.children.forEach((item) => {
+            //   console.log('item:', item)
+            //   // schema.property.children[item.type].value.height.value = item.
+            // })
           }
           options.schema = schema
           create(options)

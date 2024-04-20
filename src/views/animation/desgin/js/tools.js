@@ -217,11 +217,11 @@ export function createComp(data) {
         comp.scale.x += step
         comp.scale.y += step
 
-        Bus.$emit('compChange', {
-          id: comp.id,
-          scalex: comp.scale.x,
-          scaley: comp.scale.y
-        })
+        // Bus.$emit('compChange', {
+        //   id: comp.id,
+        //   scalex: comp.scale.x,
+        //   scaley: comp.scale.y
+        // })
 
         history.record({
           undoInfo: {
@@ -314,10 +314,14 @@ function onDragEnd(event) {
     const dsx = this.scale.x - this.initialScale.x
     const dsy = this.scale.y - this.initialScale.y
 
+    console.log('this:', this)
+
     Bus.$emit('compChange', {
       id: this.id,
       x: this.x,
-      y: this.y
+      y: this.y,
+      width: this.width,
+      height: this.height
     })
 
     if (dx !== 0 || dy !== 0) {
@@ -426,6 +430,12 @@ function onDragMove(event) {
         this.y = this.screen.height - this.pivot.y
       if (this.x > this.screen.width - this.pivot.x)
         this.x = this.screen.width - this.pivot.x
+
+      // Bus.$emit('compChange', {
+      //   id: this.id,
+      //   x: this.x,
+      //   y: this.y
+      // })
     }
   }
 }

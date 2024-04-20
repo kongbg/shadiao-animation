@@ -155,6 +155,7 @@ import {
 import { deepClone, generateUniqueID } from '../utils'
 import position from './pannelPeer/position.vue'
 import size from './pannelPeer/size.vue'
+import image from './pannelPeer/image.vue'
 import face from './pannelPeer/face.vue'
 import speak from './pannelPeer/actions/speak.vue'
 import head from './pannelPeer/head.vue'
@@ -237,6 +238,7 @@ Bus.$on('selectComp', (data) => {
   // console.log('selectComp:', data)
 })
 Bus.$on('compChange', (data) => {
+  debugger
   let id = currentConfInfo.value.id
   let conf = drawStore.drawConfigs.confs.find((item) => item.id == id)
 
@@ -248,6 +250,12 @@ Bus.$on('compChange', (data) => {
   panelType.value = 'comp'
   confInfo.value = info || {}
   schema.value = info.schema || {}
+
+  console.log('schema:', schema.value, data)
+  schema.value.property.position.value.x.value = data.x
+  schema.value.property.position.value.y.value = data.y
+  schema.value.property.size.value.width.value = data.width
+  schema.value.property.size.value.height.value = data.height
 })
 
 let currentConfInfo = ref(null)
@@ -260,6 +268,7 @@ Bus.$on('timelineChange', (options) => {
 let compMap = {
   position,
   size,
+  image,
   face,
   head,
   body,
@@ -367,23 +376,6 @@ const change = (compId, actionId) => {
 // 鼠标悬浮在元素名称上，舞台中元素高亮提示
 const hover = (compId) => {
   panelPeerChange({ action: 'hoverComp', data: { compId } })
-}
-
-const nameChange = (name) => {
-  // 清除之前的对话动作
-  schema.value.actions = schema.value.actions.filter((item) => {
-    return !item.type.includes('speak')
-  })
-
-  // 新增新的对话动作
-  const contents = currentConfInfo.value.option.content
-  contents
-    .filter((item) => {
-      return item.speak === name
-    })
-    .forEach((item, index) => {
-      // addAction(item, item.start);
-    })
 }
 
 // 属性面板中的任何事件，统一通过该方法抛出

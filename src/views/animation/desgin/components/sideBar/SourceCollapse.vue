@@ -217,15 +217,15 @@ const activeNames = ref([])
 async function onDragStart(e, data, parent) {
   console.log('onDragStart:', data, parent)
 
-  // e.dataTransfer.setData(
-  //   'text/plain',
-  //   JSON.stringify({
-  //     ox: e.offsetX,
-  //     oy: e.offsetY,
-  //     type: parent.type,
-  //     ...data
-  //   })
-  // )
+  e.dataTransfer.setData(
+    'text/plain',
+    JSON.stringify({
+      ox: e.offsetX,
+      oy: e.offsetY,
+      type: parent.type,
+      ...data
+    })
+  )
 }
 
 // 点击
