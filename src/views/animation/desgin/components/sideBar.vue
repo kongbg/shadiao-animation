@@ -584,7 +584,7 @@ const parseStr = async (text) => {
             id: generateUniqueID(),
             type: 'background',
             name: '背景1',
-            url: 'http://127.0.0.1:3006/uploads/images/background/buw3ca3n.jpg',
+            url: 'http://127.0.0.1:3006/uploads/images/background/90tmguql.jpg',
             width: 960,
             height: 540,
             x: 0,

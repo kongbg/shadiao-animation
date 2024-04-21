@@ -9,6 +9,7 @@
         <div class="redo" @click="create">新增人物</div>
         <div class="redo" @click="exportToJson2">导出视频Json</div>
         <div class="redo" @click="exportToJson">导出Json</div>
+        <div class="redo" @click="exportVideos">导出视频</div>
         <div class="redo" @click="save">保存</div>
       </div>
       <timeline></timeline>
@@ -52,6 +53,18 @@ Bus.$on('removeComp', (comp) => {
 let configs = computed(() => {
   return drawStore.drawConfigs.confs
 })
+
+async function exportVideos() {
+  let params = {
+    url: 'http://172.20.10.4/preview/index'
+    // url: 'https://www.baidu.com/'
+  }
+  if (!params.url) {
+    console.log('请传入url')
+    return
+  }
+  await exportVideo(params)
+}
 
 // const scale = `scale(${
 //   window.innerHeight < window.innerWidth

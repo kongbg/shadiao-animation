@@ -199,6 +199,19 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/preview',
+    hidden: true,
+    redirect: 'noredirect',
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/preview/index'),
+        name: 'Preview6',
+        meta: { title: '预览', icon: 'user' }
+      }
+    ]
+  },
+  {
     path: '/user',
     component: Layout,
     hidden: true,
