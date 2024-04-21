@@ -1,4 +1,4 @@
-import { Application, Container, Loader } from 'pixi.js'
+import { Application, Container, Loader, RenderTexture } from 'pixi.js'
 import Sprite from './sprite'
 import { generateUniqueID } from '../../utils'
 import { setTextures, getTextures, getTexturesAll } from './textures'
@@ -32,6 +32,7 @@ export default class Stage {
     if (el) el.appendChild(this.app.view)
 
     this.stage = this.app.stage
+    this.renderer = this.app.renderer
     this.stage.type = 'stage'
     this.stage.id = id
     this.stage.name = name
@@ -148,6 +149,65 @@ export default class Stage {
       }
       count++
     }
+
+    // 生成截图
+    // await this.createScreenShot()
+  }
+  // 生成截图
+  async createScreenShot() {
+    let children = this.stage.children
+    let minx = 9999
+    let miny = 9999
+    let maxx = 0
+    let maxy = 0
+    children.forEach((item) => {
+      if (item.x < minx) minx = item.x
+      if (item.y < miny) miny = item.y
+
+      if (item.x + item.width > maxx) maxx = item.x + item.width
+      if (item.y + item.height > maxy) maxy = item.y + item.height
+    })
+
+    let renderTexture = new RenderTexture.create({
+      width: 800,
+      height: 600,
+      transparent: true
+    })
+
+    this.renderer.render(this.stage, { renderTexture })
+    const canvas = this.renderer.plugins.extract.canvas(renderTexture)
+    const newCanvas = this.addCanvasBg(
+      canvas.getContext('2d'),
+      minx,
+      miny,
+      maxx - minx,
+      maxy - miny
+    )
+
+    let imageData = newCanvas.toDataURL('image/jpeg')
+    return imageData
+
+    // const image = new Image()
+    // image.src = imageData
+    // // 显示截图
+    // document.body.appendChild(image)
+  }
+  addCanvasBg(_ctx, x, y, width, height) {
+    const tmpCtx = document.createElement('canvas').getContext('2d')
+    if (!tmpCtx) {
+      return null
+    }
+    tmpCtx.fillStyle = '#ffffff' // 设置背景颜色为白色
+    // 截取指定区域
+    const imageData = _ctx.getImageData(x, y, width, height) // 从 (100, 100) 开始，截取宽度为 200，高度为 150 的区域
+    // 创建新的 Canvas 用于显示截取的内容
+    const newCanvas = document.createElement('canvas')
+    newCanvas.width = width
+    newCanvas.height = height
+    const newCtx = newCanvas.getContext('2d')
+    newCtx.fillStyle = '#ffffff' // 设置背景颜色为白色
+    newCtx.putImageData(imageData, 0, 0)
+    return newCtx.canvas
   }
   // 更新舞台
   uptateStage() {

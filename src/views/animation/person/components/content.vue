@@ -137,14 +137,24 @@ function saveSchema() {
   console.log('saveSchema:', schemas.value)
 }
 
-function getSchemas() {
+async function getSchemas() {
+  let imageData = await createScreenShot()
+
   schemas.value.sort((a, b) => {
     return (
       a.property.position.value.zIndex.value -
       b.property.position.value.zIndex.value
     )
   })
-  return schemas.value
+  console.log('schemas.value:', schemas.value)
+  return {
+    schemas: schemas.value,
+    imageData
+  }
+}
+async function createScreenShot() {
+  let imageData = await stage.value.createScreenShot()
+  return imageData
 }
 
 async function handleDrop(id, purpose, options) {
@@ -169,7 +179,6 @@ async function handleDrop(id, purpose, options) {
 const throttleFn = throttle(handleDrop, 200)
 
 async function init() {
-  debugger
   if (stage.value) {
     stage.value.destroy()
     stage.value = null

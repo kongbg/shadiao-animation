@@ -116,6 +116,8 @@ import {
   deleteData,
   updateData
 } from '../api/schema/index.js'
+import { generateUniqueID } from '../utils'
+import { upload } from '..//api/source/index.js'
 import Table from '@/components/Table'
 import Desgin from '../desgin'
 import SearchForm from '@/components/SearchForm'
@@ -222,6 +224,7 @@ function handleEditData(type, row) {
     handleAddSchema('编辑')
     schemaDialog.id = row.id
     schemaDialog.name = row.name
+    schemaDialog.delUrl = row.path
   }
 }
 
@@ -265,7 +268,8 @@ let schemaDialog = reactive({
   nameShow: false,
   name: '',
   id: '',
-  title: '新增'
+  title: '新增',
+  delUrl: ''
 })
 function handleAddSchema(title = '新增') {
   schemaDialog.show = true
@@ -282,14 +286,60 @@ function schemaNameDialogCancel() {
   schemaDialog.nameShow = false
   schemaDialog.name = ''
 }
+async function uploadFiles(imageData) {
+  let fileData = new FormData()
+  // 创建 File 对象并设置文件名
+  const file = new File([imageData], imageData.name, { type: 'image/png' })
+  fileData.append('file', file)
+  const { userName, userId } = userStore.userInfo
+  fileData.append('userId', userId)
+  fileData.append('userName', userName)
+  fileData.append('type', '1')
+  fileData.append('purpose', 'person')
+  fileData.append('delete', true)
+  const match = schemaDialog.delUrl.match(/\/uploads\/(.*)/)
+  fileData.append('delurl', `/uploads/${match[1]}`)
+
+  let res = await upload(fileData)
+  if (res.code == 200) {
+    return res.data.list[0].path
+  } else {
+    return ''
+  }
+}
+function base64ToBlob(base64Image) {
+  // 从 base64 数据中获取文件后缀名
+  const suffix = base64Image.substring(
+    'data:image/'.length,
+    base64Image.indexOf(';base64')
+  )
+  // 将 base64 数据解码为二进制数据
+  const byteCharacters = atob(base64Image.split(',')[1])
+  const byteNumbers = new Array(byteCharacters.length)
+  for (let i = 0; i < byteCharacters.length; i++) {
+    byteNumbers[i] = byteCharacters.charCodeAt(i)
+  }
+  const byteArray = new Uint8Array(byteNumbers)
+
+  // 创建 Blob 对象
+  const blob = new Blob([byteArray], { type: 'image/png' })
+  // 添加扩展名到 Blob 对象
+  blob.name = `${generateUniqueID()}.${suffix}`
+  return blob
+}
 async function schemaNameDialogConfirm() {
   let name = schemaDialog.name
   schemaNameDialogCancel()
-  let schemas = desginRef.value.getSchemas() || []
+  let schemas = (await desginRef.value.getSchemas()) || null
+  console.log('schemas:', schemas)
+  let blobData = base64ToBlob(schemas.imageData)
+  console.log('blobData:', blobData)
+  let path = await uploadFiles(blobData)
   let params = {
     name,
     purpose: 'person',
-    schema: JSON.stringify(schemas)
+    path,
+    schema: JSON.stringify(schemas.schemas)
   }
   if (schemaDialog.id) {
     params.id = schemaDialog.id
