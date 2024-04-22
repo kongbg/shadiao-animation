@@ -67,7 +67,9 @@ export default class appController {
         },
         msg: 'ok'
       }
-      if (deleteflag) {
+      console.log('deleteflag:', deleteflag)
+      console.log('delurl:', delurl)
+      if (deleteflag && delurl) {
         FilesService.deleteFiles({ delurl })
       }
     } else {

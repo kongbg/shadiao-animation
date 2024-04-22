@@ -235,7 +235,7 @@ function createApi(purpose) {
     type: 1,
     pageInfo: {
       pageNum: 1,
-      pageSize: 50
+      pageSize: 999
     },
     searchKey: ''
   }

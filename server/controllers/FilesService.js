@@ -33,7 +33,7 @@ export default class FilesService {
         confid: match[2],
         duration: match[3] || 0,
         aliasName: name,
-        url: `http://127.0.0.1:3009/uploads/audio/${name}`,
+        url: `http://127.0.0.1:3006/uploads/audio/${name}`,
         type: ['wav'].includes(match[4]) ? 'audio' : ''
       }
 
@@ -190,7 +190,8 @@ export default class FilesService {
       fs.unlink(path.join(staticPath, params.delurl), (err) => {
         //删除文件
         if (err) {
-          reject(new Error(`删除文件: ${params.delurl} 异常！`))
+          resolve(true)
+          // reject(new Error(`删除文件: ${params.delurl} 异常！`))
         } else {
           console.log(`文件: ${params.delurl} 删除成功！`)
           resolve(true)

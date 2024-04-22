@@ -26,7 +26,8 @@ export default class Stage {
     this.app = new Application({
       width,
       height,
-      backgroundColor
+      backgroundColor,
+      antialias: true // 设置抗锯齿属性为 true
     })
 
     if (el) el.appendChild(this.app.view)

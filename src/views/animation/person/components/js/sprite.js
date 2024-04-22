@@ -61,8 +61,8 @@ export default class MySprite {
     this.sprite.y = y - oy
     this.sprite.interactive = interactive // 开启可交互性（可拖拽）
     this.sprite.buttonMode = buttonMode
-    this.sprite.scale.x = scale
-    this.sprite.scale.y = scale
+    // this.sprite.scale.x = scale
+    // this.sprite.scale.y = scale
     // 坑爹属性。宽高一定要放 scale 后，不然宽高不会生效，真尼玛坑
     if (width) this.sprite.width = width
     if (height) this.sprite.height = height

@@ -428,11 +428,11 @@ async function preLoadAudio(options = { audios: {} }) {
 
           audios[info.id] = {
             cid: info.id,
-            audioUrl: `http://127.0.0.1:3009/uploads/audio/${filename}`,
+            audioUrl: `http://127.0.0.1:3006/uploads/audio/${filename}`,
             duration: info.duration
           }
 
-          await sleep(200)
+          await sleep(500)
         } else {
           audios[info.id] = {
             cid: info.id,

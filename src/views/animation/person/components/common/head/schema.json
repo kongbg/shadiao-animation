@@ -39,11 +39,11 @@
       "value": {
         "width": {
           "label": "宽度",
-          "value": "50"
+          "value": "auto"
         },
         "height": {
           "label": "高度",
-          "value": "50"
+          "value": "auto"
         }
       }
     }

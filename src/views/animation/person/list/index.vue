@@ -219,6 +219,7 @@ function handleEditData(type, row) {
   if (type == 'create') {
     schemaDialog.id = ''
     schemaDialog.name = ''
+    schemaDialog.delUrl = ''
     handleAddSchema()
   } else if (type == 'edit') {
     handleAddSchema('编辑')
@@ -296,9 +297,14 @@ async function uploadFiles(imageData) {
   fileData.append('userName', userName)
   fileData.append('type', '1')
   fileData.append('purpose', 'person')
-  fileData.append('delete', true)
-  const match = schemaDialog.delUrl.match(/\/uploads\/(.*)/)
-  fileData.append('delurl', `/uploads/${match[1]}`)
+
+  if (schemaDialog.delUrl) {
+    fileData.append('delete', true)
+    const match = schemaDialog.delUrl.match(/\/uploads\/(.*)/)
+    fileData.append('delurl', `/uploads/${match[1]}`)
+  } else {
+    fileData.append('delete', false)
+  }
 
   let res = await upload(fileData)
   if (res.code == 200) {

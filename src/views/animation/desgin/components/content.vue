@@ -56,7 +56,8 @@ let configs = computed(() => {
 
 async function exportVideos() {
   let params = {
-    url: 'http://172.20.10.4/preview/index'
+    url: 'http://172.20.10.4:3002/'
+    // url: 'http://172.20.10.4/preview/index'
     // url: 'https://www.baidu.com/'
   }
   if (!params.url) {
