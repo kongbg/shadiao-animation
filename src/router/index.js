@@ -108,18 +108,18 @@ export const constantRoutes = [
           link: null
         }
       },
-      {
-        name: "Video",
-        path: "video",
-        hidden: false,
-        component: () => import('@/views/source/video'),
-        meta: {
-          title: "视频",
-          icon: "online",
-          noCache: false,
-          link: null
-        }
-      },
+      // {
+      //   name: "Video",
+      //   path: "video",
+      //   hidden: false,
+      //   component: () => import('@/views/source/video'),
+      //   meta: {
+      //     title: "视频",
+      //     icon: "online",
+      //     noCache: false,
+      //     link: null
+      //   }
+      // },
     ]
   },
   {
@@ -148,37 +148,49 @@ export const constantRoutes = [
           link: null
         }
       },
+      // {
+      //   name: "Desgin",
+      //   path: "desgin",
+      //   hidden: false,
+      //   component: () => import('@/views/animation/desgin'),
+      //   meta: {
+      //     title: "设计",
+      //     icon: "online",
+      //     noCache: false,
+      //     link: null
+      //   }
+      // },
+      // {
+      //   name: "Person",
+      //   path: "person",
+      //   hidden: false,
+      //   component: () => import('@/views/animation/person'),
+      //   meta: {
+      //     title: "设计人物",
+      //     icon: "online",
+      //     noCache: false,
+      //     link: null
+      //   }
+      // },
+      // {
+      //   name: "Preview",
+      //   path: "preview",
+      //   hidden: false,
+      //   component: () => import('@/views/animation/preview'),
+      //   meta: {
+      //     title: "预览",
+      //     icon: "online",
+      //     noCache: false,
+      //     link: null
+      //   }
+      // },
       {
-        name: "Desgin",
-        path: "desgin",
+        name: "Desginv8",
+        path: "desginv8",
         hidden: false,
-        component: () => import('@/views/animation/desgin'),
+        component: () => import('@/views/animation/desginv8'),
         meta: {
-          title: "设计",
-          icon: "online",
-          noCache: false,
-          link: null
-        }
-      },
-      {
-        name: "Person",
-        path: "person",
-        hidden: false,
-        component: () => import('@/views/animation/person'),
-        meta: {
-          title: "设计人物",
-          icon: "online",
-          noCache: false,
-          link: null
-        }
-      },
-      {
-        name: "Preview",
-        path: "preview",
-        hidden: false,
-        component: () => import('@/views/animation/preview'),
-        meta: {
-          title: "预览",
+          title: "Desginv8",
           icon: "online",
           noCache: false,
           link: null

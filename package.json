@@ -38,13 +38,13 @@
         "mockjs": "^1.1.0",
         "nprogress": "0.2.0",
         "pinia": "2.1.7",
-        "pixi.js": "^6.3.0",
+        "pixi.js": "^6.5.10",
         "sqlite3": "^5.1.7",
         "vite-plugin-mock": "^3.0.1",
-        "web-video-creator": "^0.0.34",
         "vue": "3.3.9",
         "vue-cropper": "1.1.1",
-        "vue-router": "4.2.5"
+        "vue-router": "4.2.5",
+        "web-video-creator": "^0.0.34"
     },
     "devDependencies": {
         "@vitejs/plugin-vue": "4.5.0",
