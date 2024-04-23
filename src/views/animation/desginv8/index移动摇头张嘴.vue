@@ -135,6 +135,34 @@ async function init() {
   //   scene.scale.set(1, 1)
   // }, 3000)
 
+  // 初始化镜头位置和缩放比例
+  let cameraX = 0
+  let cameraY = 0
+  let zoomLevel = 1
+
+  // 更新镜头位置和缩放比例
+  function updateCamera() {
+    app.stage.x = app.renderer.width / 2 - cameraX * zoomLevel
+    app.stage.y = app.renderer.height / 2 - cameraY * zoomLevel
+    app.stage.scale.set(zoomLevel)
+  }
+
+  // 模拟运镜效果
+  function panAndZoom(newCameraX, newCameraY, newZoomLevel) {
+    cameraX = newCameraX
+    cameraY = newCameraY
+    zoomLevel = newZoomLevel
+    updateCamera()
+  }
+
+  function panAndZoom222() {
+    setTimeout(() => {
+      // 初始位置和缩放比例
+      panAndZoom(app.renderer.width / 2, app.renderer.height / 2, 1.2) // 以 (100, 100) 为中心，缩放为 2 倍
+    }, 100)
+  }
+  // panAndZoom222()
+
   function addPerson() {
     let psersonContainer = new Container()
     let body = Sprite.from(getTextures('body'))
@@ -350,57 +378,6 @@ async function init() {
       )
     }
 
-    function yj() {
-      let tl = gsap.timeline({
-        onComplete: () => {
-          console.log('动画结束了')
-        }
-      })
-
-      // 使用 TweenMax 实现缓动效果
-      function tweenCamera(newCameraX, newCameraY, newZoomLevel, duration) {
-        tl.to(app.stage, duration, {
-          x: 0, //app.renderer.width / 2 - newCameraX * newZoomLevel,
-          y: 0, //app.renderer.height / 2 - newCameraY * newZoomLevel,
-          scaleX: newZoomLevel,
-          scaleY: newZoomLevel,
-          ease: 'linear' // 使用 Power2 缓动函数
-        })
-      }
-
-      // 运镜效果，从当前位置缓动到新位置和缩放比例
-      tweenCamera(100, 100, 2, 3) // 以 (100, 100) 为中心，缩放为 1.2 倍，持续 1 秒
-      // tweenCamera(app.renderer.width / 2, app.renderer.height / 2, 1.2, 3)
-    }
-
-    // 初始化镜头位置和缩放比例
-    let cameraX = 0
-    let cameraY = 0
-    let zoomLevel = 1
-
-    // 更新镜头位置和缩放比例
-    function updateCamera() {
-      app.stage.x = app.renderer.width / 2 - cameraX * zoomLevel
-      app.stage.y = app.renderer.height / 2 - cameraY * zoomLevel
-      app.stage.scale.set(zoomLevel)
-    }
-
-    // 模拟运镜效果
-    function panAndZoom(newCameraX, newCameraY, newZoomLevel) {
-      cameraX = newCameraX
-      cameraY = newCameraY
-      zoomLevel = newZoomLevel
-      updateCamera()
-    }
-
-    function panAndZoom222() {
-      setTimeout(() => {
-        // 初始位置和缩放比例
-        panAndZoom(app.renderer.width / 2, app.renderer.height / 2, 1.2) // 以 (100, 100) 为中心，缩放为 2 倍
-      }, 100)
-    }
-    // panAndZoom222()
-
     // 平移
     // setposition()
     // 说话
@@ -417,9 +394,6 @@ async function init() {
     // }, 2000)
     // 左右翻转
     // scaleX()
-
-    // 运镜
-    // yj()
   }
   addPerson()
 
