@@ -1,8 +1,7 @@
-
 import { Sprite } from 'pixi.js'
 
 export default class _Sprite {
-constructor(options = {}) {
+  constructor(options = {}) {
     this.events = {}
     this.sprite = null
     // 合并参数
@@ -12,13 +11,28 @@ constructor(options = {}) {
 
   // 初始化
   init() {
-    let { image, width, height, zIndex, pivot={x:0.5,y:0.5}, id,type='sprite',name} = this
+    let {
+      image,
+      width,
+      height,
+      x = 0,
+      y = 0,
+      zIndex,
+      pivot = { x: 0.5, y: 0.5 },
+      visible = true,
+      id,
+      type = 'sprite',
+      name
+    } = this
     this.sprite = new Sprite.from(image)
     // 自有属性
-    if(width) this.sprite.width = width
-    if(height) this.sprite.height = height
+    if (width) this.sprite.width = width
+    if (height) this.sprite.height = height
     // 层级
     this.sprite.zIndex = zIndex
+    this.sprite.visible = visible
+    this.sprite.x = x
+    this.sprite.y = y
 
     // 业务属性
     this.sprite.id = id
@@ -38,7 +52,7 @@ constructor(options = {}) {
   }
 
   // 切换显示隐藏
-  toggleVisible (value) {
+  toggleVisible(value) {
     this.sprite.visible = value
   }
 
@@ -52,10 +66,10 @@ constructor(options = {}) {
   }
 
   // 触发事件
-  emit(name, palyLoad){
+  emit(name, palyLoad) {
     let events = this.events[name] || []
-    events.forEach(callBack => {
+    events.forEach((callBack) => {
       callBack(palyLoad)
-    });
+    })
   }
 }

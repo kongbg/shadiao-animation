@@ -100,7 +100,7 @@ async function init() {
 
   // 创建场景
   let scene = new Scene()
-  scene.on('ok', ()=>{
+  scene.on('ok', () => {
     console.log('ok')
   })
 
@@ -140,14 +140,32 @@ async function init() {
   // }, 3000)
 
   let person1 = await new Person()
-    console.log('person1:', person1)
+  // console.log('person1:', person1)
 
-    scene.addChild(person1)
+  // 飞
+  // person1.fly({
+  //   duration: 1.5,
+  //   x: 500,
+  //   y: 120
+  // })
+
+  // // 移动
+  // person1.move({
+  //   duration: 1,
+  //   x: 500,
+  //   y: 120
+  // })
+
+  // 转身
+  person1.turnAround({ duration: 10 })
+
+  // 摇头
+  person1.shakeHead({ duration: 10 })
+
+  scene.addChild(person1)
 
   // 创建人物
- async function createPerson() {
-
-    
+  async function createPerson() {
     let psersonContainer = new Container()
     let body = Sprite.from(getTextures('body'))
     body.pivot.set(0.5)
@@ -433,7 +451,7 @@ async function init() {
     // 运镜
     // yj()
   }
-//   createPerson()
+  //   createPerson()
 
   stage.addChild(scene)
 }

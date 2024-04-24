@@ -26,7 +26,7 @@ export default class _Container {
     if (height) this.container.height = height
     // 层级
     this.container.zIndex = zIndex
-    // 锚点, 这里应该有问题，应该异步设置锚点。等其他子元素全部创建好以后，再设置锚点为宽高的一半
+    // 锚点
     this.container.pivot.set(pivot.x, pivot.y)
 
     // 业务属性
@@ -63,7 +63,7 @@ export default class _Container {
     borderLine.position.set(0, 0) // 定位容器comp左上角
     borderLine.width = 0
     borderLine.height = 0
-    borderLine.visible = true
+    borderLine.visible = false
 
     // 业务属性
     borderLine.id = ''
@@ -72,11 +72,15 @@ export default class _Container {
 
     this.container.borderLine = borderLine
     this.container.addChild(borderLine)
+
+    setTimeout(() => {
+      this.container.updateBorder()
+    }, 1000)
   }
 
   // 更新容器边框属性
-  updateBorder(options) {
-    let { width, height } = options
+  updateBorder() {
+    let { width, height } = this
     this.borderLine.width = width
     this.borderLine.height = height
     this.borderLine.drawRect(0, 0, width, height)
