@@ -6,6 +6,7 @@
 <script setup>
 import { onMounted } from 'vue'
 import {
+  Application,
   Loader,
   Sprite,
   AnimatedSprite,
@@ -17,9 +18,7 @@ import { setTextures, getTextures } from './js/textures'
 import { getImgUrlV2 } from './utils'
 import * as TWEEN from '@tweenjs/tween.js'
 import gsap from 'gsap'
-import Stage from './js/Stage'
 import Person from './js/Person'
-import Scene from './js/Scene'
 
 const pixiContainer = ref(null)
 
@@ -89,20 +88,18 @@ async function init() {
   cacheTextures(resources)
 
   // 创建舞台
-  app = new Stage({
-    el: pixiContainer.value,
-    width: window.innerWidth,
-    height: window.innerHeight
+  app = new Application({
+    width: window.innerWidth, //800,
+    height: window.innerHeight //600,
     // backgroundColor: 0x1099bb
   })
 
   let stage = app.stage
 
-  // 创建场景
-  let scene = new Scene()
-  scene.on('ok', ()=>{
-    console.log('ok')
-  })
+  pixiContainer.value.appendChild(app.view)
+
+  let scene = new Container()
+  scene.pivot.set(0.5)
 
   let sprite1 = Sprite.from(getTextures('1'))
 
@@ -139,15 +136,11 @@ async function init() {
   //   scene.scale.set(1, 1)
   // }, 3000)
 
-  let person1 = await new Person()
-    console.log('person1:', person1)
-
-    scene.addChild(person1)
-
   // 创建人物
- async function createPerson() {
+  function createPerson() {
 
-    
+    let person1 = new Person()
+    console.log('person1:', person1)
     let psersonContainer = new Container()
     let body = Sprite.from(getTextures('body'))
     body.pivot.set(0.5)
@@ -433,7 +426,7 @@ async function init() {
     // 运镜
     // yj()
   }
-//   createPerson()
+  createPerson()
 
   stage.addChild(scene)
 }
