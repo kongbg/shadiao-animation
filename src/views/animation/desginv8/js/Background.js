@@ -19,7 +19,7 @@ export default class Background {
     // 创建一个容器
     this.background = new Container()
 
-    let bg1 = new Sprite({image: getTextures('1')})
+    let bg1 = new Sprite({ image: getTextures(this.id) })
     this.background.addChild(bg1)
 
     // 设置容器锚点为自身中心
@@ -44,7 +44,6 @@ export default class Background {
 
     return this.background
   }
-
 
   // 将this上的事件事件绑定到实例上
   bindEvent() {

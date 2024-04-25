@@ -22,16 +22,17 @@ import Background from './js/Background'
 import Person from './js/Person'
 import Scene from './js/Scene'
 
+let app = null
 const pixiContainer = ref(null)
 const donghuaRef = ref(null)
 
 let urls = [
   {
-    key: '1',
+    key: '9bgd6dn2',
     value: 'https://g.mdcdn.cn/h5/img/act/201711/new-1-1.jpg'
   },
   {
-    key: '2',
+    key: '9bg86dn3',
     value: 'https://g.mdcdn.cn/h5/img/act/201711/new-1-2.png'
   },
   {
@@ -83,13 +84,12 @@ function cacheTextures(res) {
   })
 }
 
-async function init() {
+async function init2() {
   let app = null
   let resources = await loaderResource(urls)
 
   // 缓存资源
   cacheTextures(resources)
-  
 
   // 创建舞台
   app = new Stage({
@@ -107,33 +107,33 @@ async function init() {
     console.log('ok')
   })
 
-//   let sprite1 = Sprite.from(getTextures('1'))
+  //   let sprite1 = Sprite.from(getTextures('1'))
 
-//   scene.addChild(sprite1)
+  //   scene.addChild(sprite1)
 
   // 创建序列帧动画的纹理数组
-  const frames = []
-  var urlPadding = 'https://g.mdcdn.cn/h5/img/act/201711/'
-  for (let i = 1; i <= 10; i++) {
-    frames.push(Texture.from(`${urlPadding}new-1-sky-${i}.jpg`))
-  }
+  // const frames = []
+  // var urlPadding = 'https://g.mdcdn.cn/h5/img/act/201711/'
+  // for (let i = 1; i <= 10; i++) {
+  //   frames.push(Texture.from(`${urlPadding}new-1-sky-${i}.jpg`))
+  // }
 
-//   // 创建 AnimatedSprite 对象
-//   const animatedSprite = new AnimatedSprite(frames)
-//   // 设置动画播放速度和循环
-//   animatedSprite.animationSpeed = 0.1 // 设置动画播放速度
-//   animatedSprite.loop = true // 设置动画循环播放
-//   // 添加到舞台并播放动画
-//   scene.addChild(animatedSprite)
+  //   // 创建 AnimatedSprite 对象
+  //   const animatedSprite = new AnimatedSprite(frames)
+  //   // 设置动画播放速度和循环
+  //   animatedSprite.animationSpeed = 0.1 // 设置动画播放速度
+  //   animatedSprite.loop = true // 设置动画循环播放
+  //   // 添加到舞台并播放动画
+  //   scene.addChild(animatedSprite)
 
-//   let sprite2 = Sprite.from(getTextures('2'))
-//   sprite2.position.set(290, 297)
-//   scene.addChild(sprite2)
-//   //
-//   let sprite3 = Sprite.from(getTextures('3'))
-//   scene.addChild(sprite3)
+  //   let sprite2 = Sprite.from(getTextures('2'))
+  //   sprite2.position.set(290, 297)
+  //   scene.addChild(sprite2)
+  //   //
+  //   let sprite3 = Sprite.from(getTextures('3'))
+  //   scene.addChild(sprite3)
 
-//   animatedSprite.play()
+  //   animatedSprite.play()
 
   // setTimeout(() => {
   //   scene.scale.set(1.2, 1.2)
@@ -142,19 +142,18 @@ async function init() {
   //   scene.scale.set(1, 1)
   // }, 3000)
 
-  let bg1Params = {x: app.renderer.width / 2, y: app.renderer.height/2}
+  let bg1Params = { x: app.renderer.width / 2, y: app.renderer.height / 2 }
   console.log('bg1Params:', bg1Params)
   let bg1 = await new Background(bg1Params)
 
-
   scene.addChild(bg1)
 
-//   setTimeout(()=>{
-//     scene.enlarge()
-//   }, 2000)
+  //   setTimeout(()=>{
+  //     scene.enlarge()
+  //   }, 2000)
 
-  let person1 = await new Person({x: 460, y: 530})
-//   person1.rotation = Math.PI / 4
+  let person1 = await new Person({ x: 460, y: 530 })
+  //   person1.rotation = Math.PI / 4
   // console.log('person1:', person1)
 
   // 飞
@@ -172,10 +171,10 @@ async function init() {
   // })
 
   // 转身
-//   person1.turnAround({ duration: 10 })
+  //   person1.turnAround({ duration: 10 })
 
   // 摇头
-//   person1.shakeHead({ duration: 10 })
+  //   person1.shakeHead({ duration: 10 })
 
   scene.addChild(person1)
 
@@ -468,20 +467,173 @@ async function init() {
   }
   //   createPerson()
 
-
   scene.updatePivot()
   scene.updatePosition()
-  setTimeout(()=>{
-    scene.enlarge({x:460, y: 460})
+  setTimeout(() => {
+    scene.enlarge({ x: 460, y: 460 })
   }, 2000)
-  setTimeout(()=>{
-    scene.shrink({x:460, y: 460})
+  setTimeout(() => {
+    scene.shrink({ x: 460, y: 460 })
   }, 10000)
-  
 
-    // scene.rotation = Math.PI / 4
+  // scene.rotation = Math.PI / 4
 
   stage.addChild(scene)
+}
+async function init() {
+  let stageInfo = {
+    id: '9bgd7dnd',
+    name: '第一章',
+    scenes: [
+      {
+        id: '9bgd7dn0',
+        sprites: [
+          {
+            id: '9bgd6dn2',
+            type: 'background'
+          },
+          {
+            id: '9bgd6pdj',
+            type: 'person',
+            name: '李四',
+            sprites: [
+              {
+                id: 'body',
+                type: 'body',
+                url: '',
+                x: 0,
+                y: 95
+              },
+              {
+                id: 'head',
+                type: 'head',
+                url: '',
+                children: [
+                  {
+                    id: 'head',
+                    type: 'head',
+                    url: ''
+                  },
+                  {
+                    id: 'face-2-a',
+                    type: 'face',
+                    name: 'face-2-a',
+                    url: '',
+                    width: 60,
+                    height: 60,
+                    x: 20,
+                    y: 35,
+                    visible: !true
+                  },
+                  {
+                    id: 'face-2-b',
+                    type: 'face',
+                    name: 'face-2-b',
+                    url: '',
+                    width: 60,
+                    height: 60,
+                    x: 20,
+                    y: 35,
+                    visible: true
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        content: [
+          {
+            id: 'jir7qxjv',
+            speak: '秦天',
+            content: '诸位爱卿，今日可有事要奏。\r'
+          },
+          {
+            id: 'gyb7fh0y',
+            speak: '袁天罡',
+            content:
+              '微臣有事要奏，昨日豫州刺史来报，豫州数县已经有近半月滴雨未下，恳请陛下派遣钦天监修士前往做法缓解旱情。\r'
+          }
+        ]
+      },
+      {
+        id: '9bgd7dw7',
+        sprites: [
+          {
+            id: '9bg86dn3',
+            type: 'background'
+          }
+        ]
+      }
+    ]
+  }
+
+  let resources = await loaderResource(urls)
+
+  // 缓存资源
+  cacheTextures(resources)
+
+  // 创建舞台
+  app = new Stage({
+    el: pixiContainer.value,
+    width: donghuaRef.value.offsetWidth,
+    height: donghuaRef.value.offsetHeight
+    // backgroundColor: 0x1099bb
+  })
+
+  // console.log('创建舞台:', app)
+
+  let stage = app.stage
+
+  let scenes = stageInfo.scenes || []
+  let leng = scenes.length
+  let current = 0
+  while (current < leng) {
+    let option = scenes[current]
+    let sprites = option.sprites || []
+    let sleng = sprites.length
+    let scurrent = 0
+
+    // console.log('option:', option)
+    // 创建场景
+    let scene = new Scene({ visible: current == 0 })
+
+    while (scurrent < sleng) {
+      let soption = sprites[scurrent]
+      // console.log('soption:', soption)
+
+      let sprite = await createSprite(soption)
+      if (sprite) scene.addChild(sprite)
+
+      scurrent++
+    }
+
+    stage.addChild(scene)
+
+    current++
+  }
+
+  setTimeout(() => {
+    stage.play()
+  }, 2000)
+
+  console.log('stage:', stage)
+}
+
+async function createSprite(options) {
+  let scrite = null
+  switch (options.type) {
+    case 'background':
+      options.x = app.renderer.width / 2
+      options.y = app.renderer.height / 2
+      scrite = await new Background(options)
+      break
+    case 'person':
+      scrite = await new Person(options)
+      break
+    default:
+      break
+  }
+  return scrite
 }
 
 onMounted(() => {
@@ -490,6 +642,6 @@ onMounted(() => {
 </script>
 <style lang="scss" scoped>
 .donghua-warp {
-    min-height: calc(100vh - 84px);
+  min-height: calc(100vh - 84px);
 }
 </style>

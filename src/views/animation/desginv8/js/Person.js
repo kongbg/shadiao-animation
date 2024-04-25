@@ -7,103 +7,72 @@ export default class Person {
   constructor(options = {}) {
     this.events = {}
     this.person = null
+    this.config = options
     this.x = 0
     this.y = 0
-    // 合并参数
-    Object.assign(this, options)
     return this.init()
   }
 
   // 初始化
   async init() {
-    // 创建一个容器
-    // this.person = new Container()
-
-    // let body = Sprite.from(getTextures('body'))
-    // body.pivot.set(0.5)
-    // body.position.set(0, 95)
-    // this.person.addChild(body)
-
-    // let headContainer = new Container()
-    // headContainer.type = 'headContainer'
-
-    // let head = Sprite.from(getTextures('head'))
-    // // head.width = 50
-    // // head.height = 50
-    // let face2a = Sprite.from(getTextures('face-2-a'))
-    // face2a.type = 'face'
-    // face2a.width = 60
-    // face2a.height = 60
-    // face2a.position.set(20, 32)
-    // face2a.visible = false
-    // let face2b = Sprite.from(getTextures('face-2-b'))
-    // face2b.type = 'face'
-    // face2b.width = 60
-    // face2b.height = 60
-    // face2b.position.set(20, 32)
-    // headContainer.addChild(head)
-    // headContainer.addChild(face2a)
-    // headContainer.addChild(face2b)
-    // this.person.addChild(headContainer)
-
     // 通过配置创建人物
-    let config = {
-      id: '123',
-      type: 'person',
-      name: '李四',
-      sprites: [
-        {
-          id: 'body',
-          type: 'body',
-          url: '',
-          x: 0,
-          y: 95
-        },
-        {
-          id: 'head',
-          type: 'head',
-          url: '',
-          children: [
-            {
-              id: 'head',
-              type: 'head',
-              url: ''
-            },
-            {
-              id: 'face-2-a',
-              type: 'face',
-              name: 'face-2-a',
-              url: '',
-              width: 60,
-              height: 60,
-              x: 20,
-              y: 35,
-              visible: !true
-            },
-            {
-              id: 'face-2-b',
-              type: 'face',
-              name: 'face-2-b',
-              url: '',
-              width: 60,
-              height: 60,
-              x: 20,
-              y: 35,
-              visible: true
-            }
-          ]
-        }
-      ]
-    }
+    // this.config = {
+    //   id: '9bgd6pdj',
+    //   type: 'person',
+    //   name: '李四',
+    //   sprites: [
+    //     {
+    //       id: 'body',
+    //       type: 'body',
+    //       url: '',
+    //       x: 0,
+    //       y: 95
+    //     },
+    //     {
+    //       id: 'head',
+    //       type: 'head',
+    //       url: '',
+    //       children: [
+    //         {
+    //           id: 'head',
+    //           type: 'head',
+    //           url: ''
+    //         },
+    //         {
+    //           id: 'face-2-a',
+    //           type: 'face',
+    //           name: 'face-2-a',
+    //           url: '',
+    //           width: 60,
+    //           height: 60,
+    //           x: 20,
+    //           y: 35,
+    //           visible: !true
+    //         },
+    //         {
+    //           id: 'face-2-b',
+    //           type: 'face',
+    //           name: 'face-2-b',
+    //           url: '',
+    //           width: 60,
+    //           height: 60,
+    //           x: 20,
+    //           y: 35,
+    //           visible: true
+    //         }
+    //       ]
+    //     }
+    //   ]
+    // }
 
     // 创建一个容器
     this.person = new Container()
-    this.person.type = config.type
-    this.person.id = config.id
-    this.person.name = config.name
+    this.person.type = this.config.type
+    this.person.id = this.config.id
+    this.person.name = this.config.name
 
     // 创建真实精灵
-    this.createSprite(config.sprites, this.person)
+    this.createSprite(this.config.sprites, this.person)
 
     // 设置容器锚点为自身中心
     let { width, height } = this.person

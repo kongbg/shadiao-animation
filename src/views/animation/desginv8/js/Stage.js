@@ -1,8 +1,7 @@
-
 import { Application } from 'pixi.js'
 
 export default class Stage {
-constructor(options = {}) {
+  constructor(options = {}) {
     this.events = {}
     this.app = null
     this.el = options.el
@@ -28,7 +27,26 @@ constructor(options = {}) {
 
   // 将this上的事件事件绑定到实例上
   bindEvent() {
-    this.app.stage.on = this.on.bind(this)
+    this.app.stage.on = this.on.bind(this.app.stage)
+    this.app.stage.play = this.play.bind(this.app.stage)
+  }
+
+  // 播放
+  async play() {
+    let scenes = this.children || []
+    let leng = scenes.length
+    let current = 0
+    while (current < leng) {
+      let scene = scenes[current]
+      scene.toggleVisible(true)
+      await scene.run()
+
+      if (current < leng - 1) {
+        scene.toggleVisible(false)
+      }
+
+      current++
+    }
   }
 
   // 监听事件
@@ -41,10 +59,10 @@ constructor(options = {}) {
   }
 
   // 触发事件
-  emit(name, palyLoad){
+  emit(name, playLoad) {
     let events = this.events[name] || []
-    events.forEach(callBack => {
-      callBack(palyLoad)
-    });
+    events.forEach((callBack) => {
+      callBack(playLoad)
+    })
   }
 }
