@@ -1,10 +1,10 @@
 <template>
-  <div class="donghua-warp">
+  <div ref="donghuaRef" class="donghua-warp">
     <div ref="pixiContainer"></div>
   </div>
 </template>
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import {
   Loader,
   Sprite,
@@ -18,10 +18,12 @@ import { getImgUrlV2 } from './utils'
 import * as TWEEN from '@tweenjs/tween.js'
 import gsap from 'gsap'
 import Stage from './js/Stage'
+import Background from './js/Background'
 import Person from './js/Person'
 import Scene from './js/Scene'
 
 const pixiContainer = ref(null)
+const donghuaRef = ref(null)
 
 let urls = [
   {
@@ -87,12 +89,13 @@ async function init() {
 
   // 缓存资源
   cacheTextures(resources)
+  
 
   // 创建舞台
   app = new Stage({
     el: pixiContainer.value,
-    width: window.innerWidth,
-    height: window.innerHeight
+    width: donghuaRef.value.offsetWidth,
+    height: donghuaRef.value.offsetHeight
     // backgroundColor: 0x1099bb
   })
 
@@ -104,9 +107,9 @@ async function init() {
     console.log('ok')
   })
 
-  let sprite1 = Sprite.from(getTextures('1'))
+//   let sprite1 = Sprite.from(getTextures('1'))
 
-  scene.addChild(sprite1)
+//   scene.addChild(sprite1)
 
   // 创建序列帧动画的纹理数组
   const frames = []
@@ -115,22 +118,22 @@ async function init() {
     frames.push(Texture.from(`${urlPadding}new-1-sky-${i}.jpg`))
   }
 
-  // 创建 AnimatedSprite 对象
-  const animatedSprite = new AnimatedSprite(frames)
-  // 设置动画播放速度和循环
-  animatedSprite.animationSpeed = 0.1 // 设置动画播放速度
-  animatedSprite.loop = true // 设置动画循环播放
-  // 添加到舞台并播放动画
-  scene.addChild(animatedSprite)
+//   // 创建 AnimatedSprite 对象
+//   const animatedSprite = new AnimatedSprite(frames)
+//   // 设置动画播放速度和循环
+//   animatedSprite.animationSpeed = 0.1 // 设置动画播放速度
+//   animatedSprite.loop = true // 设置动画循环播放
+//   // 添加到舞台并播放动画
+//   scene.addChild(animatedSprite)
 
-  let sprite2 = Sprite.from(getTextures('2'))
-  sprite2.position.set(290, 297)
-  scene.addChild(sprite2)
-  //
-  let sprite3 = Sprite.from(getTextures('3'))
-  scene.addChild(sprite3)
+//   let sprite2 = Sprite.from(getTextures('2'))
+//   sprite2.position.set(290, 297)
+//   scene.addChild(sprite2)
+//   //
+//   let sprite3 = Sprite.from(getTextures('3'))
+//   scene.addChild(sprite3)
 
-  animatedSprite.play()
+//   animatedSprite.play()
 
   // setTimeout(() => {
   //   scene.scale.set(1.2, 1.2)
@@ -139,7 +142,19 @@ async function init() {
   //   scene.scale.set(1, 1)
   // }, 3000)
 
-  let person1 = await new Person()
+  let bg1Params = {x: app.renderer.width / 2, y: app.renderer.height/2}
+  console.log('bg1Params:', bg1Params)
+  let bg1 = await new Background(bg1Params)
+
+
+  scene.addChild(bg1)
+
+//   setTimeout(()=>{
+//     scene.enlarge()
+//   }, 2000)
+
+  let person1 = await new Person({x: 460, y: 530})
+//   person1.rotation = Math.PI / 4
   // console.log('person1:', person1)
 
   // 飞
@@ -157,10 +172,10 @@ async function init() {
   // })
 
   // 转身
-  person1.turnAround({ duration: 10 })
+//   person1.turnAround({ duration: 10 })
 
   // 摇头
-  person1.shakeHead({ duration: 10 })
+//   person1.shakeHead({ duration: 10 })
 
   scene.addChild(person1)
 
@@ -453,6 +468,19 @@ async function init() {
   }
   //   createPerson()
 
+
+  scene.updatePivot()
+  scene.updatePosition()
+  setTimeout(()=>{
+    scene.enlarge({x:460, y: 460})
+  }, 2000)
+  setTimeout(()=>{
+    scene.shrink({x:460, y: 460})
+  }, 10000)
+  
+
+    // scene.rotation = Math.PI / 4
+
   stage.addChild(scene)
 }
 
@@ -460,3 +488,8 @@ onMounted(() => {
   init()
 })
 </script>
+<style lang="scss" scoped>
+.donghua-warp {
+    min-height: calc(100vh - 84px);
+}
+</style>
