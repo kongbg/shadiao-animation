@@ -17,10 +17,10 @@ export default class Background {
   // 初始化
   async init() {
     // 创建一个容器
-    this.background = new Container()
+    this.background = new Container(this)
 
-    let bg1 = new Sprite({ image: getTextures(this.id) })
-    this.background.addChild(bg1)
+    let bg = new Sprite({ image: getTextures(this.id) })
+    this.background.addChild(bg)
 
     // 设置容器锚点为自身中心
     let { width, height } = this.background

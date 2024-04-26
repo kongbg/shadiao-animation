@@ -1,4 +1,6 @@
 import { Container, Graphics } from 'pixi.js'
+import { setSprites } from './SpriteCaches.js'
+import { generateUniqueID } from '../utils/index.js'
 
 export default class _Container {
   constructor(options = {}) {
@@ -11,12 +13,13 @@ export default class _Container {
 
   // 初始化
   init() {
+    debugger
     let {
       width,
       height,
       zIndex,
       pivot = { x: 0.5, y: 0.5 },
-      id,
+      id = generateUniqueID(),
       type = 'container',
       name
     } = this
@@ -33,6 +36,9 @@ export default class _Container {
     this.container.id = id
     this.container.type = type
     this.container.name = name
+
+    // 缓存
+    setSprites(id, this.container)
 
     // 生成边框
     this.createBorder()

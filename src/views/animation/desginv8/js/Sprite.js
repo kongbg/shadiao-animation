@@ -1,4 +1,6 @@
 import { Sprite } from 'pixi.js'
+import { setSprites } from './SpriteCaches'
+import { generateUniqueID } from '../utils'
 
 export default class _Sprite {
   constructor(options = {}) {
@@ -20,7 +22,7 @@ export default class _Sprite {
       zIndex,
       pivot = { x: 0.5, y: 0.5 },
       visible = true,
-      id,
+      id = generateUniqueID(),
       type = 'sprite',
       name
     } = this
@@ -38,6 +40,8 @@ export default class _Sprite {
     this.sprite.id = id
     this.sprite.type = type
     this.sprite.name = name
+    // 缓存
+    setSprites(this.sprite.id, this.sprite)
 
     // 将this上的事件事件绑定到实例上
     this.bindEvent()

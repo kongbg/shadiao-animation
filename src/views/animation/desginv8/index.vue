@@ -541,6 +541,71 @@ async function init() {
             ]
           }
         ],
+        actions: [
+            {
+                "id": "ll87udxh",
+                "actions": [
+                    {
+                        "id": "fzu00psj",
+                        "target": "4hyv042i",
+                        "actions": [
+                            {
+                                "content": "背景。\r",
+                                "contentId": "jh8ty1h7",
+                                "duration": 1.296,
+                                "easing": "linear",
+                                "id": "fyt7zuyu",
+                                "type": [
+                                    "speak"
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "jclqrz",
+                "actions": [
+                    {
+                        "id": "hje241wz",
+                        "target": "4hyv042i",
+                        "actions": [
+                            {
+                                "content": "诸位爱卿，今日可有事要奏。\r",
+                                "contentId": "jir7qxjv",
+                                "duration": 3.24,
+                                "easing": "linear",
+                                "id": "2o89cq5i",
+                                "type": [
+                                    "speak"
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "6izo9926",
+                "actions": [
+                    {
+                        "id": "52kikfiz",
+                        "target": "4hyv042i",
+                        "actions": [
+                            {
+                                "content": "微臣有事要奏，昨日豫州刺史来报，豫州数县已经有近半月滴雨未下，恳请陛下派遣钦天监修士前往做法缓解旱情。\r",
+                                "contentId": "gyb7fh0y",
+                                "duration": 10.224,
+                                "easing": "linear",
+                                "id": "fy0psxq5",
+                                "type": [
+                                    "speak"
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
         content: [
           {
             id: 'jir7qxjv',
@@ -574,6 +639,7 @@ async function init() {
 
   // 创建舞台
   app = new Stage({
+    stageId: stageInfo.id,
     el: pixiContainer.value,
     width: donghuaRef.value.offsetWidth,
     height: donghuaRef.value.offsetHeight
@@ -595,11 +661,12 @@ async function init() {
 
     // console.log('option:', option)
     // 创建场景
-    let scene = new Scene({ visible: current == 0 })
+    let scene = new Scene({ visible: current == 0, id: option.id })
+    scene.actions = option.actions
 
     while (scurrent < sleng) {
       let soption = sprites[scurrent]
-      // console.log('soption:', soption)
+    //   console.log('soption:', soption)
 
       let sprite = await createSprite(soption)
       if (sprite) scene.addChild(sprite)

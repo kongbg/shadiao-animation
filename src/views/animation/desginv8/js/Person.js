@@ -1,6 +1,7 @@
 import Container from './Container'
 import Sprite from './Sprite'
 import { getTextures } from './textures'
+import { generateUniqueID } from '../utils'
 import gsap from 'gsap'
 
 export default class Person {
@@ -66,10 +67,7 @@ export default class Person {
     // }
 
     // 创建一个容器
-    this.person = new Container()
-    this.person.type = this.config.type
-    this.person.id = this.config.id
-    this.person.name = this.config.name
+    this.person = new Container(this.config)
 
     // 创建真实精灵
     this.createSprite(this.config.sprites, this.person)
@@ -108,7 +106,7 @@ export default class Person {
       // 无子元素
       if (!item.children || (item.children && item.children.length == 0)) {
         if (!parentType) {
-          container.type = `${item.type}container`
+          container.type = `${item.type}`
         }
         item.image = getTextures(item.id)
         let sprite = new Sprite(item)
@@ -117,7 +115,7 @@ export default class Person {
         parent.addChild(container)
       } else {
         // // 有子元素
-        this.createSprite(item.children, parent, `${item.type}Container`)
+        this.createSprite(item.children, parent, `${item.type}`)
       }
     })
   }

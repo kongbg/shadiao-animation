@@ -1,4 +1,6 @@
-import { Container, Text } from 'pixi.js'
+import {  Text } from 'pixi.js'
+import Container from './Container'
+import { sleep } from '../utils'
 import gsap from 'gsap'
 
 export default class Scene {
@@ -12,6 +14,7 @@ export default class Scene {
 
   // 初始化
   init() {
+    debugger
     let {
       width,
       height,
@@ -22,23 +25,18 @@ export default class Scene {
       type = 'scene',
       name
     } = this
-    this.scene = new Container()
-    // 自有属性
-    if (width) this.scene.width = width
-    if (height) this.scene.height = height
-    // 层级
-    this.scene.zIndex = zIndex
-    // 显示隐藏
-    this.scene.visible = visible
-
-    // 业务属性
-    this.scene.id = id
-    this.scene.type = type
-    this.scene.name = name
-
-    // setTimeout(()=>{
-    //   // this.scene.scale.set(2)
-    // }, 2000)
+    this.scene = new Container(
+      {
+        width,
+        height,
+        zIndex,
+        visible,
+        pivot,
+        id,
+        type,
+        name
+      }
+    )
 
     // 将timeline 实例绑定在person上
     this.scene.tl = gsap.timeline({
@@ -68,13 +66,6 @@ export default class Scene {
     events.forEach((key) => {
       this.scene[key] = this[key].bind(this.scene)
     })
-
-    // this.scene.on = this.on.bind(this.scene)
-    // this.scene.toggleVisible = this.toggleVisible.bind(this.scene)
-    // this.scene.enlarge = this.enlarge.bind(this.scene)
-    // this.scene.shrink = this.shrink.bind(this.scene)
-    // this.scene.updatePivot = this.updatePivot.bind(this.scene)
-    // this.scene.updatePosition = this.updatePosition.bind(this.scene)
   }
 
   // 切换显示隐藏
@@ -188,6 +179,20 @@ export default class Scene {
 
   // 运行动画
   async run() {
+    console.log('run', this)
+    let syncActions = this.actions || [];
+    
+    // this.scene.tl
+    syncActions.forEach(syncAction=>{
+      // 同步动画
+      let duration = 0;
+      syncAction.actions.forEach((info, oi) => {
+
+      })
+    })
+
+
+
     // 生成字幕
     this.drawCaptions('运行动画')
     await sleep(2000)
@@ -211,7 +216,6 @@ export default class Scene {
     caption.position.set(width / 2, 520)
     caption.zIndex = 99
     this.addChild(caption)
-    console.log('this:', this)
   }
 
   // 监听事件
@@ -231,12 +235,4 @@ export default class Scene {
       callBack(palyLoad)
     })
   }
-}
-
-async function sleep(delay = 100) {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve()
-    }, delay)
-  })
 }

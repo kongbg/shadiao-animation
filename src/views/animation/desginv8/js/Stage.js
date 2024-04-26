@@ -1,4 +1,5 @@
 import { Application } from 'pixi.js'
+import { setSprites } from './SpriteCaches.js'
 
 export default class Stage {
   constructor(options = {}) {
@@ -15,12 +16,18 @@ export default class Stage {
   init() {
     // 创建舞台
     this.app = new Application(this.options)
+    this.app.stage.id = this.options.stageId
+    this.app.stage.type = 'stage'
 
     // 舞台添加到el上
     this.el.appendChild(this.app.view)
 
     // 将this上的事件事件绑定到实例上
     this.bindEvent()
+
+    // 缓存
+    setSprites('app', this.app)
+    setSprites(this.options.stageId, this.app.stage)
 
     return this.app
   }
