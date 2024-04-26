@@ -18,6 +18,11 @@
               <el-input v-model="scope.row.columnComment"></el-input>
             </template>
           </el-table-column>
+          <el-table-column label="表头描述" min-width="10%">
+            <template #default="scope">
+              <el-input v-model="scope.row.label"></el-input>
+            </template>
+          </el-table-column>
           <el-table-column
             label="物理类型"
             prop="columnType"
@@ -26,7 +31,7 @@
           />
           <el-table-column label="Java类型" min-width="11%">
             <template #default="scope">
-              <el-select v-model="scope.row.javaType">
+              <el-select v-model="scope.row.javaType" disabled>
                 <el-option label="Long" value="Long" />
                 <el-option label="String" value="String" />
                 <el-option label="Integer" value="Integer" />
@@ -37,11 +42,11 @@
               </el-select>
             </template>
           </el-table-column>
-          <el-table-column label="java属性" min-width="10%">
+          <!-- <el-table-column label="java属性" min-width="10%">
             <template #default="scope">
               <el-input v-model="scope.row.javaField"></el-input>
             </template>
-          </el-table-column>
+          </el-table-column> -->
 
           <el-table-column label="插入" min-width="5%">
             <template #default="scope">
@@ -63,7 +68,7 @@
               <el-checkbox true-label="1" false-label="0" v-model="scope.row.isQuery"></el-checkbox>
             </template>
           </el-table-column>
-          <el-table-column label="查询方式" min-width="10%">
+          <!-- <el-table-column label="查询方式" min-width="10%">
             <template #default="scope">
               <el-select v-model="scope.row.queryType">
                 <el-option label="=" value="EQ" />
@@ -76,13 +81,13 @@
                 <el-option label="BETWEEN" value="BETWEEN" />
               </el-select>
             </template>
-          </el-table-column>
-          <el-table-column label="必填" min-width="5%">
+          </el-table-column> -->
+          <!-- <el-table-column label="必填" min-width="5%">
             <template #default="scope">
               <el-checkbox true-label="1" false-label="0" v-model="scope.row.isRequired"></el-checkbox>
             </template>
-          </el-table-column>
-          <el-table-column label="显示类型" min-width="12%">
+          </el-table-column> -->
+          <!-- <el-table-column label="显示类型" min-width="12%">
             <template #default="scope">
               <el-select v-model="scope.row.htmlType">
                 <el-option label="文本框" value="input" />
@@ -96,10 +101,10 @@
                 <el-option label="富文本控件" value="editor" />
               </el-select>
             </template>
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column label="字典类型" min-width="12%">
             <template #default="scope">
-              <el-select v-model="scope.row.dictType" clearable filterable placeholder="请选择">
+              <el-select v-model="scope.row.dictType" clearable filterable placeholder="请选择" >
                 <el-option
                   v-for="dict in dictOptions"
                   :key="dict.dictType"
@@ -113,7 +118,7 @@
           </el-table-column>
         </el-table>
       </el-tab-pane>
-      <el-tab-pane label="生成信息" name="genInfo">
+      <el-tab-pane label="接口信息" name="genInfo">
         <gen-info-form ref="genInfo" :info="info" :tables="tables" />
       </el-tab-pane>
     </el-tabs>
@@ -131,6 +136,11 @@ import { getGenTable, updateGenTable } from "@/api/tool/gen";
 import { optionselect as getDictOptionselect } from "@/api/system/dict/type";
 import basicInfoForm from "./basicInfoForm";
 import genInfoForm from "./genInfoForm";
+import Handlebars from "handlebars";
+import testvue from './template/template/case/index.vue'
+const template = Handlebars.compile("Name: {{name}}");
+console.log(template({ name: "张三" }));
+console.log('testvue:', testvue)
 
 const route = useRoute();
 const { proxy } = getCurrentInstance();
@@ -142,8 +152,50 @@ const columns = ref([]);
 const dictOptions = ref([]);
 const info = ref({});
 
+
+initTabelLabel()
+function initTabelLabel(){
+  columns.value.forEach(item=>{
+    item.label = item.columnComment
+  })
+}
+
 /** 提交按钮 */
 function submitForm() {
+  console.log(columns.value)
+  let insertParams = []
+  let editParams = []
+  let listParams = []
+  let queryParams = []
+
+  columns.value.forEach(item => {
+    let {columnName, columnComment, dictType, isInsert, isEdit, isList, isQuery } = item
+    let obj = {
+      columnName,
+      columnComment,
+      dictType
+    }
+    if (isInsert) insertParams.push(obj)
+    if (isEdit) editParams.push(obj)
+    if (isList) listParams.push(obj)
+    if (isQuery) queryParams.push(obj)
+  });
+  console.log('insertParams:', insertParams)
+  console.log('listParams:', listParams)
+  console.log('listParams:', listParams)
+  console.log('queryParams:', queryParams)
+
+  const basicForm = proxy.$refs.basicInfo.$refs.basicInfoForm;
+  const genForm = proxy.$refs.genInfo.$refs.genInfoForm;
+  Promise.all([genForm].map(getFormPromise)).then(res => {
+    const validateResult = res.every(item => !!item);
+    console.log('validateResult:', validateResult)
+    if (validateResult) {
+
+    }
+  })
+}
+function submitForm_back() {
   const basicForm = proxy.$refs.basicInfo.$refs.basicInfoForm;
   const genForm = proxy.$refs.genInfo.$refs.genInfoForm;
   Promise.all([basicForm, genForm].map(getFormPromise)).then(res => {
