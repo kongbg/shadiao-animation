@@ -42,11 +42,11 @@ const props = defineProps({
 const types = [
   {
     label: '搜索-列表-详情',
-    value: 1
+    value: '1'
   },
   {
     label: '搜索-列表(tabs)-详情',
-    value: 2
+    value: '2'
   }
 ]
 

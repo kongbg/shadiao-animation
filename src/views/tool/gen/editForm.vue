@@ -166,7 +166,7 @@ async function getApiDetail() {
     })
     // body参数id
     columnsInfo.value.requestBodyId = getId(
-      columnsInfo.value.requestBody.jsonSchema.$ref
+      columnsInfo.value.requestBody?.jsonSchema?.$ref
     )
     //query参数id
     columnsInfo.value.requestQueryId = getId('')
@@ -210,6 +210,11 @@ function getColumns() {
     )
     // console.log('bodyParams:', bodyParams)
     properties = bodyParams.jsonSchema.properties
+  } else {
+    let query = columnsInfo.value.parameters?.query || []
+    query.forEach((q) => {
+      properties[q.name] = q
+    })
   }
 
   return properties
@@ -244,7 +249,7 @@ function initColumnMap() {
   })
 }
 
-function getId(str) {
+function getId(str = '') {
   let arr = str.split('/')
   if (arr.length) {
     return arr[arr.length - 1]
@@ -259,6 +264,7 @@ function getFormData() {
 }
 
 async function init() {
+  if (!props.apiId) return
   // 获取所有接口的jsonSchema信息id
   await getApiDetail()
 

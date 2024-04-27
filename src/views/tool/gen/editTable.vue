@@ -1,5 +1,5 @@
 <template>
-  <el-card>
+  <el-card v-if="!loading">
     <el-tabs v-model="activeName">
       <el-tab-pane label="基本信息" name="basicInfoRef">
         <basic-info-form ref="basicInfoRef" :info="baseInfo" />
@@ -13,7 +13,6 @@
       </el-tab-pane>
       <el-tab-pane label="列表字段信息" name="listFormRef">
         <listForm
-          v-if="getDataApiId"
           ref="listFormRef"
           :column="info.listColumn"
           :apiId="getDataApiId"
@@ -21,7 +20,6 @@
       </el-tab-pane>
       <el-tab-pane label="查询字段信息" name="queryFormRef">
         <reqForm
-          v-if="getDataApiId"
           ref="queryFormRef"
           :column="info.queryColumn"
           :apiId="getDataApiId"
@@ -29,7 +27,6 @@
       </el-tab-pane>
       <el-tab-pane label="新增编辑字段信息" name="editFormRef">
         <editForm
-          v-if="addDataApiId"
           ref="editFormRef"
           :column="info.editColumn"
           :apiId="addDataApiId"
@@ -214,7 +211,7 @@ async function getItemDetail() {
     id: route.params.id
   }
   let res = await getItemDetails(params)
-  loading.value = false
+  // loading.value = false
   let { code, data, msg } = res
   if (code == 200) {
     data.apiconfig = JSON.parse(data.apiconfig || JSON.stringify(domains))
@@ -228,7 +225,7 @@ async function getItemDetail() {
     baseInfo.value = {
       name: data.name,
       desc: data.desc,
-      type: 1
+      type: data.type || '1'
     }
 
     info.value.apiconfig.domains.forEach((item) => {
@@ -241,6 +238,7 @@ async function getItemDetail() {
       }
     })
   }
+  loading.value = false
 }
 getItemDetail()
 </script>
