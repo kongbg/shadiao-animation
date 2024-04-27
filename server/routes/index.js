@@ -5,6 +5,8 @@ import videoController from '../controllers/video.js'
 import fileController from '../controllers/file.js'
 import userController from '../controllers/user.js'
 import schemaController from '../controllers/schema.js'
+import aptoCodeController from '../controllers/autoCode.js'
+import createCodeController from '../controllers/createCode.js'
 const routerInit = new Router({ prefix: '/api' })
 
 // 音频相关
@@ -33,6 +35,13 @@ routerInit.get('/getSchema', schemaController.getSchema)
 routerInit.post('/saveSchema', schemaController.saveSchema)
 routerInit.post('/updateSchema', schemaController.updateSchema)
 routerInit.post('/deleteSchema', schemaController.deleteSchema)
+
+// 低代码相关
+routerInit.post('/autocode/config/add', aptoCodeController.addItem)
+routerInit.get('/autocode/config/get', aptoCodeController.getItem)
+routerInit.get('/autocode/config/details', aptoCodeController.getItemDetails)
+routerInit.post('/autocode/config/update', aptoCodeController.updateItemDetails)
+routerInit.post('/autocode/code/preview', createCodeController.previewCode)
 
 // 若依
 // 获取登录验证码

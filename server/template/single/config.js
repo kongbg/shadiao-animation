@@ -17,6 +17,7 @@ export const searchConfig = ref([
         type: "{{this.type}}",
         prop: "{{this.prop}}",
         label: "{{this.label}}",
+        show: "{{this.show}}",
         placeholder: "{{#if this.placeholder}}{{ this.placeholder }}{{else}}请输入{{/if}}",
         clearable: {{#if this.clearable}}{{ this.clearable }}{{else}}true{{/if}}
       },
@@ -25,6 +26,7 @@ export const searchConfig = ref([
         type: "{{this.type}}",
         prop: "{{this.prop}}",
         label: "{{this.label}}",
+        show: "{{this.show}}",
         placeholder: "{{#if this.placeholder}}{{ this.placeholder }}{{else}}请选择{{/if}}",
         clearable: {{#if this.clearable}}{{ this.clearable }}{{else}}true{{/if}},
         options: {{#if this.dict}}{{ this.dict }}{{else}}{{#if this.options}}{{{this.options}}}{{else}}[]{{/if}}{{/if}},
@@ -38,6 +40,7 @@ export const searchConfig = ref([
         type: "{{this.type}}",
         prop: "{{this.prop}}",
         label: "{{this.label}}",
+        show: "{{this.show}}",
         placeholder: "{{#if this.placeholder}}{{ this.placeholder }}{{else}}请选择{{/if}}",
         clearable: {{#if this.clearable}}{{ this.clearable }}{{else}}true{{/if}},
         options: {{#if this.options}}{{ this.options }}{{else}}[]{{/if}},
@@ -48,6 +51,8 @@ export const searchConfig = ref([
       },
     {{/if}}
   {{/each}}
+  { type: "reset", text: "重置" },
+  { type: "submit", text: "查询" },
 ]);
 export const columns = [
   {{#each columns}}

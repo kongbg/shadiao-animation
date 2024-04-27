@@ -29,10 +29,15 @@ export default defineConfig(({ mode, command }) => {
       host: true,
       open: true,
       proxy: {
+        '/api/apifox': {
+          target: 'https://api.apifox.com/',
+          changeOrigin: true,
+          rewrite: (p) => p.replace(/^\/api\/apifox/, '/api/v1')
+        },
         // https://cn.vitejs.dev/config/#server-proxy
         '/api': {
           target: 'http://localhost:3006',
-          changeOrigin: true,
+          changeOrigin: true
           // rewrite: (p) => p.replace(/^\/api/, '')
         }
       }
@@ -46,7 +51,7 @@ export default defineConfig(({ mode, command }) => {
             AtRule: {
               charset: (atRule) => {
                 if (atRule.name === 'charset') {
-                  atRule.remove();
+                  atRule.remove()
                 }
               }
             }

@@ -1,129 +1,43 @@
 <template>
   <el-card>
     <el-tabs v-model="activeName">
-      <el-tab-pane label="基本信息" name="basic">
-        <basic-info-form ref="basicInfo" :info="info" />
+      <el-tab-pane label="基本信息" name="basicInfoRef">
+        <basic-info-form ref="basicInfoRef" :info="baseInfo" />
       </el-tab-pane>
-      <el-tab-pane label="字段信息" name="columnInfo">
-        <el-table ref="dragTable" :data="columns" row-key="columnId" :max-height="tableHeight">
-          <el-table-column label="序号" type="index" min-width="5%"/>
-          <el-table-column
-            label="字段列名"
-            prop="columnName"
-            min-width="10%"
-            :show-overflow-tooltip="true"
-          />
-          <el-table-column label="字段描述" min-width="10%">
-            <template #default="scope">
-              <el-input v-model="scope.row.columnComment"></el-input>
-            </template>
-          </el-table-column>
-          <el-table-column label="表头描述" min-width="10%">
-            <template #default="scope">
-              <el-input v-model="scope.row.label"></el-input>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="物理类型"
-            prop="columnType"
-            min-width="10%"
-            :show-overflow-tooltip="true"
-          />
-          <el-table-column label="Java类型" min-width="11%">
-            <template #default="scope">
-              <el-select v-model="scope.row.javaType" disabled>
-                <el-option label="Long" value="Long" />
-                <el-option label="String" value="String" />
-                <el-option label="Integer" value="Integer" />
-                <el-option label="Double" value="Double" />
-                <el-option label="BigDecimal" value="BigDecimal" />
-                <el-option label="Date" value="Date" />
-                <el-option label="Boolean" value="Boolean" />
-              </el-select>
-            </template>
-          </el-table-column>
-          <!-- <el-table-column label="java属性" min-width="10%">
-            <template #default="scope">
-              <el-input v-model="scope.row.javaField"></el-input>
-            </template>
-          </el-table-column> -->
-
-          <el-table-column label="插入" min-width="5%">
-            <template #default="scope">
-              <el-checkbox true-label="1" false-label="0" v-model="scope.row.isInsert"></el-checkbox>
-            </template>
-          </el-table-column>
-          <el-table-column label="编辑" min-width="5%">
-            <template #default="scope">
-              <el-checkbox true-label="1" false-label="0" v-model="scope.row.isEdit"></el-checkbox>
-            </template>
-          </el-table-column>
-          <el-table-column label="列表" min-width="5%">
-            <template #default="scope">
-              <el-checkbox true-label="1" false-label="0" v-model="scope.row.isList"></el-checkbox>
-            </template>
-          </el-table-column>
-          <el-table-column label="查询" min-width="5%">
-            <template #default="scope">
-              <el-checkbox true-label="1" false-label="0" v-model="scope.row.isQuery"></el-checkbox>
-            </template>
-          </el-table-column>
-          <!-- <el-table-column label="查询方式" min-width="10%">
-            <template #default="scope">
-              <el-select v-model="scope.row.queryType">
-                <el-option label="=" value="EQ" />
-                <el-option label="!=" value="NE" />
-                <el-option label=">" value="GT" />
-                <el-option label=">=" value="GTE" />
-                <el-option label="<" value="LT" />
-                <el-option label="<=" value="LTE" />
-                <el-option label="LIKE" value="LIKE" />
-                <el-option label="BETWEEN" value="BETWEEN" />
-              </el-select>
-            </template>
-          </el-table-column> -->
-          <!-- <el-table-column label="必填" min-width="5%">
-            <template #default="scope">
-              <el-checkbox true-label="1" false-label="0" v-model="scope.row.isRequired"></el-checkbox>
-            </template>
-          </el-table-column> -->
-          <!-- <el-table-column label="显示类型" min-width="12%">
-            <template #default="scope">
-              <el-select v-model="scope.row.htmlType">
-                <el-option label="文本框" value="input" />
-                <el-option label="文本域" value="textarea" />
-                <el-option label="下拉框" value="select" />
-                <el-option label="单选框" value="radio" />
-                <el-option label="复选框" value="checkbox" />
-                <el-option label="日期控件" value="datetime" />
-                <el-option label="图片上传" value="imageUpload" />
-                <el-option label="文件上传" value="fileUpload" />
-                <el-option label="富文本控件" value="editor" />
-              </el-select>
-            </template>
-          </el-table-column> -->
-          <el-table-column label="字典类型" min-width="12%">
-            <template #default="scope">
-              <el-select v-model="scope.row.dictType" clearable filterable placeholder="请选择" >
-                <el-option
-                  v-for="dict in dictOptions"
-                  :key="dict.dictType"
-                  :label="dict.dictName"
-                  :value="dict.dictType">
-                  <span style="float: left">{{ dict.dictName }}</span>
-                  <span style="float: right; color: #8492a6; font-size: 13px">{{ dict.dictType }}</span>
-              </el-option>
-              </el-select>
-            </template>
-          </el-table-column>
-        </el-table>
+      <el-tab-pane label="接口信息" name="genInfoRef">
+        <gen-info-form
+          ref="genInfoRef"
+          :info="info.apiconfig"
+          :tables="tables"
+        />
       </el-tab-pane>
-      <el-tab-pane label="接口信息" name="genInfo">
-        <gen-info-form ref="genInfo" :info="info" :tables="tables" />
+      <el-tab-pane label="列表字段信息" name="listFormRef">
+        <listForm
+          v-if="getDataApiId"
+          ref="listFormRef"
+          :column="info.listColumn"
+          :apiId="getDataApiId"
+        ></listForm>
+      </el-tab-pane>
+      <el-tab-pane label="查询字段信息" name="queryFormRef">
+        <reqForm
+          v-if="getDataApiId"
+          ref="queryFormRef"
+          :column="info.queryColumn"
+          :apiId="getDataApiId"
+        ></reqForm>
+      </el-tab-pane>
+      <el-tab-pane label="新增编辑字段信息" name="editFormRef">
+        <editForm
+          v-if="addDataApiId"
+          ref="editFormRef"
+          :column="info.editColumn"
+          :apiId="addDataApiId"
+        ></editForm>
       </el-tab-pane>
     </el-tabs>
     <el-form label-width="100px">
-      <div style="text-align: center;margin-left:-100px;margin-top:10px;">
+      <div style="text-align: center; margin-left: -100px; margin-top: 10px">
         <el-button type="primary" @click="submitForm()">提交</el-button>
         <el-button @click="close()">返回</el-button>
       </div>
@@ -132,119 +46,201 @@
 </template>
 
 <script setup name="GenEdit">
-import { getGenTable, updateGenTable } from "@/api/tool/gen";
-import { optionselect as getDictOptionselect } from "@/api/system/dict/type";
-import basicInfoForm from "./basicInfoForm";
-import genInfoForm from "./genInfoForm";
-import Handlebars from "handlebars";
-import testvue from './template/template/case/index.vue'
-const template = Handlebars.compile("Name: {{name}}");
-console.log(template({ name: "张三" }));
-console.log('testvue:', testvue)
+import { getItemDetails, updateDetails } from '@/api/autoCode'
+import basicInfoForm from './basicInfoForm'
+import genInfoForm from './genInfoForm'
+import reqForm from './reqForm'
+import listForm from './listForm'
+import editForm from './editForm'
 
-const route = useRoute();
-const { proxy } = getCurrentInstance();
+const basicInfoRef = ref(null)
+const genInfoRef = ref(null)
+const listFormRef = ref(null)
+const queryFormRef = ref(null)
+const editFormRef = ref(null)
 
-const activeName = ref("columnInfo");
-const tableHeight = ref(document.documentElement.scrollHeight - 245 + "px");
-const tables = ref([]);
-const columns = ref([]);
-const dictOptions = ref([]);
-const info = ref({});
+const baseInfo = ref({})
 
+const route = useRoute()
+const { proxy } = getCurrentInstance()
+const activeName = ref('basicInfoRef')
+const tables = ref([])
+const info = ref({})
 
-initTabelLabel()
-function initTabelLabel(){
-  columns.value.forEach(item=>{
-    item.label = item.columnComment
-  })
-}
+const getDataApiId = ref('')
+const addDataApiId = ref('')
+// const editApiId = ref('167758525')
+// const actionApiId = ref('167758523')
+// const deleteApiId = ref('167758526')
 
 /** 提交按钮 */
-function submitForm() {
-  console.log(columns.value)
-  let insertParams = []
-  let editParams = []
-  let listParams = []
-  let queryParams = []
+async function submitForm() {
+  let basicInfo = basicInfoRef.value.getFormData()
+  console.log('apiconfig:', basicInfo)
+  let apiconfig = genInfoRef.value.getFormData()
+  console.log('apiconfig:', apiconfig)
+  let listColumn = listFormRef.value.getFormData()
+  console.log('listColumn:', listColumn)
+  let queryColumn = queryFormRef.value.getFormData()
+  console.log('queryColumn:', queryColumn)
+  let editColumn = editFormRef.value.getFormData()
+  console.log('editColumn:', editColumn)
 
-  columns.value.forEach(item => {
-    let {columnName, columnComment, dictType, isInsert, isEdit, isList, isQuery } = item
-    let obj = {
-      columnName,
-      columnComment,
-      dictType
-    }
-    if (isInsert) insertParams.push(obj)
-    if (isEdit) editParams.push(obj)
-    if (isList) listParams.push(obj)
-    if (isQuery) queryParams.push(obj)
-  });
-  console.log('insertParams:', insertParams)
-  console.log('listParams:', listParams)
-  console.log('listParams:', listParams)
-  console.log('queryParams:', queryParams)
-
-  const basicForm = proxy.$refs.basicInfo.$refs.basicInfoForm;
-  const genForm = proxy.$refs.genInfo.$refs.genInfoForm;
-  Promise.all([genForm].map(getFormPromise)).then(res => {
-    const validateResult = res.every(item => !!item);
-    console.log('validateResult:', validateResult)
-    if (validateResult) {
-
-    }
-  })
-}
-function submitForm_back() {
-  const basicForm = proxy.$refs.basicInfo.$refs.basicInfoForm;
-  const genForm = proxy.$refs.genInfo.$refs.genInfoForm;
-  Promise.all([basicForm, genForm].map(getFormPromise)).then(res => {
-    const validateResult = res.every(item => !!item);
-    if (validateResult) {
-      const genTable = Object.assign({}, info.value);
-      genTable.columns = columns.value;
-      genTable.params = {
-        treeCode: info.value.treeCode,
-        treeName: info.value.treeName,
-        treeParentCode: info.value.treeParentCode,
-        parentMenuId: info.value.parentMenuId
-      };
-      updateGenTable(genTable).then(res => {
-        proxy.$modal.msgSuccess(res.msg);
-        if (res.code === 200) {
-          close();
-        }
-      });
-    } else {
-      proxy.$modal.msgError("表单校验未通过，请重新检查提交内容");
-    }
-  });
-}
-function getFormPromise(form) {
-  return new Promise(resolve => {
-    form.validate(res => {
-      resolve(res);
-    });
-  });
-}
-function close() {
-  const obj = { path: "/tool/gen", query: { t: Date.now(), pageNum: route.query.pageNum } };
-  proxy.$tab.closeOpenPage(obj);
-}
-
-(() => {
-  const tableId = route.params && route.params.tableId;
-  if (tableId) {
-    // 获取表详细信息
-    getGenTable(tableId).then(res => {
-      columns.value = res.data.rows;
-      info.value = res.data.info;
-      tables.value = res.data.tables;
-    });
-    /** 查询字典下拉列表 */
-    getDictOptionselect().then(response => {
-      dictOptions.value = response.data;
-    });
+  loading.value = true
+  let params = {
+    id: route.params.id,
+    apiconfig: JSON.stringify(apiconfig),
+    listColumn: JSON.stringify(listColumn),
+    queryColumn: JSON.stringify(queryColumn),
+    addColumn: JSON.stringify(editColumn),
+    detailColumn: JSON.stringify(editColumn),
+    editColumn: JSON.stringify(editColumn),
+    ...basicInfo
   }
-})();
+  let res = await updateDetails(params)
+  loading.value = false
+  let { code, data, msg } = res
+  if (code == 200) {
+  }
+}
+
+function close() {
+  const obj = {
+    path: '/tool/gen',
+    query: { t: Date.now(), pageNum: route.query.pageNum }
+  }
+  proxy.$tab.closeOpenPage(obj)
+}
+
+let domains = {
+  domains: [
+    {
+      list: [
+        {
+          label: '功能名称',
+          value: '新增',
+          disabled: true
+        },
+        {
+          label: '接口名称',
+          value: 'addData',
+          disabled: true
+        },
+        {
+          label: '接口url',
+          value: ''
+        }
+      ]
+    },
+    {
+      list: [
+        {
+          label: '功能名称',
+          value: '编辑',
+          disabled: true
+        },
+        {
+          label: '接口名称',
+          value: 'editData',
+          disabled: true
+        },
+        {
+          label: '接口url',
+          value: ''
+        }
+      ]
+    },
+    {
+      list: [
+        {
+          label: '功能名称',
+          value: '查询',
+          disabled: true
+        },
+        {
+          label: '接口名称',
+          value: 'getData',
+          disabled: true
+        },
+        {
+          label: '接口url',
+          value: ''
+        }
+      ]
+    },
+    {
+      list: [
+        {
+          label: '功能名称',
+          value: '详情',
+          disabled: true
+        },
+        {
+          label: '接口名称',
+          value: 'getDetails',
+          disabled: true
+        },
+        {
+          label: '接口url',
+          value: ''
+        }
+      ]
+    },
+    {
+      list: [
+        {
+          label: '功能名称',
+          value: '删除',
+          disabled: true
+        },
+        {
+          label: '接口名称',
+          value: 'deleteData',
+          disabled: true
+        },
+        {
+          label: '接口url',
+          value: ''
+        }
+      ]
+    }
+  ]
+}
+
+const loading = ref(false)
+async function getItemDetail() {
+  loading.value = true
+  let params = {
+    id: route.params.id
+  }
+  let res = await getItemDetails(params)
+  loading.value = false
+  let { code, data, msg } = res
+  if (code == 200) {
+    data.apiconfig = JSON.parse(data.apiconfig || JSON.stringify(domains))
+    data.queryColumn = JSON.parse(data.queryColumn || JSON.stringify([]))
+    data.listColumn = JSON.parse(data.listColumn || JSON.stringify([]))
+    data.addColumn = JSON.parse(data.addColumn || JSON.stringify([]))
+    data.editColumn = JSON.parse(data.editColumn || JSON.stringify([]))
+    data.detailColumn = JSON.parse(data.detailColumn || JSON.stringify([]))
+    info.value = data
+
+    baseInfo.value = {
+      name: data.name,
+      desc: data.desc,
+      type: 1
+    }
+
+    info.value.apiconfig.domains.forEach((item) => {
+      if (item.list[1].value == 'addData') {
+        addDataApiId.value = item.list[2].id
+      }
+
+      if (item.list[1].value == 'getData') {
+        getDataApiId.value = item.list[2].id
+      }
+    })
+  }
+}
+getItemDetail()
 </script>
