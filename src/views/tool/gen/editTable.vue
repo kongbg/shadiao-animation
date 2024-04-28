@@ -18,7 +18,7 @@
           :apiId="getDataApiId"
         ></listForm>
       </el-tab-pane>
-      <el-tab-pane label="列表页按钮信息" name="listActionFormRef">
+      <el-tab-pane label="列表页按钮接口信息" name="listActionFormRef">
         <listActionForm
           ref="listActionFormRef"
           :actions="info.listActions"
@@ -39,6 +39,13 @@
           :apiId="addDataApiId"
         ></editForm>
       </el-tab-pane>
+      <el-tab-pane label="新增编辑页按钮接口信息" name="editActionFormRef">
+        <editActionForm
+          ref="editActionFormRef"
+          :actions="info.editActions"
+          :apiId="getDataApiId"
+        ></editActionForm>
+      </el-tab-pane>
     </el-tabs>
     <el-form label-width="100px">
       <div style="text-align: center; margin-left: -100px; margin-top: 10px">
@@ -56,6 +63,7 @@ import genInfoForm from './genInfoForm'
 import reqForm from './reqForm'
 import listForm from './listForm'
 import listActionForm from './listActionForm'
+import editActionForm from './editActionForm'
 import editForm from './editForm'
 
 const basicInfoRef = ref(null)
@@ -64,6 +72,7 @@ const listFormRef = ref(null)
 const queryFormRef = ref(null)
 const editFormRef = ref(null)
 const listActionFormRef = ref(null)
+const editActionFormRef = ref(null)
 
 const baseInfo = ref({})
 
@@ -93,6 +102,8 @@ async function submitForm() {
   // console.log('queryColumn:', queryColumn)
   let editColumn = editFormRef.value.getFormData()
   // console.log('editColumn:', editColumn)
+  let editActions = editActionFormRef.value.getFormData()
+  // console.log('editActions:', editActions)
 
   loading.value = true
   let params = {
@@ -104,12 +115,14 @@ async function submitForm() {
     addColumn: JSON.stringify(editColumn),
     detailColumn: JSON.stringify(editColumn),
     editColumn: JSON.stringify(editColumn),
+    editActions: JSON.stringify(editActions),
     ...basicInfo
   }
   let res = await updateDetails(params)
   loading.value = false
   let { code, data, msg } = res
   if (code == 200) {
+    proxy.$modal.msgSuccess("编辑成功");
   }
 }
 
@@ -246,11 +259,12 @@ async function getItemDetail() {
   if (code == 200) {
     data.apiconfig = JSON.parse(data.apiconfig || JSON.stringify(domains))
     data.queryColumn = JSON.parse(data.queryColumn || JSON.stringify([]))
-    data.listColumn = JSON.parse(data.listColumn || JSON.stringify({}))
+    data.listColumn = JSON.parse(data.listColumn || JSON.stringify([]))
     data.listActions = JSON.parse(data.listActions || JSON.stringify([]))
     data.addColumn = JSON.parse(data.addColumn || JSON.stringify([]))
     data.editColumn = JSON.parse(data.editColumn || JSON.stringify([]))
     data.detailColumn = JSON.parse(data.detailColumn || JSON.stringify([]))
+    data.editActions = JSON.parse(data.editActions || JSON.stringify([]))
     info.value = data
 
     baseInfo.value = {

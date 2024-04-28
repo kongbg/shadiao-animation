@@ -113,50 +113,6 @@ const action = ref([
     ]
   },
   {
-    name: '导出',
-    key: 'export',
-    list: [
-      {
-        prop: 'show',
-        label: '是否显示',
-        value: true,
-        type: 'checkbox'
-      },
-      {
-        prop: 'apiName',
-        label: 'api名称',
-        value: 'exportData',
-        disabled: true,
-        type: 'input'
-      },
-      {
-        prop: 'btnTxt',
-        label: '文案',
-        value: '导出',
-        type: 'input'
-      },
-      {
-        prop: 'type',
-        label: '按钮类型',
-        value: 'success',
-        type: 'select',
-        options: options1
-      },
-      {
-        prop: 'feilName',
-        label: '文件名',
-        value: '导出文件名',
-        type: 'input'
-      },
-      {
-        prop: 'suffix',
-        label: '后缀',
-        value: '.xlsx',
-        type: 'input'
-      }
-    ]
-  },
-  {
     name: '编辑',
     key: 'edit',
     list: [
@@ -202,96 +158,13 @@ const action = ref([
     ]
   },
   {
-    name: '查看',
+    name: '详情接口',
     key: 'view',
     list: [
-      {
-        prop: 'show',
-        label: '是否显示',
-        value: true,
-        type: 'checkbox'
-      },
       {
         prop: 'apiName',
         label: 'api名称',
         value: 'getDetails',
-        disabled: true,
-        type: 'input'
-      },
-      {
-        prop: 'btnTxt',
-        label: '文案',
-        value: '查看',
-        type: 'input'
-      },
-      {
-        prop: 'type',
-        label: '按钮类型',
-        value: 'primary',
-        type: 'select',
-        options: options1
-      },
-      {
-        prop: 'openType',
-        label: '打开方式',
-        value: '1',
-        type: 'select',
-        options: options2
-      },
-      {
-        prop: 'openUrl',
-        label: '跳转地址',
-        value: 'action',
-        type: 'input'
-      }
-    ]
-  },
-  {
-    name: '删除',
-    key: 'delete',
-    list: [
-      {
-        prop: 'show',
-        label: '是否显示',
-        value: true,
-        type: 'checkbox'
-      },
-      {
-        prop: 'apiName',
-        label: 'api名称',
-        value: 'deleteData',
-        disabled: true,
-        type: 'input'
-      },
-      {
-        prop: 'btnTxt',
-        label: '文案',
-        value: '删除',
-        type: 'input'
-      },
-      {
-        prop: 'type',
-        label: '按钮类型',
-        value: 'danger',
-        type: 'select',
-        options: options1
-      },
-      {
-        prop: 'tips',
-        label: '提示文案',
-        value: '确定删除该咨询记录吗？',
-        type: 'input'
-      }
-    ]
-  },
-  {
-    name: '列表接口',
-    key: 'list',
-    list: [
-      {
-        prop: 'apiName',
-        label: 'api名称',
-        value: 'getData',
         disabled: true,
         type: 'input'
       }
