@@ -338,10 +338,41 @@ function createConfig(options) {
 function createAction(options) {
   // 获取所有字典
   let dicts = getDicts(searchConfig, columns)
+  // 获取所有提交参数，并设置默认值
+  let submitParams = getSubmitParams(options)
+  // console.log('submitParams:', submitParams)
   // 详情配置
   let config = {
     apis,
     dicts,
+    moduleName: options.moduleName,
+    submitParams,
+    actions: {
+      // 新增
+      create: {
+        show: true,
+        apiName: 'addData',
+        btnTxt: '新增',
+        openType: '1', // 1-跳转，2-弹窗
+        openUrl: 'index' // 跳转地址
+      },
+      // 编辑
+      edit: {
+        show: true,
+        apiName: 'update',
+        btnTxt: '编辑',
+        openType: '1', // 1-跳转，2-弹窗
+        openUrl: 'index' // 跳转地址
+      },
+      // 查看
+      view: {
+        show: true,
+        apiName: 'getDetails',
+        btnTxt: '查看',
+        openType: '1', // 1-跳转，2-弹窗
+        openUrl: 'index' // 跳转地址
+      }
+    },
     createApiName: 'addData',
     getDataApiName: 'getData',
     updateApiName: 'update',
@@ -362,6 +393,45 @@ function createAction(options) {
   return vueContent
 }
 
+function getSubmitParams(options) {
+  let list = []
+
+  options.editColumn.forEach(item => {
+    // 一般情况下。新增跟编辑是一样的参数
+    if (isTrue(item.isEdit)) {
+      let obj = {
+        prop: item.columnName,
+        label: item.columnComment,
+        // type: getJavaType(item.javaType)
+        type: item.editZDType,
+        value: `''`,
+        disabled: item.disabled
+      }
+
+
+      if(['select', 'areacascader'].includes(item.editZDType)) {
+        obj.value = `[]`
+        obj.options = `[]`// todo 根据数据来源去配置
+        obj.props = `''`
+      }
+
+      list.push(obj)
+    }
+  })
+
+  return list
+}
+
+// 获取数据类型
+function getJavaType(javaType) {
+  if (typeof javaType == 'string' ) {
+    return javaType
+  }
+  if (Array.isArray(javaType) && javaType.length) {
+    return javaType[0]
+  }
+  return ''
+}
 // 获取类型名称
 function getTypeTxt(type) {
   let typeTxtMap = {

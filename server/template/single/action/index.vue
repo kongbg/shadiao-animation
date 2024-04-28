@@ -75,52 +75,55 @@
       class="sub_btn"
     >
       <el-button @click="cancel" plain> 取 消 </el-button>
-      <el-button type="primary" :loading="loading" @click="submitForm"
-        >保 存</el-button
-      >
+      <el-button type="primary" :loading="loading" @click="submitForm">保 存</el-button>
     </el-row>
   </div>
 </template>
 <script setup>
-import TitleBar from "@/components/TitleBar";
-import FileUpload from "@/components/FileUpload";
-import {
-    {{#each apis}}
-    {{ this.methodName }}, // {{this.name}}
+  import { ref } from "vue"; // vue
+  import { useDict } from "@/utils/dict"; // 字典
+  import TitleBar from "@/components/TitleBar"; // 标题组件
+  import FileUpload from "@/components/FileUpload"; // 上传组件
+  import {
+      {{#each apis}}
+      {{ this.methodName }}, // {{this.name}}
+      {{/each}}
+  } from "@/api/{{moduleName}}/index.js"; // 接口
+
+  const { proxy } = getCurrentInstance(); // vue 实例
+
+  const {
+    {{#each dicts}}
+    {{this}},
     {{/each}}
-} from "@/api/{{compName}}/index.js"; // 接口
-import { ref } from "vue";
-import { useDict } from "@/utils/dict";
-
-const { proxy } = getCurrentInstance();
-
-const {
-  {{#each dicts}}
-  {{this}},
-  {{/each}}
-} = useDict(
-  {{#each dicts}}
-  "{{this}}",
-  {{/each}}
-)
+  } = useDict(
+    {{#each dicts}}
+    "{{this}}",
+    {{/each}}
+  )
 
   const router = useRouter(); // 路由实例
   const route = useRoute(); // 路由对象
-  // 表单校验规则
-  const rules = {
-    caseType: [{ required: true, message: "请选择案例类型", trigger: "change" }],
-    title: [{ required: true, message: "请输入案例标题", trigger: "blur" }],
-    caseDes: [{ required: true, message: "请输入案例描述", trigger: "blur" }],
-    fileId: [{ required: true, message: "请上传文件", trigger: "blur" }],
-  };
+  const loading = ref(false); // loading
+  const formRef = ref(null); // 表单实例
 
   // 是否禁用
   const disabled = computed(() => {
     return route.query.type == 'view'
   })
 
-  const formRef = ref(null); // 表单实例
-  const fromData = ref({}); // 表单数据
+  const fromData = ref({
+    {{#each submitParams}}
+    {{this.prop}}: {{{this.value}}}, // {{this.label}}
+    {{/each}}
+  }); // 表单数据
+
+  // 表单校验规则
+  const rules = {
+    {{#each submitParams}}
+    {{this.prop}}: [{ required:{{#if this.required}}{{this.required}}{{else}}false{{/if}}, message: "请选择", trigger: ["change", "blur"] }], // {{this.label}}
+    {{/each}}
+  };
 
   // 表单提交
   const submitForm = async () => {
@@ -132,58 +135,66 @@ const {
         };
         if (route.query.type == "create") {
           try {
-            await addData(params);
+            loading.value = true;
+            await {{actions.create.apiName}}(params);
+            loading.value = false;
             proxy.$modal.msgSuccess("新增成功");
             setTimeout(() => {
               router.push({
-                path: 'index'
+                path: '{{actions.create.openUrl}}'
               });
             }, 1500);
           } catch (error) {
+            loading.value = false;
             proxy.$modal.msgError("新增失败");
           }
         } else {
           try {
-            await update(params);
+            loading.value = true;
+            await {{actions.edit.apiName}}(params);
             proxy.$modal.msgSuccess("编辑成功");
+            loading.value = false;
             setTimeout(() => {
               router.push({
-                path: 'index'
+                path: '{{actions.edit.openUrl}}'
               });
             }, 1500);
           } catch (error) {
+            loading.value = false;
             proxy.$modal.msgError("编辑失败");
           }
         }
       }
     });
   };
+
   // 取消按钮
   function cancel() {
-    router.push("index");
+    router.push({
+      path: '{{actions.view.openUrl}}'
+    });
   }
 
-  const loading = ref(false);
+  // 获取详情
   async function getDetail() {
     let params = {
       type: 3,
       id: route.query.id,
     };
     loading.value = true;
-    let res = await getDetails(params);
-    loading.value = false;
-    let { code, data, msg } = res;
-    if (code == 200) {
-      fromData.value = {
-        id: data.id,
-        title: data.title,
-        caseType: data.caseType,
-        caseDes: data.caseDes,
-        fileId: data.fileId,
-      };
+    try {
+      let res = await {{actions.view.apiName}}(params);
+      loading.value = false;
+      let { code, data, msg } = res;
+      if (code == 200) {
+        fromData.value = data
+      }
+    } catch (error) {
+      loading.value = false;
     }
   }
 
+  // 判断是否需要获取详情
   if (["view", "edit"].includes(route.query.type)) {
     getDetail();
   }

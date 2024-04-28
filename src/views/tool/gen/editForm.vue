@@ -416,7 +416,8 @@ function initTableData(properties = {}) {
       editIndex: realItem?.editIndex || '',
       editZDType: realItem?.editZDType || 'input',
       isExtraEdit: realItem?.isExtraEdit || false,
-      dict: realItem?.dict || ''
+      dict: realItem?.dict || '',
+      dataSource: realItem?.dataSource || {}
     }
     tableData.value.push(obj)
   }
