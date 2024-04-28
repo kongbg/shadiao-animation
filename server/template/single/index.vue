@@ -87,7 +87,7 @@ async function getList() {
     let params = { ...searchForm.value, ...pageInfo };
     loading.value = true;
     try {
-        let res = await {{actions.search.apiName}}(params);
+        let res = await {{actions.list.apiName}}(params);
         loading.value = false;
 
         let { code, data, msg } = res;

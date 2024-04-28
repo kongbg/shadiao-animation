@@ -1,7 +1,7 @@
 <template>
   <div class="action-config">
     <div class="action" v-for="act in action">
-      <div>{{ act.name }}：</div>
+      <div class="title">{{ act.name }}：</div>
       <div class="item" v-for="item in act.list">
         <div class="label">{{ item.label }}</div>
         <div class="value" v-if="item.type == 'checkbox'">
@@ -247,38 +247,6 @@ const action = ref([
     ]
   },
   {
-    name: '搜索',
-    key: 'search',
-    list: [
-      {
-        prop: 'show',
-        label: '是否显示',
-        value: true,
-        type: 'checkbox'
-      },
-      {
-        prop: 'apiName',
-        label: 'api名称',
-        value: 'getData',
-        disabled: true,
-        type: 'input'
-      },
-      {
-        prop: 'btnTxt',
-        label: '文案',
-        value: '搜索',
-        type: 'input'
-      },
-      {
-        prop: 'type',
-        label: '按钮类型',
-        value: 'primary',
-        type: 'select',
-        options: options1
-      },
-    ]
-  },
-  {
     name: '删除',
     key: 'delete',
     list: [
@@ -314,6 +282,32 @@ const action = ref([
         value: '确定删除该咨询记录吗？',
         type: 'input'
       }
+    ]
+  },
+  {
+    name: '列表接口',
+    key: 'list',
+    list: [
+      {
+        prop: 'apiName',
+        label: 'api名称',
+        value: 'getData',
+        disabled: true,
+        type: 'input'
+      },
+      {
+        prop: 'btnTxt',
+        label: '文案',
+        value: '搜索',
+        type: 'input'
+      },
+      {
+        prop: 'type',
+        label: '按钮类型',
+        value: 'primary',
+        type: 'select',
+        options: options1
+      },
     ]
   },
 ])
@@ -353,9 +347,12 @@ defineExpose({
 .action-config {
   .action {
     display: flex;
+    .title {
+      width: 80px;
+    }
     .item {
-      margin-left: 10px;
-      margin-bottom: 5px;
+      margin-left: 20px;
+      margin-bottom: 15px;
     }
   }
   &.hide {
