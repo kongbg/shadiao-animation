@@ -2,9 +2,6 @@ import Handlebars from 'handlebars'
 import fs from 'fs'
 import path from 'path'
 const __dirname = path.resolve()
-// const fs = require('fs')
-// const path = require('path')
-// server\controllers\Handlebars.js
 function resolvePath(filePath) {
   return path.resolve(__dirname, filePath)
 }
@@ -213,6 +210,18 @@ function createApi(options) {
     config.apis.push(obj)
   })
 
+  options.listColumn.forEach(item=>{
+    if (item?.dataSource?.sourceType == 2) {
+      let obj = {
+        name: item.dataSource.name,
+        method: iitem.dataSource.method,
+        methodName: item.dataSource.apiName,
+        url: item.dataSource.apiUrl
+      }
+      config.apis.push(obj)
+    }
+  })
+
   // 存到全局 createList需要用到
   apis = config.apis
 
@@ -362,12 +371,25 @@ function getSearchConfig(options) {
   options.queryColumn.forEach((item) => {
     let obj = {}
     if (isTrue(item.isQuery) || isTrue(item.isExtraQuery)) {
+      // console.log('item:', item)
       obj.type = item.queryType
       obj.prop = item.columnName
       obj.label = item.label
 
-      if (item.dict) {
-        obj.dict = item.dict
+      if (item?.dataSource?.sourceType == '1') {
+        obj.dict = item.dataSource.dict
+        obj.api = ''
+      }
+      if (item?.dataSource?.sourceType == '2') {
+        obj.dict = ''
+        obj.api = `async () => {
+          let res = await ${item.dataSource.apiName}(${item.dataSource.apiParams});
+          let { code, data, msg } = res;
+          if (code == 200) {
+            return data;
+          }
+          return [];
+        }`
       }
 
       if (item.options) {

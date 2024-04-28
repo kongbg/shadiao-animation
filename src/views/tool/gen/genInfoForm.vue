@@ -4,8 +4,7 @@
       type="primary"
       @click="addDomain"
       style="margin-left: 70px; margin-bottom: 20px"
-      >新增接口</el-button
-    >
+    >新增接口</el-button>
     <el-row :span="24">
       <el-col :span="6">
         <el-form-item label="API模块名称" prop="apiModuleName">

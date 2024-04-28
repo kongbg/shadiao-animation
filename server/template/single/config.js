@@ -30,6 +30,7 @@ export const searchConfig = ref([
         placeholder: "{{#if this.placeholder}}{{ this.placeholder }}{{else}}请选择{{/if}}",
         clearable: {{#if this.clearable}}{{ this.clearable }}{{else}}true{{/if}},
         options: {{#if this.dict}}{{ this.dict }}{{else}}{{#if this.options}}{{{this.options}}}{{else}}[]{{/if}}{{/if}},
+        api: {{#if this.api}}{{{ this.api }}}{{else}}''{{/if}},
         props: {{#if this.props}}{{ this.props }}{{else}}{
           label: 'dictLabel',
           value: 'dictValue'

@@ -250,15 +250,15 @@ function initTableData(properties = {}) {
       dict: realItem?.dict || ''
     }
     tableData.value.push(obj)
-    tableData.value.sort((a, b) => {
-      // 如果a的字段为空，则a排在b后面
-      if (!a.editIndex) return 1;
-      // 如果b的字段为空，则b排在a后面
-      if (!b.editIndex) return -1;
-      // 否则，按字段的大小进行排序
-      return a.editIndex - b.editIndex;
-    });
   }
+  tableData.value.sort((a, b) => {
+    // 如果a的字段为空，则a排在b后面
+    if (!a.editIndex) return 1;
+    // 如果b的字段为空，则b排在a后面
+    if (!b.editIndex) return -1;
+    // 否则，按字段的大小进行排序
+    return a.editIndex - b.editIndex;
+  });
 }
 
 function initColumnMap() {
