@@ -143,6 +143,9 @@
         <el-form-item v-show="sourceDialog.formData.sourceType == 2" label="接口地址：" prop="apiName">
           <el-input v-model="sourceDialog.formData.apiUrl"/>
         </el-form-item>
+        <el-form-item v-show="sourceDialog.formData.sourceType == 2" label="props：" prop="apiName">
+          <el-input v-model="sourceDialog.formData.props"/>
+        </el-form-item>
         <el-form-item v-show="sourceDialog.formData.sourceType == 2" label="请求方式：" prop="apiName">
           <el-select
             v-model="sourceDialog.formData.method"
@@ -240,7 +243,11 @@ const sourceDialog = reactive({
     sourceType: '1',
     dict: '',
     dictName: '',
+    name: '',
     apiName: '',
+    apiUrl: '',
+    props: '',
+    method: 'get',
     apiParams: '',
     onSeccess: ''
   },
@@ -282,7 +289,12 @@ function handleSetSourceSubmit() {
   sourceDialog.formData = {
     sourceType: '1',
     dict: '',
+    dictName: '',
+    name: '',
     apiName: '',
+    apiUrl: '',
+    props: '',
+    method: 'get',
     apiParams: '',
     onSeccess: ''
   }

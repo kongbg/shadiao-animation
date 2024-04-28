@@ -7,6 +7,8 @@ function resolvePath(filePath) {
 }
 
 let apis = []
+// config中需要引入的api
+let configApis = []
 // 搜索组件配置
 let searchConfig = []
 // 表格配置
@@ -210,15 +212,16 @@ function createApi(options) {
     config.apis.push(obj)
   })
 
-  options.listColumn.forEach(item=>{
+  options.queryColumn.forEach(item=>{
     if (item?.dataSource?.sourceType == 2) {
       let obj = {
         name: item.dataSource.name,
-        method: iitem.dataSource.method,
+        method: item.dataSource.method,
         methodName: item.dataSource.apiName,
         url: item.dataSource.apiUrl
       }
       config.apis.push(obj)
+      configApis.push(obj)
     }
   })
 
@@ -314,7 +317,9 @@ function createConfig(options) {
   let config = {
     searchConfig,
     columns,
-    dicts
+    dicts,
+    moduleName: options.moduleName,
+    configApis
   }
   let filePath = resolvePath(
     `./server/template/${getTypeTxt(options.type)}/config.js`
@@ -390,6 +395,10 @@ function getSearchConfig(options) {
           }
           return [];
         }`
+
+        if(item.dataSource.props) {
+          obj.props = item.dataSource.props || ''
+        }
       }
 
       if (item.options) {
