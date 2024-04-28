@@ -80,34 +80,113 @@
         </el-select>
       </template>
     </el-table-column>
-    <el-table-column label="字典类型" min-width="12%">
+    <el-table-column label="数据来源" min-width="10%">
       <template #default="scope">
-        <el-select
-          v-model="scope.row.dict"
-          clearable
-          filterable
-          placeholder="请选择"
-          :disabled="!['select', 'areacascader'].includes(scope.row.editZDType)"
-        >
-          <el-option
-            v-for="dict in dictOptions"
-            :key="dict.dictType"
-            :label="dict.dictName"
-            :value="dict.dictType"
-          >
-            <span style="float: left">{{ dict.dictName }}</span>
-            <span style="float: right; color: #8492a6; font-size: 13px">{{
-              dict.dictType
-            }}</span>
-          </el-option>
-        </el-select>
+        <div class="source" v-if="scope.row?.dataSource?.sourceType == '1'">
+          来源：字典
+          <div>{{scope.row.dataSource.dictName}}：{{scope.row.dataSource.dict}}</div>
+        </div>
+        <div class="source" v-if="scope.row?.dataSource?.sourceType == '2'">
+          <div>来源：接口</div>
+          <div>接口名称：{{ scope.row.dataSource.apiName }}</div>
+          <!-- <div>参数：{{ scope.row.dataSource.apiParams }}</div> -->
+          <!-- <div>成功回调：{{ scope.row.dataSource.onSeccess }}</div> -->
+        </div>
+        <el-button type="primary" @click="setSource(scope.row)" :disabled="!['select', 'areacascader'].includes(scope.row.editZDType)">设置来源</el-button>
       </template>
     </el-table-column>
   </el-table>
+
+  <el-dialog
+    title="设置数据来源"
+    v-model="sourceDialog.show"
+    width="30%"
+    :show-close="false"
+    :before-close="true"
+    :align-center="true"
+  >
+      <el-form
+        ref="ruleFormRef"
+        style="max-width: 600px"
+        :model="sourceDialog.formData"
+        status-icon
+        :rules="sourceDialog.rules"
+        label-width="auto"
+        class="demo-ruleForm"
+      >
+        <el-form-item label="数据来源：" prop="sourceType">
+          <el-select v-model="sourceDialog.formData.sourceType" placeholder="请选择">
+            <el-option
+              v-for="dict in sourceDialog.sourceTypes"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item v-show="sourceDialog?.formData?.sourceType == 1" label="字典类型：" prop="dict">
+          <el-select
+            v-model="sourceDialog.formData.dict"
+            filterable
+            placeholder="请选择"
+            @change="dictChange"
+          >
+            <el-option
+              v-for="dict in dictOptions"
+              :key="dict.dictType"
+              :label="dict.dictName"
+              :value="dict.dictType"
+            >
+              <span style="float: left">{{ dict.dictName }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ dict.dictType }}</span>
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item v-show="sourceDialog?.formData?.sourceType == 2" label="名称：" prop="apiName">
+          <el-input v-model="sourceDialog.formData.name"/>
+        </el-form-item>
+        <el-form-item v-show="sourceDialog.formData.sourceType == 2" label="接口名称：" prop="apiName">
+          <el-input v-model="sourceDialog.formData.apiName"/>
+        </el-form-item>
+        <el-form-item v-show="sourceDialog.formData.sourceType == 2" label="接口地址：" prop="apiName">
+          <el-input v-model="sourceDialog.formData.apiUrl"/>
+        </el-form-item>
+        <el-form-item v-show="sourceDialog.formData.sourceType == 2" label="props：" prop="apiName">
+          <el-input v-model="sourceDialog.formData.props"/>
+        </el-form-item>
+        <el-form-item v-show="sourceDialog.formData.sourceType == 2" label="请求方式：" prop="apiName">
+          <el-select
+            v-model="sourceDialog.formData.method"
+            filterable
+            placeholder="请选择"
+          >
+            <el-option
+              v-for="dict in methodOptions"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item v-show="sourceDialog.formData.sourceType == 2" label="接口参数：" prop="apiName">
+          <el-input v-model="sourceDialog.formData.apiParams" :autosize="{ minRows: 2, maxRows: 4 }" />
+        </el-form-item>
+        <el-form-item v-show="sourceDialog.formData.sourceType == 2" label="接口成功回调：" prop="apiName">
+          <el-input v-model="sourceDialog.formData.onSeccess" type="textarea"  :autosize="{ minRows: 2, maxRows: 4 }"/>
+        </el-form-item>
+      </el-form>
+    <template #footer>
+      <span>
+        <el-button type="primary" @click="handleSetSourceSubmit">确认</el-button>
+        <el-button @click="handleSetSourceColse">取消</el-button>
+      </span>
+    </template>
+  </el-dialog>
 </template>
 
 <script setup name="ReqForm">
 import { getApiDetails, getDataSchemas, getDictsFromJf } from '@/api/autoCode'
+import { deepClone } from '@/utils'
 const { proxy } = getCurrentInstance()
 const props = defineProps({
   apiId: {
@@ -154,6 +233,96 @@ const queryTypes = [
   }
 ]
 
+const methodOptions = [
+  {
+    label: 'get',
+    value: 'get'
+  },
+  {
+    label: 'post',
+    value: 'post'
+  },
+  {
+    label: 'put',
+    value: 'put'
+  },
+  {
+    label: 'delete',
+    value: 'delete'
+  }
+]
+
+
+const sourceDialog = reactive({
+  show: false,
+  formData: {
+    sourceType: '1',
+    dict: '',
+    dictName: '',
+    name: '',
+    apiName: '',
+    apiUrl: '',
+    props: '',
+    method: 'get',
+    apiParams: '',
+    onSeccess: ''
+  },
+  rules: [],
+  sourceTypes: [
+    {
+      label: '字典',
+      value: '1'
+    },
+    {
+      label: '接口',
+      value: '2'
+    }
+  ]
+})
+const currentRow = ref({})
+
+function getDataSourceName(option={}) {
+  let info = sourceDialog.sourceTypes.find(item=>item.value == option.sourceType)
+  if (info) {
+    return `${info.label}：${option.dict}`
+  } else {
+    return ''
+  }
+}
+
+let dataSourceFormData = {
+    sourceType: '1',
+    dict: '',
+    dictName: '',
+    name: '',
+    apiName: '',
+    apiUrl: '',
+    props: '',
+    method: 'get',
+    apiParams: '',
+    onSeccess: ''
+}
+// 设置数据来源
+function setSource(row) {
+  sourceDialog.show = true
+  currentRow.value = row
+  sourceDialog.formData = row.dataSource || deepClone(dataSourceFormData)
+}
+function dictChange(dict) {
+  let info = dictOptions.value.find(item=>item.dictType == dict)
+  sourceDialog.formData.dictName = info.dictName || ''
+}
+// 提交
+function handleSetSourceSubmit() {
+  currentRow.value.dataSource = sourceDialog.formData
+  sourceDialog.formData = deepClone(dataSourceFormData)
+  sourceDialog.show = false
+}
+// 取消
+function handleSetSourceColse() {
+  sourceDialog.show = false
+  sourceDialog.formData = deepClone(dataSourceFormData)
+}
 
 // 获取建废所有字典
 async function getDictsFromJfs() {

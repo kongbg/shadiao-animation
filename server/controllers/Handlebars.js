@@ -197,7 +197,8 @@ function createApi(options) {
   // api配置
   let config = {
     apiModuleName: options.apiconfig.apiModuleName,
-    apis: []
+    apis: [],
+    configApis: []
   }
   let filePath = resolvePath(
     `./server/template/${getTypeTxt(options.type)}/api/index.js`
@@ -220,13 +221,13 @@ function createApi(options) {
         methodName: item.dataSource.apiName,
         url: item.dataSource.apiUrl
       }
-      config.apis.push(obj)
-      configApis.push(obj)
+      config.configApis.push(obj)
     }
   })
 
   // 存到全局 createList需要用到
   apis = config.apis
+  configApis = config.configApis
 
   // 读取模板
   const templateContent = fs.readFileSync(filePath, 'utf8')
@@ -459,8 +460,17 @@ function getDicts(searchConfig, columns) {
   let dict = []
   let list = [...searchConfig, ...columns]
   list.forEach((item) => {
-    if (item.dict && !dict.includes(item.dict)) {
+    // 配置了字典，且数据类型是下拉或者级联的才去请求接口
+    if (item.dict && !dict.includes(item.dict) && needGetApi(item)) {
       dict.push(item.dict)
+    }
+
+    function needGetApi(item) {
+      if(['select', 'areacascader'].includes(item.queryType) || ['select', 'areacascader'].includes(item.editZDType)) {
+        return true
+      } else {
+        return false
+      }
     }
   })
   return dict

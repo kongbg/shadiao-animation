@@ -179,6 +179,7 @@
 <script setup name="ReqForm">
 import { getApiDetails, getDataSchemas, getDictsFromJf } from '@/api/autoCode'
 import { reactive } from 'vue'
+import { deepClone } from '@/utils'
 const { proxy } = getCurrentInstance()
 const props = defineProps({
   apiId: {
@@ -204,6 +205,10 @@ const queryTypes = [
     value: 'input'
   },
   {
+    label: '文本域',
+    value: 'textArea'
+  },
+  {
     label: '下拉框',
     value: 'select'
   },
@@ -215,6 +220,10 @@ const queryTypes = [
     label: '日期时间',
     value: 'datetimerange'
   },
+  {
+    label: '上传组件',
+    value: 'upload'
+  }
 ]
 
 const methodOptions = [
@@ -273,20 +282,7 @@ function getDataSourceName(option={}) {
     return ''
   }
 }
-// 设置数据来源
-function setSource(row) {
-  sourceDialog.show = true
-  currentRow.value = row
-  sourceDialog.formData = row.dataSource
-}
-function dictChange(dict) {
-  let info = dictOptions.value.find(item=>item.dictType == dict)
-  sourceDialog.formData.dictName = info.dictName || ''
-}
-// 提交
-function handleSetSourceSubmit() {
-  currentRow.value.dataSource = sourceDialog.formData
-  sourceDialog.formData = {
+let dataSourceFormData = {
     sourceType: '1',
     dict: '',
     dictName: '',
@@ -297,19 +293,27 @@ function handleSetSourceSubmit() {
     method: 'get',
     apiParams: '',
     onSeccess: ''
-  }
+}
+// 设置数据来源
+function setSource(row) {
+  sourceDialog.show = true
+  currentRow.value = row
+  sourceDialog.formData = row.dataSource || deepClone(dataSourceFormData)
+}
+function dictChange(dict) {
+  let info = dictOptions.value.find(item=>item.dictType == dict)
+  sourceDialog.formData.dictName = info.dictName || ''
+}
+// 提交
+function handleSetSourceSubmit() {
+  currentRow.value.dataSource = sourceDialog.formData
+  sourceDialog.formData = deepClone(dataSourceFormData)
   sourceDialog.show = false
 }
 // 取消
 function handleSetSourceColse() {
   sourceDialog.show = false
-  sourceDialog.formData = {
-    sourceType: '1',
-    dict: '',
-    apiName: '',
-    apiParams: '',
-    onSeccess: ''
-  }
+  sourceDialog.formData = deepClone(dataSourceFormData)
 }
 
 // 获取建废所有字典
