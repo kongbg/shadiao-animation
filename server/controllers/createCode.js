@@ -1,5 +1,5 @@
 import SQLiteDB from '../sqlite/index.js'
-import { createCode } from './Handlebars.js'
+import { createCode, writeFile } from './Handlebars.js'
 
 // 创建数据库连接
 const db = new SQLiteDB('aotuCode.db')
@@ -37,21 +37,29 @@ export default class appController {
    */
   static async previewCode(ctx) {
     let params = ctx.request.body
-    // 插入数据
     const data = { ...params }
 
-    // console.log('data:', data)
     let config = await getconfDetailById({
       request: { query: { id: data.id } }
     })
-    // console.log('data:', config)
-    let code = createCode(config)
-    ctx.body = {
-      code: 200,
-      data: {
-        code
-      },
-      msg: 'ok'
+    
+
+    if (data.moduleName) {
+      writeFile(config);
+      ctx.body = {
+        code: 200,
+        data: null,
+        msg: `代码已生成在dist/${data.moduleName}目录下`
+      }
+    } else {
+      let code = createCode(config)
+      ctx.body = {
+        code: 200,
+        data: {
+          code
+        },
+        msg: 'ok'
+      }
     }
   }
   /**

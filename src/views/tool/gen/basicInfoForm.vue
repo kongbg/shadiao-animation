@@ -2,7 +2,7 @@
   <el-form ref="basicInfoForm" :model="info" :rules="rules" label-width="150px">
     <el-row>
       <el-col :span="12">
-        <el-form-item label="页面名称" prop="name">
+        <el-form-item label="功能名称" prop="name">
           <el-input placeholder="请输入" v-model="info.name" />
         </el-form-item>
       </el-col>
@@ -23,7 +23,17 @@
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item label="表描述" prop="desc">
+        <el-form-item label="模块名称" prop="moduleName">
+          <el-input placeholder="请输入模块名称：(英文，充当模块在项目中的文件夹名称)" v-model="info.moduleName" />
+        </el-form-item>
+      </el-col>
+      <el-col :span="12">
+        <el-form-item label="模块存放路径" prop="path">
+          <el-input placeholder="请输入模块名称：(英文，充当模块在项目中的文件夹位置)" v-model="info.path" />
+        </el-form-item>
+      </el-col>
+      <el-col :span="12">
+        <el-form-item label="描述" prop="desc">
           <el-input type="textarea" :rows="3" v-model="info.desc"></el-input>
         </el-form-item>
       </el-col>
@@ -52,10 +62,11 @@ const types = [
 
 // 表单校验
 const rules = ref({
-  tableName: [{ required: true, message: '请输入表名称', trigger: 'blur' }],
-  tableComment: [{ required: true, message: '请输入表描述', trigger: 'blur' }],
-  className: [{ required: true, message: '请输入实体类名称', trigger: 'blur' }],
-  functionAuthor: [{ required: true, message: '请输入作者', trigger: 'blur' }]
+  name: [{ required: true, message: '请输入功能名称', trigger: 'blur' }],
+  type: [{ required: true, message: '请选择模板类型', trigger: 'blur' }],
+  moduleName: [{ required: true, message: '请输入模块名称', trigger: 'blur' }],
+  desc: [{ required: true, message: '请输入描述', trigger: 'blur' }],
+  path: [{ required: true, message: '请输入模块存放路径', trigger: 'blur' }],
 })
 
 function getFormData() {

@@ -18,6 +18,13 @@
           :apiId="getDataApiId"
         ></listForm>
       </el-tab-pane>
+      <el-tab-pane label="列表页按钮信息" name="listActionFormRef">
+        <listActionForm
+          ref="listActionFormRef"
+          :actions="info.listActions"
+          :apiId="getDataApiId"
+        ></listActionForm>
+      </el-tab-pane>
       <el-tab-pane label="查询字段信息" name="queryFormRef">
         <reqForm
           ref="queryFormRef"
@@ -48,6 +55,7 @@ import basicInfoForm from './basicInfoForm'
 import genInfoForm from './genInfoForm'
 import reqForm from './reqForm'
 import listForm from './listForm'
+import listActionForm from './listActionForm'
 import editForm from './editForm'
 
 const basicInfoRef = ref(null)
@@ -55,6 +63,7 @@ const genInfoRef = ref(null)
 const listFormRef = ref(null)
 const queryFormRef = ref(null)
 const editFormRef = ref(null)
+const listActionFormRef = ref(null)
 
 const baseInfo = ref({})
 
@@ -73,21 +82,24 @@ const addDataApiId = ref('')
 /** 提交按钮 */
 async function submitForm() {
   let basicInfo = basicInfoRef.value.getFormData()
-  console.log('apiconfig:', basicInfo)
+  // console.log('apiconfig:', basicInfo)
   let apiconfig = genInfoRef.value.getFormData()
-  console.log('apiconfig:', apiconfig)
+  // console.log('apiconfig:', apiconfig)
   let listColumn = listFormRef.value.getFormData()
-  console.log('listColumn:', listColumn)
+  // console.log('listColumn:', listColumn)
+  let listActions = listActionFormRef.value.getFormData()
+  // console.log('listActions:', listActions)
   let queryColumn = queryFormRef.value.getFormData()
-  console.log('queryColumn:', queryColumn)
+  // console.log('queryColumn:', queryColumn)
   let editColumn = editFormRef.value.getFormData()
-  console.log('editColumn:', editColumn)
+  // console.log('editColumn:', editColumn)
 
   loading.value = true
   let params = {
     id: route.params.id,
     apiconfig: JSON.stringify(apiconfig),
     listColumn: JSON.stringify(listColumn),
+    listActions: JSON.stringify(listActions),
     queryColumn: JSON.stringify(queryColumn),
     addColumn: JSON.stringify(editColumn),
     detailColumn: JSON.stringify(editColumn),
@@ -200,6 +212,24 @@ let domains = {
           value: ''
         }
       ]
+    },
+    {
+      list: [
+        {
+          label: '功能名称',
+          value: '导出',
+          disabled: true
+        },
+        {
+          label: '接口名称',
+          value: 'exportData',
+          disabled: true
+        },
+        {
+          label: '接口url',
+          value: ''
+        }
+      ]
     }
   ]
 }
@@ -216,7 +246,8 @@ async function getItemDetail() {
   if (code == 200) {
     data.apiconfig = JSON.parse(data.apiconfig || JSON.stringify(domains))
     data.queryColumn = JSON.parse(data.queryColumn || JSON.stringify([]))
-    data.listColumn = JSON.parse(data.listColumn || JSON.stringify([]))
+    data.listColumn = JSON.parse(data.listColumn || JSON.stringify({}))
+    data.listActions = JSON.parse(data.listActions || JSON.stringify([]))
     data.addColumn = JSON.parse(data.addColumn || JSON.stringify([]))
     data.editColumn = JSON.parse(data.editColumn || JSON.stringify([]))
     data.detailColumn = JSON.parse(data.detailColumn || JSON.stringify([]))
@@ -225,7 +256,9 @@ async function getItemDetail() {
     baseInfo.value = {
       name: data.name,
       desc: data.desc,
-      type: data.type || '1'
+      type: data.type || '1',
+      moduleName: data.moduleName || '',
+      path: data.path || ''
     }
 
     info.value.apiconfig.domains.forEach((item) => {

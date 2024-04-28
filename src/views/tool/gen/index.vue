@@ -54,6 +54,7 @@
           >生成</el-button
         >
       </el-col>
+      
       <el-col :span="1.5">
         <el-button
           type="primary"
@@ -192,12 +193,21 @@
               v-hasPermi="['tool:gen:edit']"
             ></el-button>
           </el-tooltip>
-          <el-tooltip content="生成代码" placement="top">
+          <!-- <el-tooltip content="生成代码" placement="top">
             <el-button
               link
               type="primary"
               icon="Download"
               @click="handleGenTable(scope.row)"
+              v-hasPermi="['tool:gen:code']"
+            ></el-button>
+          </el-tooltip> -->
+          <el-tooltip content="生成代码" placement="top">
+            <el-button
+              link
+              type="primary"
+              icon="Download"
+              @click="handleGenTableCreate(scope.row)"
               v-hasPermi="['tool:gen:code']"
             ></el-button>
           </el-tooltip>
@@ -348,6 +358,7 @@ function handleGenTable(row) {
     proxy.$download.zip('/tool/gen/batchGenCode?tables=' + tbNames, 'ruoyi.zip')
   }
 }
+
 /** 同步数据库操作 */
 function handleSynchDb(row) {
   const tableName = row.tableName
@@ -395,7 +406,23 @@ async function handlePreview(row) {
   loading.value = false
   let { code, data, msg } = res
   data.code = JSON.parse(data.code)
-  console.log('previewTable2:', res)
+  if (code == 200) {
+    preview.value.data = data.code
+    preview.value.open = true
+    preview.value.activeName = 'api'
+  }
+}
+// 生成代码
+async function handleGenTableCreate(row) {
+  loading.value = true
+  let params = {
+    id: row.id,
+    moduleName: row.moduleName
+  }
+  let res = await previewTable2(params)
+  loading.value = false
+  let { code, data, msg } = res
+  data.code = JSON.parse(data.code)
   if (code == 200) {
     preview.value.data = data.code
     preview.value.open = true

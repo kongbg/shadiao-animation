@@ -49,6 +49,11 @@
         ></el-checkbox>
       </template>
     </el-table-column>
+    <el-table-column label="顺序" min-width="5%">
+      <template #default="scope">
+        <el-input v-model="scope.row.queryIndex"></el-input>
+      </template>
+    </el-table-column>
     <el-table-column label="查询方式" min-width="12%">
       <template #default="scope">
         <el-select v-model="scope.row.queryType" placeholder="请选择">
@@ -223,10 +228,20 @@ function initTableData(properties = {}) {
       isList: false,
       queryType: realItem?.queryType || 'input',
       isQuery: realItem?.isQuery || false,
+      queryIndex: realItem?.queryIndex || '',
       isExtraQuery: realItem?.isExtraQuery || false,
       dict: realItem?.dict || ''
     }
     tableData.value.push(obj)
+
+    tableData.value.sort((a, b) => {
+      // 如果a的字段为空，则a排在b后面
+      if (!a.queryIndex) return 1;
+      // 如果b的字段为空，则b排在a后面
+      if (!b.queryIndex) return -1;
+      // 否则，按字段的大小进行排序
+      return a.queryIndex - b.queryIndex;
+    });
   }
 }
 

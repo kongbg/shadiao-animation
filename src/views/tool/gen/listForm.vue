@@ -31,24 +31,6 @@
         {{ scope.row.javaType }}
       </template>
     </el-table-column>
-    <!-- <el-table-column label="插入" min-width="5%">
-      <template #default="scope">
-        <el-checkbox
-          true-label="1"
-          false-label="0"
-          v-model="scope.row.isInsert"
-        ></el-checkbox>
-      </template>
-    </el-table-column> -->
-    <!-- <el-table-column label="编辑" min-width="5%">
-      <template #default="scope">
-        <el-checkbox
-          true-label="1"
-          false-label="0"
-          v-model="scope.row.isEdit"
-        ></el-checkbox>
-      </template>
-    </el-table-column> -->
     <el-table-column label="列表" min-width="5%">
       <template #default="scope">
         <el-checkbox
@@ -58,19 +40,15 @@
         ></el-checkbox>
       </template>
     </el-table-column>
-    <!-- <el-table-column label="查询" min-width="5%">
+    <el-table-column label="顺序" min-width="5%">
       <template #default="scope">
-        <el-checkbox
-          true-label="1"
-          false-label="0"
-          v-model="scope.row.isQuery"
-        ></el-checkbox>
+        <el-input v-model="scope.row.listIndex"></el-input>
       </template>
-    </el-table-column> -->
+    </el-table-column>
     <el-table-column label="字典类型" min-width="12%">
       <template #default="scope">
         <el-select
-          v-model="scope.row.dictType"
+          v-model="scope.row.dict"
           clearable
           filterable
           placeholder="请选择"
@@ -102,7 +80,7 @@ const props = defineProps({
   },
   column: {
     type: Array,
-    default: () => []
+    default: () => {}
   }
 })
 const tableHeight = ref(document.documentElement.scrollHeight - 245 + 'px')
@@ -201,11 +179,20 @@ function initTableData(properties = {}) {
       isInsert: false,
       isEdit: false,
       isList: realItem?.isList || false,
+      listIndex: realItem?.listIndex || '',
       isQuery: false,
-      dictType: realItem?.dict || ''
+      dict: realItem?.dict || ''
     }
     tableData.value.push(obj)
   }
+  tableData.value.sort((a, b) => {
+    // 如果a的字段为空，则a排在b后面
+    if (!a.listIndex) return 1;
+    // 如果b的字段为空，则b排在a后面
+    if (!b.listIndex) return -1;
+    // 否则，按字段的大小进行排序
+    return a.listIndex - b.listIndex;
+  });
 }
 
 function initColumnMap() {
@@ -225,21 +212,11 @@ function getId(str = '') {
 
 /** 提交按钮 */
 function getFormData() {
-  // let listParams = []
-  // tableData.value.forEach((item) => {
-  //   let { columnName, columnComment, dictType, isList } = item
-  //   let obj = {
-  //     columnName,
-  //     columnComment,
-  //     dictType
-  //   }
-  //   if (isList) listParams.push(obj)
-  // })
-
   return tableData.value || []
 }
 
 async function init() {
+
   if (!props.apiId) return
   // 获取所有接口的jsonSchema信息id
   await getApiDetail()

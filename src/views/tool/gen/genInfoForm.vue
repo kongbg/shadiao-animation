@@ -6,6 +6,13 @@
       style="margin-left: 70px; margin-bottom: 20px"
       >新增接口</el-button
     >
+    <el-row :span="24">
+      <el-col :span="6">
+        <el-form-item label="API模块名称" prop="apiModuleName">
+          <el-input placeholder="请输入API模块名称" v-model="info.apiModuleName" />
+        </el-form-item>
+      </el-col>
+    </el-row>
     <el-row v-for="(item, index) in info.domains">
       <el-col :span="6" v-for="(info2, index2) in item.list">
         <el-form-item
@@ -162,6 +169,10 @@ async function getApiTreeLists() {
   }
 }
 
+function deleteDomain(index) {
+  props.info.domains.splice(index, 1)
+}
+
 function urlChange(data, item) {
   let path = findApiPaths(options.value, data)
   console.log('path:', path, data, item)
@@ -191,90 +202,6 @@ function urlChange(data, item) {
     return last.split('.')[1]
   }
 }
-// const dynamicValidateForm = ref({
-//   domains: [
-//     {
-//       list: [
-//         {
-//           label: '功能名称',
-//           value: '新增'
-//         },
-//         {
-//           label: '接口名称',
-//           value: 'addData'
-//         },
-//         {
-//           label: '接口url',
-//           value: ''
-//         }
-//       ]
-//     },
-//     {
-//       list: [
-//         {
-//           label: '功能名称',
-//           value: '编辑'
-//         },
-//         {
-//           label: '接口名称',
-//           value: 'editData'
-//         },
-//         {
-//           label: '接口url',
-//           value: ''
-//         }
-//       ]
-//     },
-//     {
-//       list: [
-//         {
-//           label: '功能名称',
-//           value: '查询'
-//         },
-//         {
-//           label: '接口名称',
-//           value: 'getData'
-//         },
-//         {
-//           label: '接口url',
-//           value: ''
-//         }
-//       ]
-//     },
-//     {
-//       list: [
-//         {
-//           label: '功能名称',
-//           value: '删除'
-//         },
-//         {
-//           label: '接口名称',
-//           value: 'deleteData'
-//         },
-//         {
-//           label: '接口url',
-//           value: ''
-//         }
-//       ]
-//     },
-//     {
-//       list: [
-//         {
-//           label: '功能名称',
-//           value: '更新'
-//         },
-//         {
-//           label: '接口名称',
-//           value: 'updateData'
-//         },
-//         {
-//           label: '接口url',
-//           value: ''
-//         }
-//       ]
-//     }
-//   ]
-// })
 function addDomain() {
   props.info.domains.push({
     list: [
@@ -295,14 +222,6 @@ function addDomain() {
 }
 function getFormData() {
   return props.info
-
-  genInfoForm.validate((valid) => {
-    if (valid) {
-      return dynamicValidateForm.value
-    } else {
-      return []
-    }
-  })
 }
 defineExpose({
   getFormData
@@ -315,6 +234,9 @@ getApiTreeLists()
   .el-cascader-node__label {
     max-width: 200px;
     line-height: 14px;
+  }
+  .el-cascader-menu__wrap.el-scrollbar__wrap {
+    height: 400px;
   }
 }
 </style>

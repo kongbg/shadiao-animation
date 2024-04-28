@@ -109,14 +109,56 @@ let domains = {
           value: ''
         }
       ]
+    },
+    {
+      list: [
+        {
+          label: '功能名称',
+          value: '导出',
+          disabled: true
+        },
+        {
+          label: '接口名称',
+          value: 'exportData',
+          disabled: true
+        },
+        {
+          label: '接口url',
+          value: ''
+        }
+      ]
     }
   ]
 }
 
+export const writeFile = (options) => {
+  let code = createCode(options)
+  let tempCode = JSON.parse(code)
+  for (const key in tempCode) {
+    let distPath = ''
+    if (key == 'api') {
+      distPath = resolvePath(`src/api/${options.moduleName}/index.js`)
+      createFile(distPath, tempCode[key])
+    }
+    if (key == 'list') {
+      distPath = resolvePath(`src/views/${options.path}/index.vue`)
+      createFile(distPath, tempCode[key])
+    }
+    if (key == 'config') {
+      distPath = resolvePath(`src/views/${options.path}/config.js`)
+      createFile(distPath, tempCode[key])
+    }
+    if (key == 'action') {
+      distPath = resolvePath(`src/views/${options.path}/action/index.vue`)
+      createFile(distPath, tempCode[key])
+    }
+  }
+}
 export const createCode = (options) => {
   options.apiconfig = JSON.parse(options.apiconfig || JSON.stringify(domains))
   options.queryColumn = JSON.parse(options.queryColumn || [])
   options.listColumn = JSON.parse(options.listColumn || [])
+  options.listActions = JSON.parse(options.listActions || [])
   options.addColumn = JSON.parse(options.addColumn || [])
   options.editColumn = JSON.parse(options.editColumn || [])
   options.detailColumn = JSON.parse(options.detailColumn || [])
@@ -155,7 +197,7 @@ function createApi(options) {
 
   // api配置
   let config = {
-    apiName: '内部信息交流相关接口',
+    apiModuleName: options.apiconfig.apiModuleName,
     apis: []
   }
   let filePath = resolvePath(
@@ -184,15 +226,60 @@ function createApi(options) {
 }
 
 function createList(options) {
+  let actions = {}
+  options.listActions.forEach(item=>{
+    actions[item.key] = {}
+    item.list.forEach(info => {
+      actions[item.key][info.prop] = info.value
+    })
+  })
   // api配置
   let config = {
     apis,
-    deleteTip: '确定删除该案例吗？',
-    createApiName: 'addData',
-    getDataApiName: 'getData',
-    updateApiName: 'update',
-    delateApiName: 'delateData',
-    getDetailsApiName: 'getDetails',
+    moduleName: options.moduleName,
+    actions,
+    // actions: {
+    //   // 新增
+    //   create: {
+    //     show: true,
+    //     apiName: 'addData',
+    //     btnTxt: '新增',
+    //     openType: '1' // 1-跳转详情，2-弹窗
+    //   },
+    //   // 导出
+    //   export: {
+    //     show: true,
+    //     apiName: 'exportData',
+    //     btnTxt: '导出',
+    //     feilName: '导出文件名',
+    //     suffix: '.xlsx'
+    //   },
+    //   // 编辑
+    //   edit: {
+    //     show: true,
+    //     apiName: 'update',
+    //     btnTxt: '编辑',
+    //     openType: '1' // 1-跳转详情，2-弹窗
+    //   },
+    //   // 查看
+    //   view: {
+    //     show: true,
+    //     apiName: 'update',
+    //     btnTxt: '查看',
+    //     openType: '1' // 1-跳转详情，2-弹窗
+    //   },
+    //   // (搜索)获取列表
+    //   search: {
+    //     apiName: 'getData',
+    //   },
+    //   // 删除
+    //   delete: {
+    //     show: true,
+    //     apiName: 'deleteData',
+    //     btnTxt: '删除',
+    //     tips: '确定删除该咨询记录吗？',
+    //   }
+    // },
     exportUrl: '/city-platform/bizCsDzwl/exportList',
     exportFeilName: '电子围栏',
     suffix: '.xlsx'
@@ -243,7 +330,7 @@ function createAction(options) {
     createApiName: 'addData',
     getDataApiName: 'getData',
     updateApiName: 'update',
-    delateApiName: 'delateData',
+    delateApiName: 'deleteData',
     getDetailsApiName: 'getDetails'
   }
 
@@ -321,6 +408,9 @@ function registerHelper() {
   Handlebars.registerHelper('eq', function (a, b) {
     return a == b
   })
+  Handlebars.registerHelper('and2', function (a, b) {
+    return a && b
+  })
   Handlebars.registerHelper('isHas', function (a) {
     return Boolean(a)
   })
@@ -347,4 +437,33 @@ function getDicts(searchConfig, columns) {
 
 function isTrue(type) {
   return type == true && type == 1
+}
+
+// 补全文件路径
+function createFolderPath(filePath) {
+  const fileContent = "";
+
+  // 获取文件所在目录的路径
+  const directoryPath = path.dirname(filePath);
+
+  // 判断目录是否存在，如果不存在则创建目录
+  if (!fs.existsSync(directoryPath)) {
+    fs.mkdirSync(directoryPath, { recursive: true });
+    // console.log("目录已创建");
+  }
+
+  // 判断文件是否存在，如果不存在则创建文件并写入内容
+  if (!fs.existsSync(filePath)) {
+    fs.writeFileSync(filePath, fileContent);
+    // console.log("文件已创建并写入内容");
+  } else {
+    // console.log("文件已存在");
+  }
+}
+
+// 输出文件
+function createFile(distPath, content) {
+  // 先创建一个空文件，目标为了补全路径
+  createFolderPath(distPath);
+  fs.writeFileSync(distPath, content);
 }

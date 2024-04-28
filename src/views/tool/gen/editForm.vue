@@ -58,6 +58,11 @@
         ></el-checkbox>
       </template>
     </el-table-column>
+    <el-table-column label="顺序" min-width="5%">
+      <template #default="scope">
+        <el-input v-model="scope.row.editIndex"></el-input>
+      </template>
+    </el-table-column>
     <el-table-column label="字段类型" min-width="12%">
       <template #default="scope">
         <el-select v-model="scope.row.editZDType" placeholder="请选择">
@@ -239,11 +244,20 @@ function initTableData(properties = {}) {
       isEdit: realItem?.isEdit || false,
       isList: false,
       isQuery: false,
+      editIndex: realItem?.editIndex || '',
       editZDType: realItem?.editZDType || 'input',
       isExtraEdit: realItem?.isExtraEdit || false,
       dict: realItem?.dict || ''
     }
     tableData.value.push(obj)
+    tableData.value.sort((a, b) => {
+      // 如果a的字段为空，则a排在b后面
+      if (!a.editIndex) return 1;
+      // 如果b的字段为空，则b排在a后面
+      if (!b.editIndex) return -1;
+      // 否则，按字段的大小进行排序
+      return a.editIndex - b.editIndex;
+    });
   }
 }
 
