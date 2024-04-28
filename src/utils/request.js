@@ -31,8 +31,10 @@ service.interceptors.request.use(
   (config) => {
     // 是否需要设置 token
     const isToken = (config.headers || {}).isToken === false
-    // 是否需要设置 token
+    // 是否需要ApiFox token
     const isApiFox = (config.headers || {}).isApiFox == true
+    // 是否需要建废 token
+    const isJf = (config.headers || {}).isJf == true
 
     // 是否需要防止数据重复提交
     const isRepeatSubmit = (config.headers || {}).repeatSubmit === false
@@ -41,10 +43,13 @@ service.interceptors.request.use(
       config.headers['Authorization'] = 'Bearer ' + getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
     }
     if (isApiFox) {
+      let apiFoxToken = getToken('ApiFox-Token') || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjE3NTIxNCwidHMiOiI3YTVkYTIxOTk0ZWU0NmQ5IiwiaWF0IjoxNzE0MTQyNTAwMDQwfQ.VGnzOaES3FHv8JW6A4wtaO2S9mryLEsPZ0Gqk3mvWno'
       config.headers['x-project-id'] = '4112206'
-      config.headers['Authorization'] =
-        'Bearer ' +
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjE3NTIxNCwidHMiOiI3YTVkYTIxOTk0ZWU0NmQ5IiwiaWF0IjoxNzE0MTQyNTAwMDQwfQ.VGnzOaES3FHv8JW6A4wtaO2S9mryLEsPZ0Gqk3mvWno'
+      config.headers['Authorization'] = 'Bearer ' + apiFoxToken
+    }
+    if (isJf) {
+      let JfToken = getToken('Jf-Token') || 'eyJhbGciOiJIUzUxMiJ9.eyJ1c2VyX2lkIjoxNzYxMjg5NzMxNjc0NDc2NTQ1LCJ1c2VyX2tleSI6Ijk3YTY2NTg3LTVjZjMtNGE5NC1hMDQzLWFmYjEwNDNlODQ2MCIsInVzZXJuYW1lIjoiYWRtaW4ifQ.R2sS8ENRL97htLa4DooOzly3Jeb-zZ1mGpZGw6o1o6uuWBtYd7gJa6emmZ4yI_4skFmiEbIq4ND1gOeblKUKYw'
+      config.headers['Authorization'] = 'Bearer ' + JfToken
     }
 
     // get请求映射params参数

@@ -93,7 +93,7 @@
 </template>
 
 <script setup name="ReqForm">
-import { getApiDetails, getDataSchemas } from '@/api/autoCode'
+import { getApiDetails, getDataSchemas, getDictsFromJf } from '@/api/autoCode'
 const { proxy } = getCurrentInstance()
 const props = defineProps({
   apiId: {
@@ -112,6 +112,15 @@ const apiDetails = ref([])
 const dataSchema = ref([])
 const dictOptions = ref([])
 const columnMap = {}
+
+
+// 获取建废所有字典
+async function getDictsFromJfs() {
+  let res = await getDictsFromJf({pageNum: 1, pageSize:9999}, { cache: true })
+  if (res.code == 200) {
+    dictOptions.value = res.rows || []
+  }
+}
 
 // 获取所有接口的jsonSchema信息id
 async function getApiDetail() {
@@ -231,10 +240,12 @@ function getFormData() {
 }
 
 async function init() {
-  debugger
   if (!props.apiId) return
   // 获取所有接口的jsonSchema信息id
   await getApiDetail()
+
+  // 获取所有字典
+  getDictsFromJfs()
 
   // 获取接口字段信息
   initData()

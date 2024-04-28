@@ -38,6 +38,19 @@ export function getDataSchemas(params = { locale: 'zh-CN' }, acheOption) {
     params
   })
 }
+// 获取建废所有字典类型
+export function getDictsFromJf(params, acheOption) {
+  return request({
+    url: '/jf/city-platform/dict/type/list',
+    headers: {
+      isJf: true,
+      isCache: acheOption.cache,
+      success: acheOption.success
+    },
+    method: 'get',
+    params
+  })
+}
 // 新增配置
 export function addConfig(data) {
   return request({
@@ -81,3 +94,5 @@ export function previewTable2(data) {
     data
   })
 }
+
+

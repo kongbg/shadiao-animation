@@ -25,10 +25,15 @@ export default defineConfig(({ mode, command }) => {
     },
     // vite 相关配置
     server: {
-      port: 80,
+      port: 8055,
       host: true,
       open: true,
       proxy: {
+        '/api/jf': {
+          target: 'http://192.168.3.230:8080',
+          changeOrigin: true,
+          rewrite: (p) => p.replace(/^\/api\/jf/, '')
+        },
         '/api/apifox': {
           target: 'https://api.apifox.com/',
           changeOrigin: true,
