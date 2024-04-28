@@ -103,6 +103,12 @@ const action = ref([
         value: '1',
         type: 'select',
         options: options2
+      },
+      {
+        prop: 'openUrl',
+        label: '跳转地址',
+        value: 'action',
+        type: 'input'
       }
     ]
   },
@@ -186,6 +192,12 @@ const action = ref([
         value: '1',
         type: 'select',
         options: options2
+      },
+      {
+        prop: 'openUrl',
+        label: '跳转地址',
+        value: 'action',
+        type: 'input'
       }
     ]
   },
@@ -225,6 +237,12 @@ const action = ref([
         value: '1',
         type: 'select',
         options: options2
+      },
+      {
+        prop: 'openUrl',
+        label: '跳转地址',
+        value: 'action',
+        type: 'input'
       }
     ]
   },

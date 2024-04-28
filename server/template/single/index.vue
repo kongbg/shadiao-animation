@@ -125,7 +125,7 @@ function tableBtnFn(type, row) {
 function createItem(type, row) {
     {{#if (eq actions.create.openType 1)}}
         router.push({
-            path: 'action',
+            path: '{{actions.create.openUrl}}',
             query: {
                 type: type,
             },
@@ -138,7 +138,7 @@ function createItem(type, row) {
 function editItem(type, row) {
     {{#if (eq actions.edit.openType 1)}}
         router.push({
-            path: 'action',
+            path: '{{actions.edit.openUrl}}',
             query: {
                 type: type,
                 id: row.id,
@@ -152,7 +152,7 @@ function editItem(type, row) {
 function viewItem(type, row) {
     {{#if (eq actions.view.openType 1)}}
         router.push({
-            path: 'action',
+            path: '{{actions.view.openUrl}}',
             query: {
                 type: type,
                 id: row.id,
