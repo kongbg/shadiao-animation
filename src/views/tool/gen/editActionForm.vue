@@ -79,8 +79,8 @@ const action = ref([
       },
       {
         prop: 'apiName',
-        label: 'api名称',
-        value: 'addData',
+        label: '调用api名称',
+        value: 'createData',
         disabled: true,
         type: 'input'
       },
@@ -107,7 +107,7 @@ const action = ref([
       {
         prop: 'openUrl',
         label: '跳转地址',
-        value: 'action',
+        value: 'index',
         type: 'input'
       }
     ]
@@ -124,8 +124,8 @@ const action = ref([
       },
       {
         prop: 'apiName',
-        label: 'api名称',
-        value: 'update',
+        label: '调用api名称',
+        value: 'updateData',
         disabled: true,
         type: 'input'
       },
@@ -152,7 +152,97 @@ const action = ref([
       {
         prop: 'openUrl',
         label: '跳转地址',
-        value: 'action',
+        value: 'index',
+        type: 'input'
+      }
+    ]
+  },
+  {
+    name: '取消',
+    key: 'cancel',
+    list: [
+      {
+        prop: 'show',
+        label: '是否显示',
+        value: true,
+        type: 'checkbox'
+      },
+      {
+        prop: 'apiName',
+        label: '调用api名称',
+        value: '',
+        disabled: true,
+        type: 'input'
+      },
+      {
+        prop: 'btnTxt',
+        label: '文案',
+        value: '取消',
+        type: 'input'
+      },
+      {
+        prop: 'type',
+        label: '按钮类型',
+        value: 'primary',
+        type: 'select',
+        options: options1
+      },
+      {
+        prop: 'openType',
+        label: '打开方式',
+        value: '1',
+        type: 'select',
+        options: options2
+      },
+      {
+        prop: 'openUrl',
+        label: '跳转地址',
+        value: 'index',
+        type: 'input'
+      }
+    ]
+  },
+  {
+    name: '返回',
+    key: 'back',
+    list: [
+      {
+        prop: 'show',
+        label: '是否显示',
+        value: true,
+        type: 'checkbox'
+      },
+      {
+        prop: 'apiName',
+        label: '调用api名称',
+        value: '',
+        disabled: true,
+        type: 'input'
+      },
+      {
+        prop: 'btnTxt',
+        label: '文案',
+        value: '返回',
+        type: 'input'
+      },
+      {
+        prop: 'type',
+        label: '按钮类型',
+        value: 'primary',
+        type: 'select',
+        options: options1
+      },
+      {
+        prop: 'openType',
+        label: '打开方式',
+        value: '1',
+        type: 'select',
+        options: options2
+      },
+      {
+        prop: 'openUrl',
+        label: '跳转地址',
+        value: 'index',
         type: 'input'
       }
     ]
@@ -163,7 +253,7 @@ const action = ref([
     list: [
       {
         prop: 'apiName',
-        label: 'api名称',
+        label: '调用api名称',
         value: 'getDetails',
         disabled: true,
         type: 'input'

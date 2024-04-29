@@ -3,10 +3,10 @@ import {
   {{#each configApis}}
       {{this.methodName}}, // {{this.name}}
   {{/each}}
-} from "@/api/{{moduleName}}/index.js"; // 接口
+} from "@/api/{{codePath}}/{{moduleName}}/index.js"; // 接口
 
 
-const {
+export const {
   {{#each dicts}}
     {{this}},
   {{/each}}

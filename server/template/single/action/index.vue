@@ -1,116 +1,51 @@
 <template>
-  <div class="cityAreaBannedManage">
-    <TitleBar title="案例基本信息" />
-    <el-form
-      :model="fromData"
-      :rules="rules"
-      :loading="loading"
-      ref="formRef"
-      class="custom-query-form mt20"
-      label-position="left"
-      label-width="80"
-    >
-      <el-row justify="space-between">
-        <el-col :span="5">
-          <el-form-item label="案例标题" prop="title" required>
-            <el-input
-              v-model="fromData.title"
-              :disabled="disabled"
-              @change="handleQuery"
-              placeholder="请输入"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="5">
-          <el-form-item label="案例类型" prop="caseType" required>
-            <el-select
-              v-model="fromData.caseType"
-              placeholder="请选择"
-              :disabled="disabled"
-              :clearable="true"
-            >
-              <el-option
-                v-for="op in case_type"
-                :label="op.label"
-                :value="op.value"
-                :key="op.value"
-              >
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="5"> </el-col>
-        <el-col :span="5"> </el-col>
-      </el-row>
-      <el-row justify="space-between">
-        <el-col :span="8">
-          <el-form-item label="案例描述" prop="caseDes">
-            <el-input
-              v-model="fromData.caseDes"
-              :disabled="disabled"
-              :rows="2"
-              type="textarea"
-              :autosize="{ minRows: 3, maxRows: 6 }"
-              placeholder="请输入"
-            />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row justify="space-between">
-        <el-col :span="8">
-          <el-form-item label="附件上传" prop="fileId">
-            <FileUpload
-              v-model="fromData.fileId"
-              :disabled="disabled"
-              :isAreaTip="true"
-            />
-          </el-form-item>
-        </el-col>
-      </el-row>
-    </el-form>
+  <div class="action">
+    
+    <Form ref="formRef" :fromData="fromData" :rules="rules" :dicts='dicts'></Form>
+
     <el-row
       justify="center"
       v-if="route.query.type != 'view'"
       :gutter="20"
       class="sub_btn"
     >
-      <el-button @click="cancel" plain> 取 消 </el-button>
-      <el-button type="primary" :loading="loading" @click="submitForm">保 存</el-button>
+      <!-- 取消 -->
+      {{#if actions.cancel.show }}
+      <el-button v-if="['edit', 'create'].includes(route.query.type)" @click="cancel" type="{{actions.cancel.type}}"> {{actions.cancel.btnTxt}} </el-button>
+      {{/if }}
+
+      <!-- 返回 -->
+      {{#if actions.back.show }}
+      <el-button v-if="['view'].includes(route.query.type)" @click="cancel" type="{{actions.back.type}}"> {{actions.back.btnTxt}} </el-button>
+      {{/if }}
+
+      <!-- 新增 -->
+      {{#if actions.create.show }}
+      <el-button v-if="['create'].includes(route.query.type)" type="{{actions.create.type}}" @click="submitForm"> {{actions.create.btnTxt}} </el-button>
+      {{/if }}
+
+      <!-- 编辑 -->
+      {{#if actions.edit.show }}
+      <el-button v-if="['edit'].includes(route.query.type)" type="{{actions.edit.type}}" @click="submitForm"> {{actions.edit.btnTxt}} </el-button>
+      {{/if }}
     </el-row>
   </div>
 </template>
 <script setup>
   import { ref } from "vue"; // vue
-  import { useDict } from "@/utils/dict"; // 字典
-  import TitleBar from "@/components/TitleBar"; // 标题组件
-  import FileUpload from "@/components/FileUpload"; // 上传组件
+  import Form from './form.vue' // 表单组件
   import {
       {{#each apis}}
       {{ this.methodName }}, // {{this.name}}
       {{/each}}
-  } from "@/api/{{moduleName}}/index.js"; // 接口
+  } from "@/api/{{codePath}}/{{moduleName}}/index.js"; // 接口
 
   const { proxy } = getCurrentInstance(); // vue 实例
-
-  const {
-    {{#each dicts}}
-    {{this}},
-    {{/each}}
-  } = useDict(
-    {{#each dicts}}
-    "{{this}}",
-    {{/each}}
-  )
 
   const router = useRouter(); // 路由实例
   const route = useRoute(); // 路由对象
   const loading = ref(false); // loading
   const formRef = ref(null); // 表单实例
-
-  // 是否禁用
-  const disabled = computed(() => {
-    return route.query.type == 'view'
-  })
 
   const fromData = ref({
     {{#each submitParams}}
@@ -127,58 +62,57 @@
 
   // 表单提交
   const submitForm = async () => {
-    formRef.value.validate(async (valid) => {
-      if (valid) {
-        let params = {
-          ...fromData.value,
-          type: 3,
-        };
-        if (route.query.type == "create") {
-          try {
-            loading.value = true;
-            await {{actions.create.apiName}}(params);
-            loading.value = false;
-            proxy.$modal.msgSuccess("新增成功");
-            setTimeout(() => {
-              router.push({
-                path: '{{actions.create.openUrl}}'
-              });
-            }, 1500);
-          } catch (error) {
-            loading.value = false;
-            proxy.$modal.msgError("新增失败");
-          }
-        } else {
-          try {
-            loading.value = true;
-            await {{actions.edit.apiName}}(params);
-            proxy.$modal.msgSuccess("编辑成功");
-            loading.value = false;
-            setTimeout(() => {
-              router.push({
-                path: '{{actions.edit.openUrl}}'
-              });
-            }, 1500);
-          } catch (error) {
-            loading.value = false;
-            proxy.$modal.msgError("编辑失败");
-          }
+    let data = formRef.value.getFormData()
+    let params = {
+      ...data
+    };
+    if (route.query.type == "create") {
+      try {
+        loading.value = true;
+        let res = await {{actions.create.apiName}}(params);
+        loading.value = false;
+        let { code, data, msg } = res;
+        if (code == 200) {
+          proxy.$modal.msgSuccess("新增成功");
+          setTimeout(() => {
+            router.push({
+              path: '{{actions.create.openUrl}}'
+            });
+          }, 1500);
         }
+      } catch (error) {
+        loading.value = false;
       }
-    });
+    } else {
+      try {
+        loading.value = true;
+        let res = await {{actions.edit.apiName}}(params);
+        let { code, data, msg } = res;
+        if (code == 200) {
+          proxy.$modal.msgSuccess("编辑成功");
+          loading.value = false;
+          setTimeout(() => {
+            router.push({
+              path: '{{actions.edit.openUrl}}'
+            });
+          }, 1500);
+        }
+      } catch (error) {
+        loading.value = false;
+      }
+    }
   };
 
   // 取消按钮
   function cancel() {
     router.push({
-      path: '{{actions.view.openUrl}}'
+      path: '{{actions.cancel.openUrl}}'
     });
   }
 
   // 获取详情
   async function getDetail() {
     let params = {
-      type: 3,
       id: route.query.id,
     };
     loading.value = true;
@@ -201,7 +135,7 @@
 </script>
 
 <style scoped lang="scss">
-.cityAreaBannedManage {
+.action {
   height: 100%;
   padding: 0 20px 20px;
   .sub_btn {

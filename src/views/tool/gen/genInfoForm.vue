@@ -28,7 +28,7 @@
             v-if="index2 == 2"
             v-model="info2.url"
             filterable
-            :options="options"
+            :options="apiTreeLists"
             :props="{ value: 'key', label: 'name' }"
             :show-all-levels="false"
             @change="(data) => urlChange(data, info2)"
@@ -63,102 +63,18 @@ import { getApiTreeList } from '@/api/autoCode'
 const props = defineProps({
   info: {
     type: Object,
-    default: () => {
-      return {
-        domains: [
-          {
-            list: [
-              {
-                label: '功能名称',
-                value: '新增'
-              },
-              {
-                label: '接口名称',
-                value: 'addData'
-              },
-              {
-                label: '接口url',
-                value: ''
-              }
-            ]
-          },
-          {
-            list: [
-              {
-                label: '功能名称',
-                value: '编辑'
-              },
-              {
-                label: '接口名称',
-                value: 'editData'
-              },
-              {
-                label: '接口url',
-                value: ''
-              }
-            ]
-          },
-          {
-            list: [
-              {
-                label: '功能名称',
-                value: '查询'
-              },
-              {
-                label: '接口名称',
-                value: 'getData'
-              },
-              {
-                label: '接口url',
-                value: ''
-              }
-            ]
-          },
-          {
-            list: [
-              {
-                label: '功能名称',
-                value: '删除'
-              },
-              {
-                label: '接口名称',
-                value: 'deleteData'
-              },
-              {
-                label: '接口url',
-                value: ''
-              }
-            ]
-          },
-          {
-            list: [
-              {
-                label: '功能名称',
-                value: '更新'
-              },
-              {
-                label: '接口名称',
-                value: 'updateData'
-              },
-              {
-                label: '接口url',
-                value: ''
-              }
-            ]
-          }
-        ]
-      }
-    }
+    default: () => {}
   }
 })
 
 let genInfoForm = ref(null)
-let options = ref([])
+let apiTreeLists = ref([])
+// 获取apiFox 所有接口
 async function getApiTreeLists() {
   let res = await getApiTreeList({ locale: 'zh-CN' }, { cache: true })
   if (res.success) {
-    options.value = res.data || []
-    options.value.forEach((item) => {
+    apiTreeLists.value = res.data || []
+    apiTreeLists.value.forEach((item) => {
       item.children.forEach((info) => {
         info.api = {
           path: `/${info.name}`
@@ -168,13 +84,14 @@ async function getApiTreeLists() {
   }
 }
 
+// 删除接口信息
 function deleteDomain(index) {
   props.info.domains.splice(index, 1)
 }
 
+// 选择接口
 function urlChange(data, item) {
-  let path = findApiPaths(options.value, data)
-  console.log('path:', path, data, item)
+  let path = findApiPaths(apiTreeLists.value, data)
   item.value = path.join('/').replace('///', '/').replace('//', '/')
   item.id = getApiId(data)
 
@@ -201,6 +118,7 @@ function urlChange(data, item) {
     return last.split('.')[1]
   }
 }
+// 新增接口
 function addDomain() {
   props.info.domains.push({
     list: [
@@ -219,14 +137,17 @@ function addDomain() {
     ]
   })
 }
+// 导出数据
 function getFormData() {
   return props.info
 }
+
+// 获取apiFox 所有接口
+getApiTreeLists()
+
 defineExpose({
   getFormData
 })
-
-getApiTreeLists()
 </script>
 <style lang="scss">
 .popper-cascader {

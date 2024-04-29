@@ -36,7 +36,7 @@
         <editForm
           ref="editFormRef"
           :column="info.editColumn"
-          :apiId="addDataApiId"
+          :apiId="createDataApiId"
         ></editForm>
       </el-tab-pane>
       <el-tab-pane label="新增编辑页按钮接口信息" name="editActionFormRef">
@@ -83,7 +83,7 @@ const tables = ref([])
 const info = ref({})
 
 const getDataApiId = ref('')
-const addDataApiId = ref('')
+const createDataApiId = ref('')
 // const editApiId = ref('167758525')
 // const actionApiId = ref('167758523')
 // const deleteApiId = ref('167758526')
@@ -141,48 +141,12 @@ let domains = {
         {
           label: '功能名称',
           value: '新增',
-          disabled: true
+          disabled: true,
         },
         {
           label: '接口名称',
-          value: 'addData',
-          disabled: true
-        },
-        {
-          label: '接口url',
-          value: ''
-        }
-      ]
-    },
-    {
-      list: [
-        {
-          label: '功能名称',
-          value: '编辑',
-          disabled: true
-        },
-        {
-          label: '接口名称',
-          value: 'editData',
-          disabled: true
-        },
-        {
-          label: '接口url',
-          value: ''
-        }
-      ]
-    },
-    {
-      list: [
-        {
-          label: '功能名称',
-          value: '查询',
-          disabled: true
-        },
-        {
-          label: '接口名称',
-          value: 'getData',
-          disabled: true
+          value: 'createData',
+          disabled: true,
         },
         {
           label: '接口url',
@@ -195,12 +159,48 @@ let domains = {
         {
           label: '功能名称',
           value: '详情',
-          disabled: true
+          disabled: true,
         },
         {
           label: '接口名称',
           value: 'getDetails',
-          disabled: true
+          disabled: true,
+        },
+        {
+          label: '接口url',
+          value: ''
+        }
+      ]
+    },
+    {
+      list: [
+        {
+          label: '功能名称',
+          value: '更新',
+          disabled: true,
+        },
+        {
+          label: '接口名称',
+          value: 'updateData',
+          disabled: true,
+        },
+        {
+          label: '接口url',
+          value: ''
+        }
+      ]
+    },
+    {
+      list: [
+        {
+          label: '功能名称',
+          value: '列表',
+          disabled: true,
+        },
+        {
+          label: '接口名称',
+          value: 'getData',
+          disabled: true,
         },
         {
           label: '接口url',
@@ -213,12 +213,12 @@ let domains = {
         {
           label: '功能名称',
           value: '删除',
-          disabled: true
+          disabled: true,
         },
         {
           label: '接口名称',
           value: 'deleteData',
-          disabled: true
+          disabled: true,
         },
         {
           label: '接口url',
@@ -231,12 +231,12 @@ let domains = {
         {
           label: '功能名称',
           value: '导出',
-          disabled: true
+          disabled: true,
         },
         {
           label: '接口名称',
           value: 'exportData',
-          disabled: true
+          disabled: true,
         },
         {
           label: '接口url',
@@ -272,12 +272,15 @@ async function getItemDetail() {
       desc: data.desc,
       type: data.type || '1',
       moduleName: data.moduleName || '',
-      path: data.path || ''
+      path: data.path || '',
+      apiFolder: data.apiFolder || '',
+      pageFolder: data.pageFolder || '',
+      codePath: data.codePath || ''
     }
 
     info.value.apiconfig.domains.forEach((item) => {
-      if (item.list[1].value == 'addData') {
-        addDataApiId.value = item.list[2].id
+      if (item.list[1].value == 'createData') {
+        createDataApiId.value = item.list[2].id
       }
 
       if (item.list[1].value == 'getData') {

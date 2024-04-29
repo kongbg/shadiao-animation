@@ -79,8 +79,8 @@ const action = ref([
       },
       {
         prop: 'apiName',
-        label: 'api名称',
-        value: 'addData',
+        label: '调用api名称',
+        value: 'createData',
         disabled: true,
         type: 'input'
       },
@@ -109,6 +109,12 @@ const action = ref([
         label: '跳转地址',
         value: 'action',
         type: 'input'
+      },
+      {
+        prop: 'showExpression',
+        label: '显示隐藏表达式',
+        value: '',
+        type: 'input'
       }
     ]
   },
@@ -124,7 +130,7 @@ const action = ref([
       },
       {
         prop: 'apiName',
-        label: 'api名称',
+        label: '调用api名称',
         value: 'exportData',
         disabled: true,
         type: 'input'
@@ -153,6 +159,12 @@ const action = ref([
         label: '后缀',
         value: '.xlsx',
         type: 'input'
+      },
+      {
+        prop: 'showExpression',
+        label: '显示隐藏表达式',
+        value: '',
+        type: 'input'
       }
     ]
   },
@@ -168,8 +180,8 @@ const action = ref([
       },
       {
         prop: 'apiName',
-        label: 'api名称',
-        value: 'update',
+        label: '调用api名称',
+        value: 'updateData',
         disabled: true,
         type: 'input'
       },
@@ -198,6 +210,12 @@ const action = ref([
         label: '跳转地址',
         value: 'action',
         type: 'input'
+      },
+      {
+        prop: 'showExpression',
+        label: '显示隐藏表达式',
+        value: '',
+        type: 'input'
       }
     ]
   },
@@ -213,7 +231,7 @@ const action = ref([
       },
       {
         prop: 'apiName',
-        label: 'api名称',
+        label: '调用api名称',
         value: 'getDetails',
         disabled: true,
         type: 'input'
@@ -243,6 +261,12 @@ const action = ref([
         label: '跳转地址',
         value: 'action',
         type: 'input'
+      },
+      {
+        prop: 'showExpression',
+        label: '显示隐藏表达式',
+        value: '',
+        type: 'input'
       }
     ]
   },
@@ -258,7 +282,7 @@ const action = ref([
       },
       {
         prop: 'apiName',
-        label: 'api名称',
+        label: '调用api名称',
         value: 'deleteData',
         disabled: true,
         type: 'input'
@@ -281,6 +305,12 @@ const action = ref([
         label: '提示文案',
         value: '确定删除该咨询记录吗？',
         type: 'input'
+      },
+      {
+        prop: 'showExpression',
+        label: '显示隐藏表达式',
+        value: '',
+        type: 'input'
       }
     ]
   },
@@ -290,7 +320,7 @@ const action = ref([
     list: [
       {
         prop: 'apiName',
-        label: 'api名称',
+        label: '调用api名称',
         value: 'getData',
         disabled: true,
         type: 'input'

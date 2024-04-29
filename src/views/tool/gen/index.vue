@@ -228,7 +228,7 @@
       width="80%"
       top="5vh"
       append-to-body
-      class="scrollbar"
+      class="scrollbar preview-code"
     >
       <el-tabs v-model="preview.activeName">
         <el-tab-pane
@@ -463,3 +463,16 @@ function handleDelete(row) {
 
 getList()
 </script>
+
+<style lang="scss">
+.preview-code {
+  .el-dialog__body {
+    height: 600px;
+    overflow: hidden !important;
+    .el-tabs__content {
+      height: 500px;
+      overflow: auto;
+    }
+  }
+}
+</style>

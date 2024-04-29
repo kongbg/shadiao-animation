@@ -49,7 +49,7 @@ export default class appController {
       ctx.body = {
         code: 200,
         data: null,
-        msg: `代码已生成在dist/${data.moduleName}目录下`
+        msg: `代码已生成在${data.path}}/${data.moduleName}目录下`
       }
     } else {
       let code = createCode(config)

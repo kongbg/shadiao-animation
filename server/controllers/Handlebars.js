@@ -17,150 +17,42 @@ let columns = []
 // 注册 Handlebars 的 helper 函数
 registerHelper()
 
-let domains = {
-  domains: [
-    {
-      list: [
-        {
-          label: '功能名称',
-          value: '新增',
-          disabled: true
-        },
-        {
-          label: '接口名称',
-          value: 'addData',
-          disabled: true
-        },
-        {
-          label: '接口url',
-          value: ''
-        }
-      ]
-    },
-    {
-      list: [
-        {
-          label: '功能名称',
-          value: '编辑',
-          disabled: true
-        },
-        {
-          label: '接口名称',
-          value: 'editData',
-          disabled: true
-        },
-        {
-          label: '接口url',
-          value: ''
-        }
-      ]
-    },
-    {
-      list: [
-        {
-          label: '功能名称',
-          value: '查询',
-          disabled: true
-        },
-        {
-          label: '接口名称',
-          value: 'getData',
-          disabled: true
-        },
-        {
-          label: '接口url',
-          value: ''
-        }
-      ]
-    },
-    {
-      list: [
-        {
-          label: '功能名称',
-          value: '详情',
-          disabled: true
-        },
-        {
-          label: '接口名称',
-          value: 'getDetails',
-          disabled: true
-        },
-        {
-          label: '接口url',
-          value: ''
-        }
-      ]
-    },
-    {
-      list: [
-        {
-          label: '功能名称',
-          value: '删除',
-          disabled: true
-        },
-        {
-          label: '接口名称',
-          value: 'deleteData',
-          disabled: true
-        },
-        {
-          label: '接口url',
-          value: ''
-        }
-      ]
-    },
-    {
-      list: [
-        {
-          label: '功能名称',
-          value: '导出',
-          disabled: true
-        },
-        {
-          label: '接口名称',
-          value: 'exportData',
-          disabled: true
-        },
-        {
-          label: '接口url',
-          value: ''
-        }
-      ]
-    }
-  ]
-}
-
 export const writeFile = (options) => {
   let code = createCode(options)
   let tempCode = JSON.parse(code)
+  let {path, apiFolder, pageFolder, moduleName} = options
   for (const key in tempCode) {
     let distPath = ''
     if (key == 'api') {
-      distPath = resolvePath(`src/api/${options.moduleName}/index.js`)
+      distPath = resolvePath(`${path?path+'/':''}${apiFolder?apiFolder+'/':''}index.js`)
+      console.log('distPath:', distPath)
       createFile(distPath, tempCode[key])
     }
     if (key == 'list') {
-      distPath = resolvePath(`src/views/${options.path}/index.vue`)
+      distPath = resolvePath(`${path?path+'/':''}${pageFolder?pageFolder+'/':''}index.vue`)
+      console.log('distPath:', distPath)
       createFile(distPath, tempCode[key])
     }
     if (key == 'config') {
-      distPath = resolvePath(`src/views/${options.path}/config.js`)
+      distPath = resolvePath(`${path?path+'/':''}${pageFolder?pageFolder+'/':''}config.js`)
+      console.log('distPath:', distPath)
       createFile(distPath, tempCode[key])
     }
     if (key == 'action') {
-      distPath = resolvePath(`src/views/${options.path}/action/index.vue`)
+      distPath = resolvePath(`${path?path+'/':''}${pageFolder?pageFolder+'/':''}action/index.vue`)
+      console.log('distPath:', distPath)
       createFile(distPath, tempCode[key])
     }
   }
 }
 export const createCode = (options) => {
-  options.apiconfig = JSON.parse(options.apiconfig || JSON.stringify(domains))
+  options.apiconfig = JSON.parse(options.apiconfig || JSON.stringify({}))
   options.queryColumn = JSON.parse(options.queryColumn || [])
   options.listColumn = JSON.parse(options.listColumn || [])
   options.listActions = JSON.parse(options.listActions || [])
   options.addColumn = JSON.parse(options.addColumn || [])
   options.editColumn = JSON.parse(options.editColumn || [])
-  options.detailColumn = JSON.parse(options.detailColumn || [])
+  options.editActions = JSON.parse(options.editActions || [])
 
   let code = {}
   let configs = []
@@ -250,6 +142,8 @@ function createList(options) {
   let config = {
     apis,
     moduleName: options.moduleName,
+    codePath: options.codePath,
+    path: options.path,
     actions,
     // actions: {
     //   // 新增
@@ -320,6 +214,8 @@ function createConfig(options) {
     columns,
     dicts,
     moduleName: options.moduleName,
+    codePath: options.codePath,
+    path: options.path,
     configApis
   }
   let filePath = resolvePath(
@@ -336,46 +232,59 @@ function createConfig(options) {
 }
 
 function createAction(options) {
+  // console.log('createAction：', options.editActions)
   // 获取所有字典
   let dicts = getDicts(searchConfig, columns)
   // 获取所有提交参数，并设置默认值
   let submitParams = getSubmitParams(options)
   // console.log('submitParams:', submitParams)
+
+  let actions = {}
+  options.editActions.forEach(item=>{
+    actions[item.key] = {}
+    item.list.forEach(info => {
+      // console.log('info:', info)
+      actions[item.key][info.prop] = info.value
+    })
+  })
   // 详情配置
   let config = {
     apis,
     dicts,
     moduleName: options.moduleName,
+    codePath: options.codePath,
+    path: options.path,
     submitParams,
-    actions: {
-      // 新增
-      create: {
-        show: true,
-        apiName: 'addData',
-        btnTxt: '新增',
-        openType: '1', // 1-跳转，2-弹窗
-        openUrl: 'index' // 跳转地址
-      },
-      // 编辑
-      edit: {
-        show: true,
-        apiName: 'update',
-        btnTxt: '编辑',
-        openType: '1', // 1-跳转，2-弹窗
-        openUrl: 'index' // 跳转地址
-      },
-      // 查看
-      view: {
-        show: true,
-        apiName: 'getDetails',
-        btnTxt: '查看',
-        openType: '1', // 1-跳转，2-弹窗
-        openUrl: 'index' // 跳转地址
-      }
-    },
-    createApiName: 'addData',
+    actions,
+    // actions: {
+    //   // 新增
+    //   create: {
+    //     show: true,
+    //     apiName: 'createData',
+    //     btnTxt: '新增',
+    //     openType: '1', // 1-跳转，2-弹窗
+    //     openUrl: 'index' // 跳转地址
+    //   },
+    //   // 编辑
+    //   edit: {
+    //     show: true,
+    //     apiName: 'updateData',
+    //     btnTxt: '编辑',
+    //     openType: '1', // 1-跳转，2-弹窗
+    //     openUrl: 'index' // 跳转地址
+    //   },
+    //   // 查看
+    //   view: {
+    //     show: true,
+    //     apiName: 'getDetails',
+    //     btnTxt: '查看',
+    //     openType: '1', // 1-跳转，2-弹窗
+    //     openUrl: 'index' // 跳转地址
+    //   }
+    // },
+    createApiName: 'createData',
     getDataApiName: 'getData',
-    updateApiName: 'update',
+    updateApiName: 'updateData',
     delateApiName: 'deleteData',
     getDetailsApiName: 'getDetails'
   }
@@ -531,7 +440,7 @@ function getDicts(searchConfig, columns) {
   let list = [...searchConfig, ...columns]
   list.forEach((item) => {
     // 配置了字典，且数据类型是下拉或者级联的才去请求接口
-    if (item.dict && !dict.includes(item.dict) && needGetApi(item)) {
+    if (item.dict && !dict.includes(item.dict)) {
       dict.push(item.dict)
     }
 

@@ -12,15 +12,15 @@
     <!-- 列表工具 -->
     <div class="toble-tools">
       <div class="left">
-        <!-- 新增 -->
+        <!-- {{actions.create.btnTx}} -->
         {{#if (and2 actions.create actions.create.show)}}
-        <el-button type="{{actions.create.type}}" @click="tableBtnFn('create')">{{ actions.create.btnTxt }}</el-button>
+        <el-button {{#if actions.create.showExpression}}v-if="{{actions.create.showExpression}}"{{/if}} type="{{actions.create.type}}" @click="tableBtnFn('create')">{{ actions.create.btnTxt }}</el-button>
         {{/if}}
       </div>
       <div class="right">
-        <!-- 导出 -->
+        <!-- {{actions.export.btnTxt}} -->
         {{#if (and2 actions.export actions.export.show)}}
-        <el-button type="{{actions.export.type}}" @click="tableBtnFn('export')" :loading="exportLoading">{{ actions.export.btnTxt }}</el-button>
+        <el-button {{#if actions.export.showExpression}}v-if="{{actions.export.showExpression}}"{{/if}} type="{{actions.export.type}}" @click="tableBtnFn('export')" :loading="exportLoading">{{ actions.export.btnTxt }}</el-button>
         {{/if}}
       </div>
     </div>
@@ -37,17 +37,17 @@
       :loading="loading"
     >
       <template #action="{ row }">
-        <!-- 查看 -->
+        <!-- {{actions.view.btnTxt}} -->
         {{#if (and2 actions.view actions.view.show)}}
-        <el-button size="small" type="{{actions.view.type}}" @click="tableBtnFn('view', row)" text >{{ actions.view.btnTxt }}</el-button>
+        <el-button {{#if actions.view.showExpression}}v-if="{{{actions.view.showExpression}}}"{{/if}} size="small" type="{{actions.view.type}}" @click="tableBtnFn('view', row)" text >{{ actions.view.btnTxt }}</el-button>
         {{/if}}
-        <!-- 编辑 -->
+        <!-- {{actions.edit.btnTxt}} -->
         {{#if (and2 actions.edit actions.edit.show)}}
-        <el-button size="small" type="{{actions.edit.type}}" @click="tableBtnFn('edit', row)" text >{{ actions.edit.btnTxt }}</el-button>
+        <el-button {{#if actions.edit.showExpression}}v-if="{{{actions.edit.showExpression}}}"{{/if}} size="small" type="{{actions.edit.type}}" @click="tableBtnFn('edit', row)" text >{{ actions.edit.btnTxt }}</el-button>
         {{/if}}
-        <!-- 删除 -->
+        <!-- {{actions.delete.btnTxt}} -->
         {{#if (and2 actions.delete actions.delete.show)}}
-        <el-button size="small" type="{{actions.delete.type}}"  @click="tableBtnFn('delete', row)" :loading="delLoading" text >{{ actions.delete.btnTxt }}</el-button>
+        <el-button {{#if actions.delete.showExpression}}v-if="{{{actions.delete.showExpression}}}"{{/if}} size="small" type="{{actions.delete.type}}"  @click="tableBtnFn('delete', row)" :loading="delLoading" text >{{ actions.delete.btnTxt }}</el-button>
         {{/if}}
       </template>
     </TableView>
@@ -64,7 +64,7 @@ import {
     {{#each apis}}
         {{this.methodName}}, // {{this.name}}
     {{/each}}
-} from "@/api/{{moduleName}}/index.js"; // 接口
+} from "@/api/{{codePath}}/{{moduleName}}/index.js"; // 接口
 
 const router = useRouter(); // 路由实例
 const { proxy } = getCurrentInstance();
@@ -81,8 +81,7 @@ const currentPages = ref(1); // 当前页码
 async function getList() {
     let pageInfo = {
         pageNum: currentPages.value,
-        pageSize: pageSize.value,
-        type: 3, // 审核类型（1-政策解读文件共享； 2-业务学习平台； 3-建筑废弃物案例展示 ）
+        pageSize: pageSize.value
     };
     let params = { ...searchForm.value, ...pageInfo };
     loading.value = true;
