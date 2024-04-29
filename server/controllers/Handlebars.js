@@ -6,6 +6,8 @@ function resolvePath(filePath) {
   return path.resolve(__dirname, filePath)
 }
 
+/** 全局变量 */ 
+// 写入api.js接口
 let apis = []
 // config中需要引入的api
 let configApis = []
@@ -17,6 +19,7 @@ let columns = []
 // 注册 Handlebars 的 helper 函数
 registerHelper()
 
+// 写入内容到本地文件
 export const writeFile = (options) => {
   let code = createCode(options)
   let tempCode = JSON.parse(code)
@@ -25,61 +28,78 @@ export const writeFile = (options) => {
     let distPath = ''
     if (key == 'api') {
       distPath = resolvePath(`${path?path+'/':''}${apiFolder?apiFolder+'/':''}index.js`)
-      console.log('distPath:', distPath)
+      // console.log('distPath:', distPath)
       createFile(distPath, tempCode[key])
     }
     if (key == 'list') {
       distPath = resolvePath(`${path?path+'/':''}${pageFolder?pageFolder+'/':''}index.vue`)
-      console.log('distPath:', distPath)
+      // console.log('distPath:', distPath)
       createFile(distPath, tempCode[key])
     }
     if (key == 'config') {
       distPath = resolvePath(`${path?path+'/':''}${pageFolder?pageFolder+'/':''}config.js`)
-      console.log('distPath:', distPath)
+      // console.log('distPath:', distPath)
       createFile(distPath, tempCode[key])
     }
     if (key == 'action') {
       distPath = resolvePath(`${path?path+'/':''}${pageFolder?pageFolder+'/':''}action/index.vue`)
-      console.log('distPath:', distPath)
+      // console.log('distPath:', distPath)
       createFile(distPath, tempCode[key])
     }
   }
 }
+
+// 通过配置创建文件
 export const createCode = (options) => {
+  // api 配置
   options.apiconfig = JSON.parse(options.apiconfig || JSON.stringify({}))
+  // 搜索组件配置
   options.queryColumn = JSON.parse(options.queryColumn || [])
+  // 列表页表格配置
   options.listColumn = JSON.parse(options.listColumn || [])
+  // 列表页按钮，接口配置
   options.listActions = JSON.parse(options.listActions || [])
+  // 新增接口参数配置
   options.addColumn = JSON.parse(options.addColumn || [])
+  // 编辑接口参数配置
   options.editColumn = JSON.parse(options.editColumn || [])
+  // 编辑页面按钮，接口配置
   options.editActions = JSON.parse(options.editActions || [])
 
+  // 存储各个类型文件代码
   let code = {}
+  // 构成每种模板的配置
   let configs = []
   if (options.type == 1) {
+    // 列表-搜索-详情：基本的增删查改
     configs = ['api', 'list', 'action', 'config']
-  }
+  }// todo 含tabs 的模板
 
+  // 生成各种类型的代码
   configs.forEach((conf) => {
     switch (conf) {
       case 'list':
+        // 列表页
         code[conf] = createList(options)
         break
       case 'api':
+        // api文件
         code[conf] = createApi(options)
         break
       case 'config':
+        // config.js 配置文件
         code[conf] = createConfig(options)
         break
       case 'action':
+        // 详情页
         code[conf] = createAction(options)
         break
     }
   })
-
   return JSON.stringify(code)
 }
 
+// 生成api文件
 function createApi(options) {
   // 搜索组件配置
   searchConfig = getSearchConfig(options)
@@ -88,13 +108,18 @@ function createApi(options) {
 
   // api配置
   let config = {
+    // api文件名称
     apiModuleName: options.apiconfig.apiModuleName,
+    // 列表页，详情页所有接口
     apis: [],
+    // config.js 文件中的接口
     configApis: []
   }
+  // 模板路径
   let filePath = resolvePath(
     `./server/template/${getTypeTxt(options.type)}/api/index.js`
   )
+  // 将页面配置转化成能生成接口的配置
   options.apiconfig.domains.forEach((item) => {
     let obj = {
       name: item.list[0].value,
@@ -105,6 +130,7 @@ function createApi(options) {
     config.apis.push(obj)
   })
 
+  // 从搜索配置中找到数据来源设置中需要用的的接口，将来需要在config.js中引入
   options.queryColumn.forEach(item=>{
     if (item?.dataSource?.sourceType == 2) {
       let obj = {
@@ -130,7 +156,9 @@ function createApi(options) {
   return vueContent
 }
 
+// 生成列表页代码
 function createList(options) {
+  // 列表页按钮，接口配置
   let actions = {}
   options.listActions.forEach(item=>{
     actions[item.key] = {}
@@ -191,7 +219,7 @@ function createList(options) {
     exportFeilName: '电子围栏',
     suffix: '.xlsx'
   }
-
+  // 模板路径
   let filePath = resolvePath(
     `./server/template/${getTypeTxt(options.type)}/index.vue`
   )
@@ -205,6 +233,7 @@ function createList(options) {
   return vueContent
 }
 
+// 生成config.js
 function createConfig(options) {
   // 获取所有字典
   let dicts = getDicts(searchConfig, columns)
@@ -231,26 +260,21 @@ function createConfig(options) {
   return vueContent
 }
 
+// 生成详情页
 function createAction(options) {
-  // console.log('createAction：', options.editActions)
-  // 获取所有字典
-  let dicts = getDicts(searchConfig, columns)
   // 获取所有提交参数，并设置默认值
   let submitParams = getSubmitParams(options)
-  // console.log('submitParams:', submitParams)
 
   let actions = {}
   options.editActions.forEach(item=>{
     actions[item.key] = {}
     item.list.forEach(info => {
-      // console.log('info:', info)
       actions[item.key][info.prop] = info.value
     })
   })
   // 详情配置
   let config = {
     apis,
-    dicts,
     moduleName: options.moduleName,
     codePath: options.codePath,
     path: options.path,
@@ -282,11 +306,6 @@ function createAction(options) {
     //     openUrl: 'index' // 跳转地址
     //   }
     // },
-    createApiName: 'createData',
-    getDataApiName: 'getData',
-    updateApiName: 'updateData',
-    delateApiName: 'deleteData',
-    getDetailsApiName: 'getDetails'
   }
 
   let filePath = resolvePath(
@@ -302,9 +321,9 @@ function createAction(options) {
   return vueContent
 }
 
+// 获取新增，编辑的参数
 function getSubmitParams(options) {
   let list = []
-
   options.editColumn.forEach(item => {
     // 一般情况下。新增跟编辑是一样的参数
     if (isTrue(item.isEdit)) {
@@ -317,7 +336,6 @@ function getSubmitParams(options) {
         disabled: item.disabled
       }
 
-
       if(['select', 'areacascader'].includes(item.editZDType)) {
         obj.value = `[]`
         obj.options = `[]`// todo 根据数据来源去配置
@@ -327,7 +345,6 @@ function getSubmitParams(options) {
       list.push(obj)
     }
   })
-
   return list
 }
 
@@ -341,6 +358,7 @@ function getJavaType(javaType) {
   }
   return ''
 }
+
 // 获取类型名称
 function getTypeTxt(type) {
   let typeTxtMap = {
@@ -356,15 +374,16 @@ function getSearchConfig(options) {
   options.queryColumn.forEach((item) => {
     let obj = {}
     if (isTrue(item.isQuery) || isTrue(item.isExtraQuery)) {
-      // console.log('item:', item)
       obj.type = item.queryType
       obj.prop = item.columnName
       obj.label = item.label
 
+      // 数据来源为字典
       if (item?.dataSource?.sourceType == '1') {
         obj.dict = item.dataSource.dict
         obj.api = ''
       }
+      // 数据；来源为接口 todo 配置成功回调
       if (item?.dataSource?.sourceType == '2') {
         obj.dict = ''
         obj.api = `async () => {
@@ -380,51 +399,64 @@ function getSearchConfig(options) {
           obj.props = item.dataSource.props || ''
         }
       }
+      // todo 手动录入下拉框数据
 
       if (item.options) {
         obj.options = item.options
       }
 
+      // 隐藏参数，不在提交表单中显示，单提交时需要
       obj.show = !item.isExtraQuery // 隐藏的参数，不在搜索组件中显示
       list.push(obj)
     }
   })
   return list
 }
+
 // 获取表头配置
 function getColumnsConfig(options) {
+  // 默认都有序号列
   let list = [{ type: 'index', label: '序号' }]
   options.listColumn.forEach((item) => {
     let obj = {}
     if (isTrue(item.isList)) {
+      // 列字段
       obj.prop = item.columnName
+      // 表头文案
       obj.label = item.label
 
+      //字典
       if (item.dict) {
         obj.dict = item.dict
       }
 
+      //插槽
       if (item.slot) {
         obj.slot = item.slot
       }
       list.push(obj)
     }
   })
+  // 默认有操作列
   list.push({ slot: 'action' })
   return list
 }
+
 // 注册 Handlebars 的 helper 函数
 function registerHelper() {
   // 注册 Handlebars 的 helper 函数 eq，用于判断相等
   Handlebars.registerHelper('eq', function (a, b) {
     return a == b
   })
+  // 判断两参数都是true
   Handlebars.registerHelper('and2', function (a, b) {
     return a && b
   })
+  // 判断是否存在
   Handlebars.registerHelper('isHas', function (a) {
     return Boolean(a)
   })
+  // 出来接口参数格式问题
   Handlebars.registerHelper('getParmas', function (type) {
     if (['get'].includes(type)) {
       return 'params'
@@ -455,6 +487,7 @@ function getDicts(searchConfig, columns) {
   return dict
 }
 
+// 为了避免 字符串为true的问题
 function isTrue(type) {
   return type == true && type == 1
 }

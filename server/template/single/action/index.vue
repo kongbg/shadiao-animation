@@ -1,11 +1,11 @@
 <template>
   <div class="action">
     
-    <Form ref="formRef" :fromData="fromData" :rules="rules" :dicts='dicts'></Form>
+    <Form ref="formRef" :fromData="fromData" :rules="rules"></Form>
 
     <el-row
-      justify="center"
       v-if="route.query.type != 'view'"
+      justify="center"
       :gutter="20"
       class="sub_btn"
     >
