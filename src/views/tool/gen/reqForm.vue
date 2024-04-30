@@ -334,16 +334,21 @@ async function getApiDetail() {
     columnsInfo.value = res.data.find((item) => {
       return item.id == id
     })
-    // body参数id
-    columnsInfo.value.requestBodyId = getId(
-      columnsInfo.value.requestBody?.jsonSchema?.$ref
-    )
-    //query参数id
-    columnsInfo.value.requestQueryId = getId('')
-    // 响应参数
-    columnsInfo.value.resId = getId(
-      columnsInfo.value.responses[0]?.jsonSchema?.$ref
-    )
+
+    if (columnsInfo.value) {
+      // body参数id
+      columnsInfo.value.requestBodyId = getId(
+        columnsInfo.value.requestBody?.jsonSchema?.$ref
+      )
+      //query参数id
+      columnsInfo.value.requestQueryId = getId('')
+      // 响应参数
+      columnsInfo.value.resId = getId(
+        columnsInfo.value.responses[0]?.jsonSchema?.$ref
+      )
+    } else {
+      proxy.$modal.msgError(`没有查询到接口信息，请检查接口信息是否配置`);
+    }
   }
 }
 
@@ -374,6 +379,11 @@ function getColumns() {
   // parameters.query 是query 传参数
 
   let properties = {}
+
+  if (!columnsInfo.value?.requestBodyId) {
+    return properties
+  }
+
   if (columnsInfo.value.requestBodyId) {
     let bodyParams = dataSchema.value.find(
       (item) => item.id == columnsInfo.value.requestBodyId
@@ -392,27 +402,41 @@ function getColumns() {
 
 // 获取表格数据
 function initTableData(properties = {}) {
-  initColumnMap()
-  for (const key in properties) {
-    let item = properties[key]
-    let realItem = columnMap[key]
-    let obj = {
-      columnName: key,
-      columnComment: item.description,
-      label: realItem?.label || item.description,
-      javaType: item.type,
-      isInsert: false,
-      isEdit: false,
-      isList: false,
-      queryType: realItem?.queryType || 'input',
-      isQuery: realItem?.isQuery || false,
-      queryIndex: realItem?.queryIndex || '',
-      isExtraQuery: realItem?.isExtraQuery || false,
-      dict: realItem?.dict || '',
-      optionDict: realItem?.optionDict || '',
-      dataSource: realItem?.dataSource || {}
+  if(Object.keys(properties).length) {
+    initColumnMap()
+    for (const key in properties) {
+      let item = properties[key]
+      let realItem = columnMap[key]
+      let obj = {
+        columnName: key,
+        columnComment: item.description,
+        label: realItem?.label || item.description,
+        javaType: item.type,
+        isInsert: false,
+        isEdit: false,
+        isList: false,
+        queryType: realItem?.queryType || 'input',
+        isQuery: realItem?.isQuery || false,
+        queryIndex: realItem?.queryIndex || '',
+        isExtraQuery: realItem?.isExtraQuery || false,
+        dict: realItem?.dict || '',
+        optionDict: realItem?.optionDict || '',
+        dataSource: realItem?.dataSource || {}
+      }
+      realItem.inited = true // 已还原状态
+      tableData.value.push(obj)
     }
-    tableData.value.push(obj)
+    let errStr = ''
+    for (const key in columnMap) {
+      if(!columnMap[key].inited){
+        errStr+=`${columnMap[key].columnComment}(${columnMap[key].columnComment},)`
+      }
+    }
+    if(errStr){
+      proxy.$modal.msgError(`字段：${errStr} 有变动，请检查！`);
+    }
+  } else {
+    tableData.value = props.column
   }
   tableData.value.sort((a, b) => {
     // 如果a的字段为空，则a排在b后面

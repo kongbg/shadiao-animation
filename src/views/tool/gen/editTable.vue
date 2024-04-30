@@ -277,14 +277,13 @@ async function getItemDetail() {
       pageFolder: data.pageFolder || '',
       codePath: data.codePath || ''
     }
-
     info.value.apiconfig.domains.forEach((item) => {
       if (item.list[1].value == 'createData') {
         createDataApiId.value = item.list[2].id
       }
 
       if (item.list[1].value == 'getData') {
-        getDataApiId.value = item.list[2].id
+        getDataApiId.value = 111//item.list[2].id
       }
     })
   }

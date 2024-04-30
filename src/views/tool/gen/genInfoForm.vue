@@ -28,6 +28,7 @@
             v-if="index2 == 2"
             v-model="info2.url"
             filterable
+            clearable
             :options="apiTreeLists"
             :props="{ value: 'key', label: 'name' }"
             :show-all-levels="false"
@@ -91,31 +92,35 @@ function deleteDomain(index) {
 
 // 选择接口
 function urlChange(data, item) {
-  let path = findApiPaths(apiTreeLists.value, data)
-  item.value = path.join('/').replace('///', '/').replace('//', '/')
-  item.id = getApiId(data)
+  if (data) {
+    let path = findApiPaths(apiTreeLists.value, data)
+    item.value = path.join('/').replace('///', '/').replace('//', '/')
+    item.id = getApiId(data)
 
-  function findApiPaths(data, keys) {
-    let result = []
-    let children = data
-    keys.forEach((key) => {
-      let info = children.find((item) => item.key == key)
-      if (info?.api?.path) {
-        item.method = info.api.method
-        result.push(info?.api?.path)
-      } else {
-        result.push('')
-      }
-      children = info.children || []
-    })
-    return result
-  }
+    function findApiPaths(data, keys) {
+      let result = []
+      let children = data
+      keys.forEach((key) => {
+        let info = children.find((item) => item.key == key)
+        if (info?.api?.path) {
+          item.method = info.api.method
+          result.push(info?.api?.path)
+        } else {
+          result.push('')
+        }
+        children = info.children || []
+      })
+      return result
+    }
 
-  console.log('item:', item)
-
-  function getApiId(data) {
-    let last = data[data.length - 1]
-    return last.split('.')[1]
+    function getApiId(data) {
+      let last = data[data.length - 1]
+      return last.split('.')[1]
+    }
+  } else {
+    item.id = ''
+    item.method = ''
+    item.value = ''
   }
 }
 // 新增接口
