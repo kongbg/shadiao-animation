@@ -222,33 +222,7 @@
       @pagination="getList"
     />
     <!-- 预览界面 -->
-    <el-dialog
-      :title="preview.title"
-      v-model="preview.open"
-      width="80%"
-      top="5vh"
-      append-to-body
-      class="scrollbar preview-code"
-    >
-      <el-tabs v-model="preview.activeName">
-        <el-tab-pane
-          v-for="(value, key) in preview.data"
-          :label="key"
-          :name="key"
-          :key="value"
-        >
-          <el-link
-            :underline="false"
-            icon="DocumentCopy"
-            v-copyText="value"
-            v-copyText:callback="copyTextSuccess"
-            style="float: right"
-            >&nbsp;复制</el-link
-          >
-          <pre>{{ value }}</pre>
-        </el-tab-pane>
-      </el-tabs>
-    </el-dialog>
+    <preview-code ref="previewCodeRef" :code="preview.data" :type="preview.type"></preview-code>
     <import-table ref="importRef" @ok="handleQuery" />
     <create-table ref="createRef" @ok="handleCreate" />
   </div>
@@ -263,9 +237,11 @@ import {
   synchDb
 } from '@/api/tool/gen'
 import { getConfigs, addConfig, previewTable2 } from '@/api/autoCode'
+import { getModules, addcodeModule, deleteModule } from '@/api/codeModule'
 import router from '@/router'
 import importTable from './importTable'
 import createTable from './createTable'
+import previewCode from './previewCode'
 
 const route = useRoute()
 const { proxy } = getCurrentInstance()
@@ -292,7 +268,8 @@ const data = reactive({
     open: false,
     title: '代码预览',
     data: {},
-    activeName: 'api'
+    activeName: 'api',
+    type: ''
   }
 })
 
@@ -316,7 +293,7 @@ async function getList() {
     page: queryParams.pageNum,
     pageSize: queryParams.pageSize
   }
-  let res = await getConfigs(params)
+  let res = await getModules(params)
   loading.value = false
   let { code, data, msg } = res
   if (code == 200) {
@@ -331,7 +308,7 @@ async function handleCreate(option) {
   let params = {
     ...option
   }
-  let res = await addConfig(params)
+  let res = await addcodeModule(params)
   loading.value = false
   let { code, data, msg } = res
   if (code == 200) {
@@ -405,28 +382,29 @@ async function handlePreview(row) {
   let res = await previewTable2(params)
   loading.value = false
   let { code, data, msg } = res
-  data.code = JSON.parse(data.code)
+  
+  data.forEach(item=>{
+    item.code = JSON.parse(item.code)
+  })
   if (code == 200) {
-    preview.value.data = data.code
-    preview.value.open = true
-    preview.value.activeName = 'api'
+    proxy.$refs['previewCodeRef'].show()
+    preview.value.data = data
+    preview.value.type = row.type
   }
 }
 // 生成代码
 async function handleGenTableCreate(row) {
+  debugger
   loading.value = true
   let params = {
     id: row.id,
-    moduleName: row.moduleName
+    isWrite: true
   }
   let res = await previewTable2(params)
   loading.value = false
   let { code, data, msg } = res
-  data.code = JSON.parse(data.code)
   if (code == 200) {
-    preview.value.data = data.code
-    preview.value.open = true
-    preview.value.activeName = 'api'
+    proxy.$modal.msgSuccess('生成成功')
   }
 }
 /** 复制代码成功 */
@@ -443,36 +421,31 @@ function handleSelectionChange(selection) {
 /** 修改按钮操作 */
 function handleEditTable(row) {
   router.push({
-    path: '/tool/gen-edit/index/' + row.id
+    path: '/tool/gen-edit/index/' + row.id,
+    query: {
+      type: row.type
+    }
   })
 }
 /** 删除按钮操作 */
 function handleDelete(row) {
-  const tableIds = row.tableId || ids.value
+  const id = row.id
   proxy.$modal
-    .confirm('是否确认删除表编号为"' + tableIds + '"的数据项？')
+    .confirm('是否确认删除表编号为"' + id + '"的数据项？')
     .then(function () {
-      return delTable(tableIds)
+      return handleDeleteModule(id)
     })
-    .then(() => {
-      getList()
-      proxy.$modal.msgSuccess('删除成功')
-    })
-    .catch(() => {})
+}
+async function handleDeleteModule (id) {
+  let res = await deleteModule({id})
+  loading.value = false
+  let { code, data, msg } = res
+  if (code == 200) {
+    getList()
+    proxy.$modal.msgSuccess('删除成功')
+  }
 }
 
 getList()
 </script>
 
-<style lang="scss">
-.preview-code {
-  .el-dialog__body {
-    height: 600px;
-    overflow: hidden !important;
-    .el-tabs__content {
-      height: 500px;
-      overflow: auto;
-    }
-  }
-}
-</style>

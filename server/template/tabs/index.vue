@@ -1,26 +1,26 @@
 <template>
-  <div class="electronSealApp">
+  <div class="app-container">
     <el-tabs v-model="tabIndex" class="demo-tabs">
-      <el-tab-pane label="政务侧电子印章" :name="0">
-        <List1></List1>
+      {{#each tabConfig }}
+      <el-tab-pane label="{{this.tabName}}" :name="{{indexPlusOne @index}}">
+        <List{{indexPlusOne @index}}></List{{indexPlusOne @index}}>
       </el-tab-pane>
-      <el-tab-pane label="公众侧电子印章" :name="1">
-        <List2></List2>
-      </el-tab-pane>
+      {{/each}}
     </el-tabs>
   </div>
 </template>
 <script setup>
 import { useProvideSearchFormStore } from '@/hooks/useSearchFormStore'
 const { tabIndex, clearStorage } = useProvideSearchFormStore()
-import List1 from './list/list1.vue'
-import List2 from './list/list2.vue'
-const activeName = ref('0')
+{{#each tabConfig }}
+import List{{indexPlusOne @index}} from './list/list{{indexPlusOne @index}}.vue'
+{{/each}}
+const activeName = ref('1')
 </script>
 
-<style scoped>
-.electronSealApp {
+<style lang="scss" scoped>
+.app-container {
+  overflow: auto;
   height: 100%;
-  padding: 0 20px 20px;
 }
 </style>

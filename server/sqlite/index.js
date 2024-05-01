@@ -13,11 +13,19 @@ class SQLiteDB {
   }
   
   insertData(tableName, data) {
-    const columns = Object.keys(data).join(', ');
-    const placeholders = Object.keys(data).map(() => '?').join(', ');
-    const values = Object.values(data);
-    const query = `INSERT INTO ${tableName} (${columns}) VALUES (${placeholders})`;
-    this.db.run(query, values);
+    return new Promise(resolve=>{
+      const columns = Object.keys(data).join(', ');
+      const placeholders = Object.keys(data).map(() => '?').join(', ');
+      const values = Object.values(data);
+      const query = `INSERT INTO ${tableName} (${columns}) VALUES (${placeholders})`;
+      this.db.run(query, values, function(err){
+        if (err) {
+          resolve([err, null])
+        } else {
+          resolve([null, this])
+        }
+      });
+    })
   }
   
   updateData(tableName, data, condition) {

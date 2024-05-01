@@ -5,28 +5,12 @@ const db = new SQLiteDB('aotuCode.db')
 // 创建表
 const columns = [
   { name: 'id', type: 'INTEGER PRIMARY KEY AUTOINCREMENT' },
-  { name: 'mid', type: 'TEXT' }, // 父级模块id
   { name: 'name', type: 'TEXT' }, // 名称
   { name: 'desc', type: 'TEXT' }, // 描述
-  { name: 'tabName', type: 'TEXT' }, // tabName
-  { name: 'tabId', type: 'TEXT' }, // tabId
-  { name: 'listColumn', type: 'TEXT' }, // 列表字段配置
-  { name: 'listActions', type: 'TEXT' }, // 列表按钮接口配置
-  { name: 'queryColumn', type: 'TEXT' }, // 查询字段配置
-  { name: 'addColumn', type: 'TEXT' }, //新增字段配置
-  { name: 'editColumn', type: 'TEXT' }, //编辑字段配置
-  { name: 'editActions', type: 'TEXT' }, // 详情按钮接口配置
-  { name: 'detailColumn', type: 'TEXT' }, // 详情字段配置
-  { name: 'apiconfig', type: 'TEXT' }, // api配置
-  { name: 'codePath', type: 'TEXT' }, // codePath
-  { name: 'path', type: 'TEXT' }, // path
-  { name: 'type', type: 'TEXT' }, // type
-  { name: 'moduleName', type: 'TEXT' }, // moduleName
-  { name: 'pageFolder', type: 'TEXT' }, // pageFolder
-  { name: 'apiFolder', type: 'TEXT' }, // apiFolder
+  { name: 'type', type: 'TEXT' }, // 模板类型 
   { name: 'status', type: 'TEXT' } // 1 可以 0 不可以
 ]
-db.createTable('codeConfs', columns)
+db.createTable('codeModules', columns)
 
 export default class appController {
   /**
@@ -38,12 +22,34 @@ export default class appController {
     let params = ctx.request.body
     // 插入数据
     const data = { ...params }
-    db.insertData('codeConfs', data)
-    ctx.body = {
-      code: 200,
-      data: {},
-      msg: 'ok'
+    let [err, res] = await db.insertData('codeModules', data)
+    if (!err) {
+      let params2 = {mid: res.lastID}
+      if (data.type == 2) {
+        params2.tabName = '标签名称'
+      }
+      let [err2, res2] = await db.insertData('codeConfs', params2)
+      if (!err2) {
+        ctx.body = {
+          code: 200,
+          data: res2,
+          msg: '新增成功'
+        }
+      } else {
+        ctx.body = {
+          code: 200,
+          data: null,
+          msg: '新增失败'
+        }
+      }
+    } else {
+      ctx.body = {
+        code: 200,
+        data: null,
+        msg: '新增失败'
+      }
     }
+    
   }
   /**
    * 更新接口
@@ -56,7 +62,7 @@ export default class appController {
     delete querys.id
     // 更新数据
     let condition = `id = ${id}`
-    db.updateData('codeConfs', querys, condition)
+    db.updateData('codeModules', querys, condition)
     ctx.body = {
       code: 200,
       data: null,
@@ -82,7 +88,7 @@ export default class appController {
       condition = condition.substring(0, lastIndex).trim()
     }
     let { data, total, totalPages } = await db.getPagedData(
-      'codeConfs',
+      'codeModules',
       page,
       pageSize,
       condition
@@ -118,7 +124,7 @@ export default class appController {
       condition = condition.substring(0, lastIndex).trim()
     }
     let { data, total, totalPages } = await db.getPagedData(
-      'codeConfs',
+      'codeModules',
       page,
       pageSize,
       condition
@@ -136,11 +142,11 @@ export default class appController {
    * @param {Context} ctx
    * @memberof rustController
    */
-  static async deleteSchema(ctx) {
+  static async deleteItem(ctx) {
     let params = ctx.request.body
     // 删除数据
     const deleteCondition = `id = ${params.id}`
-    let res = await db.deleteData('codeConfs', deleteCondition)
+    let res = await db.deleteData('codeModules', deleteCondition)
     ctx.body = {
       code: 200,
       data: res,

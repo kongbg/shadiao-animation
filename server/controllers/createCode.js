@@ -1,5 +1,6 @@
 import SQLiteDB from '../sqlite/index.js'
 import { createCode, writeFile } from './Handlebars.js'
+import { getCondition } from '../utils/index.js'
 
 // 创建数据库连接
 const db = new SQLiteDB('aotuCode.db')
@@ -14,6 +15,64 @@ const columns = [
 db.createTable('codes', columns)
 
 export default class appController {
+  /**
+   * 预览代码
+   * @param {Object} ctx - 上下文对象
+   */
+  static async previewCode(ctx) {
+    // 获取请求体参数
+    let params = ctx.request.body
+    // 使用对象扩展运算符复制参数对象
+    const query = { ...params }
+    // 根据id查询配置项
+    let { data, total, totalPages } = await queryItems({ mid: query.id })
+
+    if (query.isWrite) {
+      data.forEach((item, index) => {
+        // 将配置项写入文件
+        if (data.length == 1) {
+          writeFile(item)
+        } else {
+          writeFile(item, index+1)
+        }
+        
+      });
+      
+      // 返回成功响应
+      ctx.body = {
+        code: 200,
+        data: null,
+        msg: `代码已生成在${query.path}}/${query.moduleName}目录下`
+      }
+    } else {
+      let tabConfig = []
+      data.forEach(item=>{
+        tabConfig.push({
+          tabName: item.tabName,
+          tabId: item.tabId,
+          name: item.name
+        })
+      })
+      // 生成代码
+      let codes = data.map((item, index) => {
+        item.tabConfig = tabConfig
+        return {
+          tabId: item.tabId,
+          tabName: item.tabName,
+          name: item.name,
+          type: item.type,
+          code: createCode(item, index+1)
+        }
+      });
+      // 返回成功响应
+      ctx.body = {
+        code: 200,
+        data: codes,
+        msg: 'ok'
+      }
+    }
+  }
+
   /**
    * 保存接口
    * @param {Context} ctx
@@ -30,38 +89,7 @@ export default class appController {
       msg: 'ok'
     }
   }
-  /**
-   * 预览
-   * @param {Context} ctx
-   * @memberof rustController
-   */
-  static async previewCode(ctx) {
-    let params = ctx.request.body
-    const data = { ...params }
 
-    let config = await getconfDetailById({
-      request: { query: { id: data.id } }
-    })
-    
-
-    if (data.moduleName) {
-      writeFile(config);
-      ctx.body = {
-        code: 200,
-        data: null,
-        msg: `代码已生成在${data.path}}/${data.moduleName}目录下`
-      }
-    } else {
-      let code = createCode(config)
-      ctx.body = {
-        code: 200,
-        data: {
-          code
-        },
-        msg: 'ok'
-      }
-    }
-  }
   /**
    * 更新接口
    * @param {Context} ctx
@@ -133,6 +161,17 @@ export default class appController {
       msg: 'ok'
     }
   }
+}
+
+/**
+ * 通过条件查询数据
+ * @param {*} param
+ * @returns []
+ */
+async function queryItems(params) {
+  const { page = 1, pageSize = 10 } = params
+  let condition = getCondition(params)
+  return await db.getPagedData('codeConfs', page, pageSize, condition)
 }
 
 /**

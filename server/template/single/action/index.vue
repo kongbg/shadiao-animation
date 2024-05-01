@@ -38,7 +38,7 @@
       {{#each apis}}
       {{ this.methodName }}, // {{this.name}}
       {{/each}}
-  } from "@/api/{{codePath}}/{{moduleName}}/index.js"; // 接口
+  } from "@/api/{{codePath}}/{{moduleName}}/index{{#if index}}{{index}}{{/if}}.js"; // 接口
 
   const { proxy } = getCurrentInstance(); // vue 实例
 

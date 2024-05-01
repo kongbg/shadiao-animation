@@ -20,37 +20,40 @@ let columns = []
 registerHelper()
 
 // 写入内容到本地文件
-export const writeFile = (options) => {
-  let code = createCode(options)
+export const writeFile = (options, index=undefined) => {
+  // console.log('写入内容到本地文件:', options)
+  console.log('写入内容到本地文件:', index)
+  let code = createCode(options, index)
   let tempCode = JSON.parse(code)
   let {path, apiFolder, pageFolder, moduleName} = options
+
   for (const key in tempCode) {
     let distPath = ''
     if (key == 'api') {
-      distPath = resolvePath(`${path?path+'/':''}${apiFolder?apiFolder+'/':''}index.js`)
-      // console.log('distPath:', distPath)
-      createFile(distPath, tempCode[key])
+      distPath = resolvePath(`${path?path+'/':''}${apiFolder?apiFolder+'/':''}index${index!=undefined?index:''}.js`)
+      console.log('distPath:', distPath)
+      // createFile(distPath, tempCode[key])
     }
     if (key == 'list') {
       distPath = resolvePath(`${path?path+'/':''}${pageFolder?pageFolder+'/':''}index.vue`)
-      // console.log('distPath:', distPath)
-      createFile(distPath, tempCode[key])
+      console.log('distPath:', distPath)
+      // createFile(distPath, tempCode[key])
     }
     if (key == 'config') {
-      distPath = resolvePath(`${path?path+'/':''}${pageFolder?pageFolder+'/':''}config.js`)
-      // console.log('distPath:', distPath)
-      createFile(distPath, tempCode[key])
+      distPath = resolvePath(`${path?path+'/':''}${pageFolder?pageFolder+'/':''}config${index!=undefined?index:''}.js`)
+      console.log('distPath:', distPath)
+      // createFile(distPath, tempCode[key])
     }
     if (key == 'action') {
-      distPath = resolvePath(`${path?path+'/':''}${pageFolder?pageFolder+'/':''}action/index.vue`)
-      // console.log('distPath:', distPath)
-      createFile(distPath, tempCode[key])
+      distPath = resolvePath(`${path?path+'/':''}${pageFolder?pageFolder+'/':''}action/index${index!=undefined?index:''}.vue`)
+      console.log('distPath:', distPath)
+      // createFile(distPath, tempCode[key])
     }
   }
 }
 
 // 通过配置创建文件
-export const createCode = (options) => {
+export const createCode = (options, index=undefined) => {
   // api 配置
   options.apiconfig = JSON.parse(options.apiconfig || JSON.stringify({}))
   // 搜索组件配置
@@ -73,29 +76,55 @@ export const createCode = (options) => {
   if (options.type == 1) {
     // 列表-搜索-详情：基本的增删查改
     configs = ['api', 'list', 'action', 'config']
-  }// todo 含tabs 的模板
+    // 生成各种类型的代码
+    configs.forEach((conf) => {
+      switch (conf) {
+        case 'list':
+          // 列表页
+          code[conf] = createList(options)
+          break
+        case 'api':
+          // api文件
+          code[conf] = createApi(options)
+          break
+        case 'config':
+          // config.js 配置文件
+          code[conf] = createConfig(options)
+          break
+        case 'action':
+          // 详情页
+          code[conf] = createAction(options)
+          break
+      }
+    })
+  } else {// 含tabs 的模板
+    // 列表-搜索-详情：基本的增删查改
+    configs = ['api', 'list', 'action', 'config']
+    // 生成各种类型的代码
+    options.type = 2
+    configs.forEach((conf) => {
+      switch (conf) {
+        case 'list':
+          // 列表页
+          code[conf] = createList(options, index)
+          break
+        case 'api':
+          // api文件
+          code[conf] = createApi(options)
+          break
+        case 'config':
+          // config.js 配置文件
+          code[conf] = createConfig(options)
+          break
+        case 'action':
+          // 详情页
+          code[conf] = createAction(options, index)
+          break
+      }
+    })
+  }
 
-  // 生成各种类型的代码
-  configs.forEach((conf) => {
-    switch (conf) {
-      case 'list':
-        // 列表页
-        code[conf] = createList(options)
-        break
-      case 'api':
-        // api文件
-        code[conf] = createApi(options)
-        break
-      case 'config':
-        // config.js 配置文件
-        code[conf] = createConfig(options)
-        break
-      case 'action':
-        // 详情页
-        code[conf] = createAction(options)
-        break
-    }
-  })
+  
   return JSON.stringify(code)
 }
 
@@ -115,10 +144,13 @@ function createApi(options) {
     // config.js 文件中的接口
     configApis: []
   }
-  // 模板路径
+  // 模板路径 两种类型模板api 公用一个模板
   let filePath = resolvePath(
-    `./server/template/${getTypeTxt(options.type)}/api/index.js`
+    `./server/template/single/api/index.js`
   )
+  // let filePath = resolvePath(
+  //   `./server/template/${getTypeTxt(options.type)}/api/index.js`
+  // )
   // 将页面配置转化成能生成接口的配置
   options.apiconfig.domains.forEach((item) => {
     let obj = {
@@ -157,7 +189,7 @@ function createApi(options) {
 }
 
 // 生成列表页代码
-function createList(options) {
+function createList(options, index=undefined) {
   // 列表页按钮，接口配置
   let actions = {}
   options.listActions.forEach(item=>{
@@ -170,9 +202,11 @@ function createList(options) {
   let config = {
     apis,
     moduleName: options.moduleName,
+    index,
     codePath: options.codePath,
     path: options.path,
     actions,
+    tabConfig: options.tabConfig,
     // actions: {
     //   // 新增
     //   create: {
@@ -219,6 +253,7 @@ function createList(options) {
     exportFeilName: '电子围栏',
     suffix: '.xlsx'
   }
+  // console.log('生成列表页代码：', config)
   // 模板路径
   let filePath = resolvePath(
     `./server/template/${getTypeTxt(options.type)}/index.vue`
@@ -261,7 +296,7 @@ function createConfig(options) {
 }
 
 // 生成详情页
-function createAction(options) {
+function createAction(options, index=undefined) {
   // 获取所有提交参数，并设置默认值
   let submitParams = getSubmitParams(options)
 
@@ -276,6 +311,7 @@ function createAction(options) {
   let config = {
     apis,
     moduleName: options.moduleName,
+    index,
     codePath: options.codePath,
     path: options.path,
     submitParams,
@@ -308,9 +344,13 @@ function createAction(options) {
     // },
   }
 
+  // 模板路径 两种类型模板action 公用一个模板
   let filePath = resolvePath(
-    `./server/template/${getTypeTxt(options.type)}/action/index.vue`
+    `./server/template/single/action/index.vue`
   )
+  // let filePath = resolvePath(
+  //   `./server/template/${getTypeTxt(options.type)}/action/index.vue`
+  // )
 
   // 读取模板
   const templateContent = fs.readFileSync(filePath, 'utf8')
@@ -463,6 +503,10 @@ function registerHelper() {
     } else {
       return 'data'
     }
+  })
+  // 循环时下标从加1 开始
+  Handlebars.registerHelper('indexPlusOne', function (index) {
+    return index + 1
   })
 }
 

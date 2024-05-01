@@ -58,19 +58,28 @@ export function getDictsFromJf(params, acheOption) {
   })
 }
 // 新增配置
-export function addConfig(data) {
+export function addcodeModule(data) {
   return request({
-    url: '/autocode/config/add',
+    url: '/autocode/module/add',
     method: 'post',
     data
   })
 }
-// 配置列表
-export function getConfigs(params) {
+// 列表
+export function getModules(params) {
   return request({
-    url: '/autocode/config/get',
+    url: '/autocode/module/get',
     method: 'get',
     params
+  })
+}
+
+// 删除
+export function deleteModule(data) {
+  return request({
+    url: '/autocode/module/delete',
+    method: 'post',
+    data
   })
 }
 
