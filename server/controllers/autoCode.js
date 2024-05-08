@@ -24,6 +24,7 @@ const columns = [
   { name: 'moduleName', type: 'TEXT' }, // moduleName
   { name: 'pageFolder', type: 'TEXT' }, // pageFolder
   { name: 'apiFolder', type: 'TEXT' }, // apiFolder
+  { name: 'lastCode', type: 'TEXT' }, // 上次生成的代码
   { name: 'status', type: 'TEXT' } // 1 可以 0 不可以
 ]
 db.createTable('codeConfs', columns)

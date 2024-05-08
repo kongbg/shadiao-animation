@@ -423,7 +423,7 @@ function initTableData(properties = {}) {
         optionDict: realItem?.optionDict || '',
         dataSource: realItem?.dataSource || {}
       }
-      realItem.inited = true // 已还原状态
+      if(realItem) realItem.inited = true // 已还原状态
       tableData.value.push(obj)
     }
     let errStr = ''

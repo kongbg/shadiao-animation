@@ -193,7 +193,7 @@ function initTableData(properties = {}) {
         isQuery: false,
         dict: realItem?.dict || ''
       }
-      realItem.inited = true // 已还原状态
+      if(realItem) realItem.inited = true // 已还原状态
       tableData.value.push(obj)
     }
     let errStr = ''
@@ -239,6 +239,7 @@ function getFormData() {
 }
 
 async function init() {
+  debugger
 
   if (!props.apiId) return
   // 获取所有接口的jsonSchema信息id

@@ -1,6 +1,9 @@
 import Handlebars from 'handlebars'
 import fs from 'fs'
 import path from 'path'
+import codeController from './autoCode.js'
+import * as Diff from 'diff';
+
 const __dirname = path.resolve()
 function resolvePath(filePath) {
   return path.resolve(__dirname, filePath)
@@ -22,32 +25,51 @@ registerHelper()
 // 写入内容到本地文件
 export const writeFile = (options, index=undefined) => {
   // console.log('写入内容到本地文件:', options)
-  console.log('写入内容到本地文件:', index)
+  // console.log('写入内容到本地文件:', index)
+  // let lastCode = options.lastCode//.replace(/\\r\\n/g, '\r\n');
+  // console.log('lastCode:', lastCode)
   let code = createCode(options, index)
+  // console.log('code:', code)
   let tempCode = JSON.parse(code)
   let {path, apiFolder, pageFolder, moduleName} = options
+
+  // const diffs = Diff.diffWords(lastCode, code);
+  // console.log('diff:', diffs)
+  // diffs.forEach(item => {
+  //   // delete item.value
+  //   console.log(item)
+  // })
+
+  // codeController.updateItemDetails({
+  //   request: {
+  //     body: {
+  //       id: options.id,
+  //       lastCode: code
+  //     }
+  //   }
+  // })
 
   for (const key in tempCode) {
     let distPath = ''
     if (key == 'api') {
       distPath = resolvePath(`${path?path+'/':''}${apiFolder?apiFolder+'/':''}index${index!=undefined?index:''}.js`)
       console.log('distPath:', distPath)
-      // createFile(distPath, tempCode[key])
+      createFile(distPath, tempCode[key])
     }
     if (key == 'list') {
       distPath = resolvePath(`${path?path+'/':''}${pageFolder?pageFolder+'/':''}index.vue`)
       console.log('distPath:', distPath)
-      // createFile(distPath, tempCode[key])
+      createFile(distPath, tempCode[key])
     }
     if (key == 'config') {
       distPath = resolvePath(`${path?path+'/':''}${pageFolder?pageFolder+'/':''}config${index!=undefined?index:''}.js`)
       console.log('distPath:', distPath)
-      // createFile(distPath, tempCode[key])
+      createFile(distPath, tempCode[key])
     }
     if (key == 'action') {
       distPath = resolvePath(`${path?path+'/':''}${pageFolder?pageFolder+'/':''}action/index${index!=undefined?index:''}.vue`)
       console.log('distPath:', distPath)
-      // createFile(distPath, tempCode[key])
+      createFile(distPath, tempCode[key])
     }
   }
 }

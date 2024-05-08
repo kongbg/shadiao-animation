@@ -388,7 +388,7 @@ function getColumns() {
 
   let properties = {}
 
-  if (columnsInfo.value?.requestBodyId) {
+  if (!columnsInfo.value?.requestBodyId) {
     return properties
   }
 
@@ -430,7 +430,7 @@ function initTableData(properties = {}) {
         dict: realItem?.dict || '',
         dataSource: realItem?.dataSource || {}
       }
-      realItem.inited = true // 已还原状态
+      if(realItem) realItem.inited = true // 已还原状态
       tableData.value.push(obj)
     }
     let errStr = ''
@@ -476,6 +476,7 @@ function getFormData() {
 }
 
 async function init() {
+  debugger
   if (!props.apiId) return
   // 获取所有接口的jsonSchema信息id
   await getApiDetail()

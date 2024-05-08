@@ -15,35 +15,35 @@
           <listForm
             ref="listFormRef"
             :column="info.listColumn"
-            :apiId="getDataApiId"
+            :apiId="info.getDataApiId"
           ></listForm>
         </el-tab-pane>
         <el-tab-pane label="列表页按钮接口信息" name="listActionFormRef">
           <listActionForm
             ref="listActionFormRef"
             :actions="info.listActions"
-            :apiId="getDataApiId"
+            :apiId="info.getDataApiId"
           ></listActionForm>
         </el-tab-pane>
         <el-tab-pane label="查询字段信息" name="queryFormRef">
           <reqForm
             ref="queryFormRef"
             :column="info.queryColumn"
-            :apiId="getDataApiId"
+            :apiId="info.getDataApiId"
           ></reqForm>
         </el-tab-pane>
         <el-tab-pane label="新增编辑字段信息" name="editFormRef">
           <editForm
             ref="editFormRef"
             :column="info.editColumn"
-            :apiId="createDataApiId"
+            :apiId="info.createDataApiId"
           ></editForm>
         </el-tab-pane>
         <el-tab-pane label="新增编辑页按钮接口信息" name="editActionFormRef">
           <editActionForm
             ref="editActionFormRef"
             :actions="info.editActions"
-            :apiId="getDataApiId"
+            :apiId="info.getDataApiId"
           ></editActionForm>
         </el-tab-pane>
       </el-tabs>
@@ -92,8 +92,6 @@
   const activeName = ref('basicInfoRef')
   const tables = ref([])
   
-  const getDataApiId = ref('')
-  const createDataApiId = ref('')
   const loading = ref(false)
 
   /** 提交按钮 */
@@ -142,6 +140,7 @@
   function init() {
     if(props.configs.length) {
       info.value = props.configs[0]
+      console.log('info.value:', info.value)
     }
   }
   init()

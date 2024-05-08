@@ -83,7 +83,7 @@ const props = defineProps({
 })
 
 console.log(props.info)
-debugger
+
 
 const route = useRoute()
 const type = route.query.type

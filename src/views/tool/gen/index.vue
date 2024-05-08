@@ -394,7 +394,7 @@ async function handlePreview(row) {
 }
 // 生成代码
 async function handleGenTableCreate(row) {
-  debugger
+  
   loading.value = true
   let params = {
     id: row.id,
