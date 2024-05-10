@@ -21,12 +21,12 @@
 
       <!-- 新增 -->
       {{#if actions.create.show }}
-      <el-button v-if="['create'].includes(route.query.type)" type="{{actions.create.type}}" @click="submitForm"> {{actions.create.btnTxt}} </el-button>
+      <el-button v-if="['create'].includes(route.query.type)" type="{{actions.create.type}}" @click="submit"> {{actions.create.btnTxt}} </el-button>
       {{/if }}
 
       <!-- 编辑 -->
       {{#if actions.edit.show }}
-      <el-button v-if="['edit'].includes(route.query.type)" type="{{actions.edit.type}}" @click="submitForm"> {{actions.edit.btnTxt}} </el-button>
+      <el-button v-if="['edit'].includes(route.query.type)" type="{{actions.edit.type}}" @click="submit"> {{actions.edit.btnTxt}} </el-button>
       {{/if }}
     </el-row>
   </div>
@@ -61,44 +61,52 @@
   };
 
   // 表单提交
-  const submitForm = async () => {
-    let data = formRef.value.getFormData()
-    let params = {
-      ...data
-    };
-    if (route.query.type == "create") {
-      try {
-        loading.value = true;
-        let res = await {{actions.create.apiName}}(params);
-        loading.value = false;
-        let { code, data, msg } = res;
-        if (code == 200) {
-          proxy.$modal.msgSuccess("新增成功");
-          setTimeout(() => {
-            router.push({
-              path: '{{actions.create.openUrl}}'
-            });
-          }, 1500);
+  const submit = async () => {
+    let { valid, errKeys=[] } = await formRef.value.validate()
+    if (valid) {
+      let data = formRef.value.getValues()
+      let params = {
+        ...data
+      };
+      if (route.query.type == "create") {
+        try {
+          loading.value = true;
+          let res = await {{actions.create.apiName}}(params);
+          loading.value = false;
+          let { code, data, msg } = res;
+          if (code == 200) {
+            proxy.$modal.msgSuccess("新增成功");
+            setTimeout(() => {
+              router.push({
+                path: '{{actions.create.openUrl}}'
+              });
+            }, 1500);
+          }
+        } catch (error) {
+          loading.value = false;
         }
-      } catch (error) {
-        loading.value = false;
+      } else {
+        try {
+          loading.value = true;
+          let res = await {{actions.edit.apiName}}(params);
+          let { code, data, msg } = res;
+          if (code == 200) {
+            proxy.$modal.msgSuccess("编辑成功");
+            loading.value = false;
+            setTimeout(() => {
+              router.push({
+                path: '{{actions.edit.openUrl}}'
+              });
+            }, 1500);
+          }
+        } catch (error) {
+          loading.value = false;
+        }
       }
     } else {
-      try {
-        loading.value = true;
-        let res = await {{actions.edit.apiName}}(params);
-        let { code, data, msg } = res;
-        if (code == 200) {
-          proxy.$modal.msgSuccess("编辑成功");
-          loading.value = false;
-          setTimeout(() => {
-            router.push({
-              path: '{{actions.edit.openUrl}}'
-            });
-          }, 1500);
-        }
-      } catch (error) {
-        loading.value = false;
+      let key = errKeys.length ? errKeys[0].key : '';
+      if (key) {
+        formRef.value.scrollToField(key)
       }
     }
   };
@@ -128,10 +136,14 @@
     }
   }
 
-  // 判断是否需要获取详情
-  if (["view", "edit"].includes(route.query.type)) {
-    getDetail();
+  function init() {
+    // 判断是否需要获取详情
+    if (["view", "edit"].includes(route.query.type)) {
+      getDetail();
+    }
   }
+
+  init()
 </script>
 
 <style scoped lang="scss">
