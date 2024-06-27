@@ -162,7 +162,7 @@ async function getItemDetail() {
           tabName: item.tabName || ''
         }
         console.log('item.baseInfo:', item.baseInfo)
-        debugger
+        
 
         item.apiconfig.domains.forEach((info) => {
           if (info.list[1].value == 'createData') {

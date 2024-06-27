@@ -239,7 +239,7 @@ function getFormData() {
 }
 
 async function init() {
-  debugger
+
 
   if (!props.apiId) return
   // 获取所有接口的jsonSchema信息id

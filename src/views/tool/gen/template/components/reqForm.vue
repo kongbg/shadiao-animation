@@ -340,12 +340,13 @@ async function getApiDetail() {
       columnsInfo.value.requestBodyId = getId(
         columnsInfo.value.requestBody?.jsonSchema?.$ref
       )
-      //query参数id
-      columnsInfo.value.requestQueryId = getId('')
+      // //query参数id
+      // columnsInfo.value.requestQueryId = getId('')
       // 响应参数
       columnsInfo.value.resId = getId(
         columnsInfo.value.responses[0]?.jsonSchema?.$ref
       )
+      console.log('columnsInfo:', columnsInfo.value)
     } else {
       proxy.$modal.msgError(`没有查询到接口信息，请检查接口信息是否配置`);
     }
@@ -366,6 +367,7 @@ async function initData() {
 
   // 获取请求字段信息
   let properties = getColumns()
+  console.log('properties:', properties)
 
   // 获取表格数据
   initTableData(properties)
@@ -378,13 +380,15 @@ function getColumns() {
   // requestBody.jsonSchema.$ref 是body 传参数
   // parameters.query 是query 传参数
 
+  debugger
+
   let properties = {}
 
-  if (!columnsInfo.value?.requestBodyId) {
-    return properties
-  }
+  // if (!columnsInfo.value?.requestBodyId) {
+  //   return properties
+  // }
 
-  if (columnsInfo.value.requestBodyId) {
+  if (columnsInfo?.value?.requestBodyId) {
     let bodyParams = dataSchema.value.find(
       (item) => item.id == columnsInfo.value.requestBodyId
     )

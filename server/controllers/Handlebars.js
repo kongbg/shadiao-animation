@@ -76,6 +76,7 @@ export const writeFile = (options, index=undefined) => {
 
 // 通过配置创建文件
 export const createCode = (options, index=undefined) => {
+  console.log('type:', options.type)
   // api 配置
   options.apiconfig = JSON.parse(options.apiconfig || JSON.stringify({}))
   // 搜索组件配置
@@ -120,6 +121,7 @@ export const createCode = (options, index=undefined) => {
       }
     })
   } else {// 含tabs 的模板
+    console.log('含tabs 的模板')
     // 列表-搜索-详情：基本的增删查改
     configs = ['api', 'list', 'action', 'config']
     // 生成各种类型的代码

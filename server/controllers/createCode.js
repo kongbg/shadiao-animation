@@ -25,6 +25,7 @@ export default class appController {
     // 使用对象扩展运算符复制参数对象
     const query = { ...params }
     // 根据id查询配置项
+    
     let { data, total, totalPages } = await queryItems({ mid: query.id })
 
     if (query.isWrite) {
@@ -56,6 +57,7 @@ export default class appController {
       // 生成代码
       let codes = data.map((item, index) => {
         item.tabConfig = tabConfig
+        console.log('itemtype:', item.type)
         return {
           tabId: item.tabId,
           tabName: item.tabName,

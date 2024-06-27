@@ -14,6 +14,7 @@
           :label="item.tabName"
           :name="index"
         >
+        {{ item.id }}
           <Single :configs="item.config" :id="item.id"></Single>
         </el-tab-pane>
       </el-tabs>
